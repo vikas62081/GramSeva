@@ -8,7 +8,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {PollingStackNavigationProp} from '../../types/navigation';
+import {PollingStackNavigationProp} from '../../../types/navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TabHeader from '../common/TabHeader';
 

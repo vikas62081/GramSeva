@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {PollingStackNavigationProp, Poll} from '../../types/navigation';
+import {PollingStackNavigationProp, Poll} from '../../../types/navigation';
 import PageHeader from '../common/PageHeader';
 
 const VotingScreen = (): React.JSX.Element => {

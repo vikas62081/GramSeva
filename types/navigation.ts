@@ -1,5 +1,5 @@
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {Event} from '../components/events/types';
+import {Event} from '../src/components/events/types';
 
 export interface Poll {
   id: string;

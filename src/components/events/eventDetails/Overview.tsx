@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {OverviewProps, Contributor, Expense} from '../types';
+import {formatDate} from '../../../utils';
 
 const Overview: React.FC<OverviewProps> = ({event}) => {
   const calculateTotalContributions = () => {
@@ -23,14 +24,6 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
     return event.contributors.reduce((max: Contributor, current: Contributor) =>
       current.amount > max.amount ? current : max,
     );
-  };
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
   };
 
   const totalContributions = calculateTotalContributions();

@@ -14,6 +14,7 @@ import {EventFormScreenProps} from '../types';
 import PageHeader from '../../common/PageHeader';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import FormGroup from '../../common/FormGroup';
+import {formatDate} from '../../../utils';
 
 const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
   const initialData = route.params?.event;
@@ -47,14 +48,6 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
     if (selectedDate) {
       setForm(prev => ({...prev, date: selectedDate}));
     }
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
   };
 
   const handleSubmit = () => {
@@ -115,7 +108,9 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
               style={styles.dateButton}
               onPress={() => setShowDatePicker(true)}>
               <MaterialIcons name="event" size={24} color="#63C7A6" />
-              <Text style={styles.dateText}>{formatDate(form.date)}</Text>
+              <Text style={styles.dateText}>
+                {formatDate(form.date.toISOString())}
+              </Text>
             </TouchableOpacity>
           </FormGroup>
           <FormGroup label="Venue">

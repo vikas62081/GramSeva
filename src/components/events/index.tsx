@@ -11,12 +11,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {EventsScreenNavigationProp} from '../../types/navigation';
+import {EventsScreenNavigationProp} from '../../../types/navigation';
 import EventDetailsScreen from './EventDetailsScreen';
 import EventForm from './eventDetails/EventForm';
 import {Event} from './types';
-import {RootStackParamList} from '../../types/navigation';
+import {RootStackParamList} from '../../../types/navigation';
 import TabHeader from '../common/TabHeader';
+import {formatDate} from '../../utils';
 
 const sampleEvents: Event[] = [
   {
@@ -106,14 +107,6 @@ const sampleEvents: Event[] = [
 
 const EventContainer = (): React.JSX.Element => {
   const navigation = useNavigation<EventsScreenNavigationProp>();
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
 
   const handleAddEvent = (
     eventData: Omit<Event, 'id' | 'contributors' | 'expenses'>,

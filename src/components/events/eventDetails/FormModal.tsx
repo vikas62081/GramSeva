@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {FormModalProps} from '../types';
+import PageHeader from '../../common/PageHeader';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const FormModal: React.FC<FormModalProps> = ({
   visible,
@@ -19,26 +21,40 @@ const FormModal: React.FC<FormModalProps> = ({
   children,
 }) => {
   return (
-    <Modal visible={visible} transparent={true} animationType="slide">
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{title}</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <MaterialIcons name="close" size={24} color="#666" />
-            </TouchableOpacity>
-          </View>
-          <ScrollView style={styles.formContent}>{children}</ScrollView>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.content}>
+          <PageHeader onBack={onClose} title={title} />
+          <ScrollView
+            style={styles.formContent}
+            showsVerticalScrollIndicator={false}>
+            {children}
+          </ScrollView>
           <TouchableOpacity style={styles.submitButton} onPress={onSubmit}>
             <Text style={styles.submitButtonText}>{submitText}</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  content: {
+    flex: 1,
+  },
+  formContent: {
+    flex: 1,
+    padding: 16,
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -67,9 +83,7 @@ const styles = StyleSheet.create({
   closeButton: {
     padding: 8,
   },
-  formContent: {
-    padding: 16,
-  },
+
   submitButton: {
     backgroundColor: '#4CAF50',
     margin: 16,

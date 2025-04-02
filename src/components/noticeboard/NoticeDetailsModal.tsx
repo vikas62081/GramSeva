@@ -8,6 +8,7 @@ import {
   Modal,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {formatDate} from '../../utils';
 
 interface Notice {
   id: string;
@@ -34,14 +35,6 @@ const NoticeDetailsModal: React.FC<NoticeDetailsModalProps> = ({
       hour: '2-digit',
       minute: '2-digit',
       hour12: true,
-    });
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
     });
   };
 
@@ -85,7 +78,7 @@ const NoticeDetailsModal: React.FC<NoticeDetailsModalProps> = ({
                   <Text style={styles.detailLabel}>Start Date:</Text>
                 </View>
                 <Text style={styles.detailValue}>
-                  {formatDate(notice.startDate)}
+                  {formatDate(notice.startDate.toISOString())}
                 </Text>
               </View>
               <View style={styles.detailRow}>
@@ -99,7 +92,7 @@ const NoticeDetailsModal: React.FC<NoticeDetailsModalProps> = ({
                   <Text style={styles.detailLabel}>End Date:</Text>
                 </View>
                 <Text style={styles.detailValue}>
-                  {formatDate(notice.endDate)}
+                  {formatDate(notice.endDate.toISOString())}
                 </Text>
               </View>
               <View style={styles.detailRow}>

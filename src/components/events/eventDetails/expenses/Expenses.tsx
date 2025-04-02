@@ -1,84 +1,98 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  Image,
+  Alert,
+  FlatList,
+} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {ContributorsProps, Contributor} from '../../types';
-import ContributorForm from './ContributorForm';
+import {ExpensesProps, Expense} from '../../types';
+import ExpenseForm from './ExpenseForm';
+import {formatDate} from '../../../../utils';
 
-const Contributors: React.FC<ContributorsProps> = ({
-  contributors,
-  onAddContributor,
-  onEditContributor,
+const Expenses: React.FC<ExpensesProps> = ({
+  event,
+  onAddExpense,
+  onEditExpense,
 }) => {
   const [showForm, setShowForm] = useState(false);
-  const [selectedContributor, setSelectedContributor] = useState<
-    Contributor | undefined
-  >();
+  const [selectedExpense, setSelectedExpense] = useState<Expense | undefined>();
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-  const handleSubmit = (data: {name: string; amount: number}) => {
-    if (selectedContributor) {
-      onEditContributor({
+  const handleSubmit = (data: {
+    name: string;
+    amount: number;
+    receipt: string;
+  }) => {
+    if (selectedExpense) {
+      onEditExpense({
         ...data,
-        id: selectedContributor.id,
-        date: selectedContributor.date,
+        id: selectedExpense.id,
+        date: '',
       });
     } else {
-      onAddContributor(data);
+      onAddExpense(data);
     }
     setShowForm(false);
-    setSelectedContributor(undefined);
+    setSelectedExpense(undefined);
   };
 
-  const handleEdit = (contributor: Contributor) => {
-    setSelectedContributor(contributor);
+  const handleEdit = (expense: Expense) => {
+    setSelectedExpense(expense);
     setShowForm(true);
   };
 
-  const renderItem = ({item}: {item: Contributor}) => (
-    <View style={styles.contributorCard}>
-      <View style={styles.iconContainer}>
-        <MaterialIcons name="person" size={28} color="#63C7A6" />
+  const renderItem = ({item}: {item: Expense}) => (
+    <TouchableOpacity
+      onPress={() => {
+        handleEdit(item);
+      }}>
+      <View style={styles.expenseCard}>
+        <View style={styles.iconContainer}>
+          <MaterialIcons name="credit-card" size={28} color="#63C7A6" />
+        </View>
+        <View style={styles.expenseInfo}>
+          <Text style={styles.expenseName}>{item.name}</Text>
+          <Text style={styles.expenseDate}>{formatDate(item.date)}</Text>
+        </View>
+        <Text style={styles.expenseAmount}>₹{item.amount}</Text>
       </View>
-      <View style={styles.contributorInfo}>
-        <Text style={styles.contributorName}>{item.name}</Text>
-        <Text style={styles.contributorDate}>{formatDate(item.date)}</Text>
-      </View>
-      <Text style={styles.contributorAmount}>₹{item.amount}</Text>
-    </View>
+    </TouchableOpacity>
   );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Contributors</Text>
+        <Text style={styles.title}>Expenses</Text>
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => {
-            setSelectedContributor(undefined);
+            setSelectedExpense(undefined);
             setShowForm(true);
           }}>
           <MaterialIcons name="add" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
+
       <FlatList
-        data={contributors}
+        data={event.expenses}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
       />
-      <ContributorForm
+
+      <ExpenseForm
         visible={showForm}
         onClose={() => {
           setShowForm(false);
-          setSelectedContributor(undefined);
+          setSelectedExpense(undefined);
         }}
         onSubmit={handleSubmit}
-        initialData={selectedContributor}
+        initialData={selectedExpense}
       />
     </View>
   );
@@ -112,7 +126,7 @@ const styles = StyleSheet.create({
   list: {
     padding: 20,
   },
-  contributorCard: {
+  expenseCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -129,34 +143,33 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 3,
   },
-  contributorInfo: {
+  expenseInfo: {
     flex: 1,
   },
-
   iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#B2E6D5', // Light blue background
+    backgroundColor: '#B2E6D5',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
 
-  contributorName: {
+  expenseName: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
   },
-  contributorDate: {
+  expenseDate: {
     fontSize: 13,
     color: '#777',
   },
-  contributorAmount: {
+  expenseAmount: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#28A745',
+    color: '#DC3545',
   },
 });
 
-export default Contributors;
+export default Expenses;

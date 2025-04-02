@@ -12,7 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useNavigation} from '@react-navigation/native';
-import {PollingStackNavigationProp} from '../../types/navigation';
+import {PollingStackNavigationProp} from '../../../types/navigation';
 import PageHeader from '../common/PageHeader';
 import FormGroup from '../common/FormGroup';
 

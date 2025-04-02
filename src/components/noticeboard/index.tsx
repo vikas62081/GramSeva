@@ -143,7 +143,6 @@ const NoticeListing = (): React.JSX.Element => {
           <View style={styles.footerRow}>
             <View style={styles.dateContainer}>
               <MaterialIcons name="event" size={16} color="#666" />
-              {/* <Text style={styles.date}>{formatDate(item.date)}</Text> */}
               <Text style={styles.timeLeft}>{timeLeft}</Text>
             </View>
             <View style={styles.timeContainer}>
