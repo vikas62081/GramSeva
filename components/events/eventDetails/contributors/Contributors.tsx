@@ -42,17 +42,16 @@ const Contributors: React.FC<ContributorsProps> = ({
 
   const renderItem = ({item}: {item: Contributor}) => (
     <View style={styles.contributorCard}>
+      <View style={styles.iconContainer}>
+        <MaterialIcons name="person" size={28} color="#63C7A6" />
+      </View>
       <View style={styles.contributorInfo}>
         <Text style={styles.contributorName}>{item.name}</Text>
         <Text style={styles.contributorDate}>{formatDate(item.date)}</Text>
-        <Text style={styles.contributorAmount}>₹{item.amount}</Text>
       </View>
-      <TouchableOpacity onPress={() => handleEdit(item)}>
-        <MaterialIcons name="edit" size={24} color="#666" />
-      </TouchableOpacity>
+      <Text style={styles.contributorAmount}>₹{item.amount}</Text>
     </View>
   );
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -66,14 +65,12 @@ const Contributors: React.FC<ContributorsProps> = ({
           <MaterialIcons name="add" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
-
       <FlatList
         data={contributors}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
       />
-
       <ContributorForm
         visible={showForm}
         onClose={() => {
@@ -95,9 +92,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: 8,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
   title: {
@@ -121,7 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 8,
     borderRadius: 12,
     marginBottom: 12,
     shadowColor: '#000',
@@ -131,24 +127,35 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 3,
   },
   contributorInfo: {
     flex: 1,
   },
+
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#B2E6D5', // Light blue background
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+
   contributorName: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: 'bold',
     color: '#333',
-    marginBottom: 4,
   },
   contributorDate: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: 13,
+    color: '#777',
   },
   contributorAmount: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#28A745',
   },
 });
 

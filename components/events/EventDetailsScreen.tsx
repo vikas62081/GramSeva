@@ -22,6 +22,8 @@ import type {
 import Overview from './eventDetails/Overview';
 import Contributors from './eventDetails/contributors/Contributors';
 import Expenses from './eventDetails/expenses/Expenses';
+import PageHeader from '../common/PageHeader';
+import Tabs from '../common/Tabs';
 
 interface EventDetailsScreenProps {
   route: EventDetailsScreenRouteProp;
@@ -30,9 +32,7 @@ interface EventDetailsScreenProps {
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
   const navigation = useNavigation<EventDetailsScreenNavigationProp>();
   const {event} = route.params;
-  const [activeTab, setActiveTab] = useState<
-    'details' | 'contributions' | 'expenses'
-  >('details');
+  const [activeTab, setActiveTab] = useState<string>('details');
   const [showAddContributor, setShowAddContributor] = useState(false);
   const [showAddExpense, setShowAddExpense] = useState(false);
   const [newContributor, setNewContributor] = useState({name: '', amount: ''});
@@ -111,64 +111,27 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}>
-          <MaterialIcons name="arrow-back" size={24} color="#666" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>{event.title}</Text>
-      </View>
+      <PageHeader onBack={() => navigation.goBack()} title={event.title} />
 
       <ScrollView style={styles.content}>
         {/* Event Profile Picture */}
         <Image
-          source={{uri: event.profilePicture}}
+          source={{
+            uri: event.profilePicture,
+          }}
           style={styles.profilePicture}
         />
 
         {/* Tab Navigation */}
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === 'details' && styles.activeTab]}
-            onPress={() => setActiveTab('details')}>
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === 'details' && styles.activeTabText,
-              ]}>
-              Details
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.tab,
-              activeTab === 'contributions' && styles.activeTab,
-            ]}
-            onPress={() => setActiveTab('contributions')}>
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === 'contributions' && styles.activeTabText,
-              ]}>
-              Contributions
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === 'expenses' && styles.activeTab]}
-            onPress={() => setActiveTab('expenses')}>
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === 'expenses' && styles.activeTabText,
-              ]}>
-              Expenses
-            </Text>
-          </TouchableOpacity>
+        <View>
+          <Tabs
+            tabs={['details', 'contributions', 'expenses']}
+            activeTab={activeTab}
+            onChangeTab={setActiveTab}
+          />
+          {renderTabContent()}
         </View>
-
         {/* Content based on active tab */}
-        {renderTabContent()}
       </ScrollView>
 
       {/* Add Contributor Modal */}
@@ -277,55 +240,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    backgroundColor: '#FFFFFF',
-  },
-  backButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    marginLeft: 8,
-  },
   content: {
     flex: 1,
   },
   profilePicture: {
     width: '100%',
-    height: 20,
+    height: 200,
     resizeMode: 'cover',
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    backgroundColor: '#FFFFFF',
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 8,
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: '#f0f0f0',
-  },
-  activeTab: {
-    borderBottomColor: '#63C7A6',
-  },
-  tabText: {
-    fontSize: 16,
-    color: '#666',
-    fontWeight: '500',
-  },
-  activeTabText: {
-    color: '#63C7A6',
   },
   modalOverlay: {
     flex: 1,

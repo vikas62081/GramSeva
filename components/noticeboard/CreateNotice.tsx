@@ -13,6 +13,8 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import PageHeader from '../common/PageHeader';
+import FormGroup from '../common/FormGroup';
+import Pills from '../common/Pills';
 
 interface CreateNoticeModalProps {
   visible: boolean;
@@ -24,7 +26,7 @@ interface NoticeForm {
   description: string;
   startDate: Date;
   endDate: Date;
-  priority: 'high' | 'medium' | 'low';
+  priority: string;
 }
 
 const getPriorityStyle = (isActive: boolean) => {
@@ -42,7 +44,7 @@ const CreateNoticeModal: React.FC<CreateNoticeModalProps> = ({
     description: '',
     startDate: new Date(),
     endDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    priority: 'low',
+    priority: 'medium',
   });
 
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
@@ -74,8 +76,7 @@ const CreateNoticeModal: React.FC<CreateNoticeModalProps> = ({
             style={styles.formContent}
             showsVerticalScrollIndicator={false}>
             {/* Title Input */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Title</Text>
+            <FormGroup label="Title">
               <TextInput
                 style={styles.input}
                 value={formData.title}
@@ -85,11 +86,8 @@ const CreateNoticeModal: React.FC<CreateNoticeModalProps> = ({
                 placeholder="Enter notice title"
                 placeholderTextColor="#999"
               />
-            </View>
-
-            {/* Description Input */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Description</Text>
+            </FormGroup>
+            <FormGroup label="Description">
               <TextInput
                 style={[styles.input, styles.textArea]}
                 value={formData.description}
@@ -101,11 +99,8 @@ const CreateNoticeModal: React.FC<CreateNoticeModalProps> = ({
                 multiline
                 numberOfLines={4}
               />
-            </View>
-
-            {/* Start Date */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Start Date</Text>
+            </FormGroup>
+            <FormGroup label="Start Date">
               <TouchableOpacity
                 style={styles.dateButton}
                 onPress={() => setShowStartDatePicker(true)}>
@@ -118,11 +113,8 @@ const CreateNoticeModal: React.FC<CreateNoticeModalProps> = ({
                   {formData.startDate.toLocaleString()}
                 </Text>
               </TouchableOpacity>
-            </View>
-
-            {/* End Date */}
-            <View style={styles.section}>
-              <Text style={styles.label}>End Date</Text>
+            </FormGroup>
+            <FormGroup label="End Date">
               <TouchableOpacity
                 style={styles.dateButton}
                 onPress={() => setShowEndDatePicker(true)}>
@@ -135,44 +127,16 @@ const CreateNoticeModal: React.FC<CreateNoticeModalProps> = ({
                   {formData.endDate.toLocaleString()}
                 </Text>
               </TouchableOpacity>
-            </View>
-
-            {/* Priority Selection */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Priority</Text>
-              <View style={styles.priorityContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.priorityPill,
-                    getPriorityStyle(formData.priority === 'high'),
-                  ]}
-                  onPress={() =>
-                    setFormData(prev => ({...prev, priority: 'high'}))
-                  }>
-                  <Text>High</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.priorityPill,
-                    getPriorityStyle(formData.priority === 'medium'),
-                  ]}
-                  onPress={() =>
-                    setFormData(prev => ({...prev, priority: 'medium'}))
-                  }>
-                  <Text>Medium</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.priorityPill,
-                    getPriorityStyle(formData.priority === 'low'),
-                  ]}
-                  onPress={() =>
-                    setFormData(prev => ({...prev, priority: 'low'}))
-                  }>
-                  <Text>Low</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+            </FormGroup>
+            <FormGroup label="Priority">
+              <Pills
+                options={['high', 'medium', 'low']}
+                selectedOption={formData.priority}
+                onSelect={priority =>
+                  setFormData(prev => ({...prev, priority}))
+                }
+              />
+            </FormGroup>
           </ScrollView>
 
           {/* Submit Button */}
@@ -223,15 +187,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  section: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2d3436',
-    marginBottom: 8,
-  },
   input: {
     backgroundColor: '#f8f9fa',
     borderRadius: 12,
@@ -254,26 +209,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     fontSize: 16,
     color: '#2d3436',
-  },
-  priorityContainer: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  priorityPill: {
-    flex: 1,
-    padding: 12,
-    borderRadius: 20,
-    alignItems: 'center',
-    borderWidth: 2,
-    backgroundColor: '#f0f0f0',
-  },
-  priorityPillText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#666',
-  },
-  priorityPillTextActive: {
-    color: '#ffffff',
   },
   bottomButton: {
     padding: 16,

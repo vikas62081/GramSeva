@@ -14,6 +14,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useNavigation} from '@react-navigation/native';
 import {PollingStackNavigationProp} from '../../types/navigation';
 import PageHeader from '../common/PageHeader';
+import FormGroup from '../common/FormGroup';
 
 interface PollForm {
   question: string;
@@ -73,8 +74,7 @@ const CreatePoll = (): React.JSX.Element => {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Question Input */}
-        <View style={styles.section}>
-          <Text style={styles.label}>Question</Text>
+        <FormGroup label="Question">
           <TextInput
             style={styles.questionInput}
             value={formData.question}
@@ -85,11 +85,8 @@ const CreatePoll = (): React.JSX.Element => {
             placeholderTextColor="#999"
             multiline
           />
-        </View>
-
-        {/* Options */}
-        <View style={styles.section}>
-          <Text style={styles.label}>Options</Text>
+        </FormGroup>
+        <FormGroup label="Options">
           {formData.options.map((option, index) => (
             <View key={index} style={styles.optionContainer}>
               <TextInput
@@ -116,11 +113,8 @@ const CreatePoll = (): React.JSX.Element => {
             <Icon name="add-circle-outline" size={24} color="#63C7A6" />
             <Text style={styles.addOptionText}>Add Option</Text>
           </TouchableOpacity>
-        </View>
-
-        {/* Duration */}
-        <View style={styles.section}>
-          <Text style={styles.label}>Poll Duration</Text>
+        </FormGroup>
+        <FormGroup label="Poll Duration">
           <TouchableOpacity
             style={styles.durationButton}
             onPress={() => setShowDatePicker(true)}>
@@ -129,7 +123,7 @@ const CreatePoll = (): React.JSX.Element => {
               Ends {formData.endDate.toLocaleString()}
             </Text>
           </TouchableOpacity>
-        </View>
+        </FormGroup>
       </ScrollView>
 
       {/* Create Button */}
@@ -163,15 +157,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  section: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2d3436',
-    marginBottom: 8,
-  },
+
   questionInput: {
     backgroundColor: '#f8f9fa',
     borderRadius: 12,

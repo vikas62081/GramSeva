@@ -28,7 +28,8 @@ const sampleEvents: Event[] = [
     time: '9:00 AM - 9:00 PM',
     venue: 'Village Temple Ground',
     eventHead: 'Ram Kumar',
-    profilePicture: 'https://example.com/temple-festival.jpg',
+    profilePicture:
+      'https://dims.apnews.com/dims4/default/c90f053/2147483647/strip/true/crop/4500x3001+0+0/resize/2046x1364!/format/webp/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F8f%2F90%2F7895d6e91470dba7c6ccb2d5a4da%2F5a9cb53123a84899a0f3b7a9dc9cc2a5',
     contributors: [
       {
         id: '1',
@@ -68,7 +69,8 @@ const sampleEvents: Event[] = [
     time: '8:00 AM - 5:00 PM',
     venue: 'Village Sports Ground',
     eventHead: 'Amit Singh',
-    profilePicture: 'https://example.com/sports-day.jpg',
+    profilePicture:
+      'https://duendebymadamzozo.com/dbmzz-content/uploads/2024/03/Holi-Indian-Festival-of-Colours.jpg',
     contributors: [
       {
         id: '3',

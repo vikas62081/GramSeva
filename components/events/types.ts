@@ -37,7 +37,7 @@ export interface Expense {
   name: string;
   amount: number;
   receipt: string;
-  date?: string;
+  date: string;
 }
 
 export interface ExpenseForm {

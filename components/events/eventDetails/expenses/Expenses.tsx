@@ -14,6 +14,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {ExpensesProps, Expense} from '../../types';
 import ExpenseForm from './ExpenseForm';
 
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+
 const Expenses: React.FC<ExpensesProps> = ({
   event,
   onAddExpense,
@@ -28,7 +36,11 @@ const Expenses: React.FC<ExpensesProps> = ({
     receipt: string;
   }) => {
     if (selectedExpense) {
-      onEditExpense({...data, id: selectedExpense.id});
+      onEditExpense({
+        ...data,
+        id: selectedExpense.id,
+        date: '',
+      });
     } else {
       onAddExpense(data);
     }
@@ -43,13 +55,14 @@ const Expenses: React.FC<ExpensesProps> = ({
 
   const renderItem = ({item}: {item: Expense}) => (
     <View style={styles.expenseCard}>
+      <View style={styles.iconContainer}>
+        <MaterialIcons name="credit-card" size={28} color="#63C7A6" />
+      </View>
       <View style={styles.expenseInfo}>
         <Text style={styles.expenseName}>{item.name}</Text>
-        <Text style={styles.expenseAmount}>₹{item.amount}</Text>
+        <Text style={styles.expenseDate}>{formatDate(item.date)}</Text>
       </View>
-      <TouchableOpacity onPress={() => handleEdit(item)}>
-        <MaterialIcons name="edit" size={24} color="#666" />
-      </TouchableOpacity>
+      <Text style={styles.expenseAmount}>₹{item.amount}</Text>
     </View>
   );
 
@@ -95,9 +108,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: 8,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
   title: {
@@ -121,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 8,
     borderRadius: 12,
     marginBottom: 12,
     shadowColor: '#000',
@@ -131,20 +143,34 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 3,
   },
   expenseInfo: {
     flex: 1,
   },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#B2E6D5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+
   expenseName: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: 'bold',
     color: '#333',
-    marginBottom: 4,
+  },
+  expenseDate: {
+    fontSize: 13,
+    color: '#777',
   },
   expenseAmount: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#DC3545',
   },
 });
 

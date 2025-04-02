@@ -87,9 +87,6 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
           <MaterialIcons name="person" size={20} color="#666" />
           <Text style={styles.detailText}>{event.eventHead}</Text>
         </View>
-      </View>
-
-      <View style={styles.descriptionSection}>
         <Text style={styles.sectionTitle}>Description</Text>
         <Text style={styles.description}>{event.description}</Text>
       </View>
@@ -100,7 +97,7 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingHorizontal: 16,
   },
   dashboard: {
     flexDirection: 'row',
@@ -155,7 +152,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 4,
   },
   sectionTitle: {
     fontSize: 18,
