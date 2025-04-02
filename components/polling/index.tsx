@@ -10,7 +10,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {PollingStackNavigationProp} from '../../types/navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import TabHeader from '../common/TabHeader';
 
 interface Poll {
   id: string;
@@ -141,14 +141,10 @@ const PollingContainer = (): React.JSX.Element => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Ionic Polls</Text>
-        <TouchableOpacity
-          style={styles.createButton}
-          onPress={() => navigation.navigate('CreatePoll')}>
-          <MaterialIcons name="add" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
+      <TabHeader
+        title="Ionic Polls"
+        onAdd={() => navigation.navigate('CreatePoll')}
+      />
       <FlatList
         data={samplePolls}
         renderItem={renderPollItem}
@@ -166,34 +162,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F6FA',
     paddingHorizontal: 16,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-    marginTop: 8,
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#1A1A1A',
-  },
-  createButton: {
-    backgroundColor: '#63C7A6',
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
+
   listContainer: {
     gap: 16,
-    paddingBottom: 80,
+    paddingBottom: 48,
   },
   pollCard: {
     borderRadius: 16,

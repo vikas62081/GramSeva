@@ -1,20 +1,9 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  ScrollView,
-  TextInput,
-  Alert,
-  SafeAreaView,
-} from 'react-native';
+import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CreateNoticeModal from './CreateNotice';
 import NoticeDetailsModal from './NoticeDetailsModal';
+import TabHeader from '../common/TabHeader';
 
 interface Notice {
   id: string;
@@ -171,14 +160,10 @@ const NoticeListing = (): React.JSX.Element => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Notice Board</Text>
-        <TouchableOpacity
-          style={styles.createButton}
-          onPress={() => setCreateModalVisible(true)}>
-          <MaterialIcons name="add" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
+      <TabHeader
+        title="Notice Board"
+        onAdd={() => setCreateModalVisible(true)}
+      />
       <FlatList
         data={sampleNotices}
         renderItem={renderEventItem}
@@ -203,32 +188,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F6FA',
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-    marginTop: 8,
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#1A1A1A',
-  },
-  createButton: {
-    backgroundColor: '#63C7A6',
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    paddingHorizontal: 16,
   },
   listContainer: {
     gap: 16,

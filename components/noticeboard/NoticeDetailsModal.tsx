@@ -58,7 +58,7 @@ const NoticeDetailsModal: React.FC<NoticeDetailsModalProps> = ({
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={visible}
       onDismiss={onClose}

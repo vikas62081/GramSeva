@@ -159,42 +159,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    padding: 16,
-    marginTop: 32,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  backButton: {
-    alignItems: 'center',
-    marginBottom: 8,
-    padding: 8,
-  },
-  backText: {
-    color: '#63C7A6',
-    fontSize: 16,
-    marginLeft: 4,
-  },
-  headerTitle: {
-    textAlign: 'center',
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#000000',
-  },
   content: {
     flex: 1,
     padding: 16,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 20,
   },
   label: {
     fontSize: 18,
     fontWeight: '600',
     color: '#2d3436',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   questionInput: {
     backgroundColor: '#f8f9fa',
@@ -225,7 +201,7 @@ const styles = StyleSheet.create({
   addOptionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: 8,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#63C7A6',
@@ -256,7 +232,7 @@ const styles = StyleSheet.create({
   },
   createButton: {
     backgroundColor: '#63C7A6',
-    padding: 16,
+    padding: 12,
     borderRadius: 12,
     alignItems: 'center',
     // Shadow

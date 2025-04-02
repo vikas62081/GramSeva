@@ -16,6 +16,7 @@ import EventDetailsScreen from './EventDetailsScreen';
 import EventForm from './eventDetails/EventForm';
 import {Event} from './types';
 import {RootStackParamList} from '../../types/navigation';
+import TabHeader from '../common/TabHeader';
 
 const sampleEvents: Event[] = [
   {
@@ -154,14 +155,10 @@ const EventContainer = (): React.JSX.Element => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Events</Text>
-        <TouchableOpacity
-          style={styles.createButton}
-          onPress={() => navigation.navigate('EventForm', {})}>
-          <MaterialIcons name="add" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
+      <TabHeader
+        title="Events"
+        onAdd={() => navigation.navigate('EventForm', {})}
+      />
       <FlatList
         data={sampleEvents}
         renderItem={renderEventItem}
@@ -177,32 +174,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F6FA',
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-    marginTop: 8,
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#1A1A1A',
-  },
-  createButton: {
-    backgroundColor: '#6C63FF',
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    paddingHorizontal: 16,
   },
   listContainer: {
     gap: 16,

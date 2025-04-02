@@ -219,37 +219,18 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    padding: 16,
-    marginTop: 32,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  backButton: {
-    alignItems: 'center',
-    marginBottom: 8,
-    padding: 8,
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#000000',
-    marginLeft: 16,
-  },
   formContent: {
     flex: 1,
     padding: 16,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 20,
   },
   label: {
     fontSize: 18,
     fontWeight: '600',
     color: '#2d3436',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   input: {
     backgroundColor: '#f8f9fa',
@@ -301,7 +282,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#63C7A6',
-    padding: 16,
+    padding: 12,
     borderRadius: 12,
     alignItems: 'center',
     shadowColor: '#000',
