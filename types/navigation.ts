@@ -1,14 +1,6 @@
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Event} from '../src/components/events/types';
-
-export interface Poll {
-  id: string;
-  question: string;
-  options: string[];
-  startDate: Date;
-  endDate: Date;
-  votes: number;
-}
+import {Poll} from '../src/components/polling/type';
 
 export type RootStackParamList = {
   Home: undefined;

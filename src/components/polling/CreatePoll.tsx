@@ -26,11 +26,20 @@ const CreatePoll = (): React.JSX.Element => {
   const navigation = useNavigation<PollingStackNavigationProp>();
   const [formData, setFormData] = useState<PollForm>({
     question: '',
-    options: ['', ''], // Initialize with two empty options
-    endDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // Default 24h from now
+    options: ['', ''],
+    endDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleQuestionChange = (text: string) =>
+    setFormData(prev => ({...prev, question: text}));
+
+  const handleOptionChange = (text: string, index: number) => {
+    const newOptions = [...formData.options];
+    newOptions[index] = text;
+    setFormData(prev => ({...prev, options: newOptions}));
+  };
 
   const addOption = () => {
     if (formData.options.length >= 5) {
@@ -55,16 +64,20 @@ const CreatePoll = (): React.JSX.Element => {
   };
 
   const handleSubmit = () => {
-    if (!formData.question.trim()) {
-      Alert.alert('Error', 'Please enter a question');
+    const {question, options} = formData;
+
+    if (!question.trim()) {
+      Alert.alert('Validation Error', 'Please enter a poll question');
       return;
     }
-    if (formData.options.some(opt => !opt.trim())) {
-      Alert.alert('Error', 'All options must be filled');
+
+    if (options.some(opt => !opt.trim())) {
+      Alert.alert('Validation Error', 'Please fill out all options');
       return;
     }
-    console.log('Form submitted:', formData);
-    // Handle submission
+
+    console.log('Poll Submitted:', formData);
+    // Replace with API call or state dispatch
     navigation.goBack();
   };
 
@@ -73,30 +86,24 @@ const CreatePoll = (): React.JSX.Element => {
       <PageHeader onBack={() => navigation.goBack()} title="Create Poll" />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Question Input */}
         <FormGroup label="Question">
           <TextInput
             style={styles.questionInput}
             value={formData.question}
-            onChangeText={text =>
-              setFormData(prev => ({...prev, question: text}))
-            }
+            onChangeText={handleQuestionChange}
             placeholder="Ask a question..."
             placeholderTextColor="#999"
             multiline
           />
         </FormGroup>
+
         <FormGroup label="Options">
           {formData.options.map((option, index) => (
             <View key={index} style={styles.optionContainer}>
               <TextInput
                 style={styles.optionInput}
                 value={option}
-                onChangeText={text => {
-                  const newOptions = [...formData.options];
-                  newOptions[index] = text;
-                  setFormData(prev => ({...prev, options: newOptions}));
-                }}
+                onChangeText={text => handleOptionChange(text, index)}
                 placeholder={`Option ${index + 1}`}
                 placeholderTextColor="#999"
               />
@@ -104,36 +111,35 @@ const CreatePoll = (): React.JSX.Element => {
                 <TouchableOpacity
                   onPress={() => removeOption(index)}
                   style={styles.removeButton}>
-                  <Icon name="close" size={24} color="#ff4444" />
+                  <Icon name="close" size={22} color="#ff4444" />
                 </TouchableOpacity>
               )}
             </View>
           ))}
           <TouchableOpacity onPress={addOption} style={styles.addOptionButton}>
-            <Icon name="add-circle-outline" size={24} color="#63C7A6" />
+            <Icon name="add-circle-outline" size={22} color="#63C7A6" />
             <Text style={styles.addOptionText}>Add Option</Text>
           </TouchableOpacity>
         </FormGroup>
-        <FormGroup label="Poll Duration">
+
+        <FormGroup label="Poll Ends On">
           <TouchableOpacity
             style={styles.durationButton}
             onPress={() => setShowDatePicker(true)}>
-            <Icon name="calendar-month" size={24} color="#63C7A6" />
+            <Icon name="calendar-month" size={22} color="#63C7A6" />
             <Text style={styles.durationText}>
-              Ends {formData.endDate.toLocaleString()}
+              {formData.endDate.toLocaleString()}
             </Text>
           </TouchableOpacity>
         </FormGroup>
       </ScrollView>
 
-      {/* Create Button */}
       <View style={styles.bottomButton}>
         <TouchableOpacity style={styles.createButton} onPress={handleSubmit}>
           <Text style={styles.createButtonText}>Create Poll</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Date Picker */}
       <DateTimePickerModal
         isVisible={showDatePicker}
         mode="datetime"
@@ -151,13 +157,12 @@ const CreatePoll = (): React.JSX.Element => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
   },
   content: {
     flex: 1,
     padding: 16,
   },
-
   questionInput: {
     backgroundColor: '#f8f9fa',
     borderRadius: 12,
@@ -181,21 +186,23 @@ const styles = StyleSheet.create({
     color: '#2d3436',
   },
   removeButton: {
-    marginLeft: 12,
+    marginLeft: 10,
     padding: 4,
   },
   addOptionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderRadius: 12,
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: '#63C7A6',
     borderStyle: 'dashed',
+    marginTop: 4,
   },
   addOptionText: {
     color: '#63C7A6',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     marginLeft: 8,
   },
@@ -218,21 +225,17 @@ const styles = StyleSheet.create({
   },
   createButton: {
     backgroundColor: '#63C7A6',
-    padding: 12,
+    padding: 14,
     borderRadius: 12,
     alignItems: 'center',
-    // Shadow
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3,
   },
   createButtonText: {
-    color: '#ffffff',
+    color: '#fff',
     fontSize: 18,
     fontWeight: '600',
   },

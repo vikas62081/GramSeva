@@ -1,5 +1,12 @@
 import {getFromStorage, saveToStorage} from './AsyncStorage';
-import formatDate from './datetime';
+import {formatDate, getTimeLeft} from './datetime';
 import {isAndroid, isIOS} from './device';
 
-export {formatDate, isIOS, isAndroid, saveToStorage, getFromStorage};
+export {
+  formatDate,
+  isIOS,
+  isAndroid,
+  saveToStorage,
+  getFromStorage,
+  getTimeLeft,
+};

@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: '#4a4a4a',
+    color: '#777',
     marginBottom: 12,
     lineHeight: 20,
   },

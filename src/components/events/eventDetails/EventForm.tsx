@@ -220,14 +220,22 @@ const styles = StyleSheet.create({
     borderTopColor: '#E1E1E1',
   },
   submitButton: {
-    backgroundColor: '#6C63FF',
+    backgroundColor: '#63C7A6',
+    padding: 12,
     borderRadius: 12,
-    padding: 16,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   submitButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: '#ffffff',
+    fontSize: 18,
     fontWeight: '600',
   },
 });

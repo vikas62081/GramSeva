@@ -8,22 +8,16 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {PollingStackNavigationProp, Poll} from '../../../types/navigation';
+import {PollingStackNavigationProp} from '../../../types/navigation';
 import PageHeader from '../common/PageHeader';
+import {getTimeLeft} from '../../utils';
+import {Poll} from './type';
 
 const VotingScreen = (): React.JSX.Element => {
   const navigation = useNavigation<PollingStackNavigationProp>();
   const route = useRoute();
   const {poll} = route.params as {poll: Poll};
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-
-  const getTimeLeft = (endDate: Date) => {
-    const now = new Date();
-    const diff = endDate.getTime() - now.getTime();
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours} HOURS, ${minutes} MINS LEFT`;
-  };
 
   const handleVote = () => {
     if (selectedOption !== null) {
@@ -188,7 +182,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: '#ffffff',
-    padding: 16,
+    padding: 12,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',

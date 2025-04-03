@@ -83,17 +83,24 @@ const styles = StyleSheet.create({
   closeButton: {
     padding: 8,
   },
-
   submitButton: {
-    backgroundColor: '#4CAF50',
-    margin: 16,
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: '#63C7A6',
+    padding: 12,
+    borderRadius: 12,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    margin: 16,
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#ffffff',
+    fontSize: 18,
     fontWeight: '600',
   },
 });
