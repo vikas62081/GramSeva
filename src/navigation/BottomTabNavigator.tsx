@@ -4,7 +4,7 @@ import GramSeva from '../components/GramSeva';
 import PollingStack from './PollsStackNavigator';
 import NoticeListing from '../components/noticeboard';
 import EventStack from '../components/events';
-import FamilyTree from '../components/family/Listing';
+import PeopleStack from './PeopleStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,8 +19,8 @@ const tabScreens = [
     hidden: false,
   },
   {name: 'Events', component: EventStack, icon: 'event', hidden: false},
-  {name: 'Family', component: FamilyTree, icon: 'group', hidden: false},
-  {name: 'Profile', component: GramSeva, icon: 'person', hidden: false}, // Example of hidden tab
+  {name: 'People', component: PeopleStack, icon: 'group', hidden: false},
+  {name: 'Profile', component: GramSeva, icon: 'person', hidden: false},
 ];
 
 const MainTabs = () => {
