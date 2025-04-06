@@ -1,6 +1,6 @@
 // PeopleDetailsContainer.tsx
-import React, {useState} from 'react';
-import {Modal, StyleSheet, FlatList, Text} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {Modal, StyleSheet, FlatList, Text, Alert} from 'react-native';
 
 import MemberCard from './MemberCard';
 import PeopleForm from './PeopleForm';
@@ -9,45 +9,11 @@ import {FamilyMember} from '../types';
 import {
   PeopleDetailsScreenNavigationProp,
   PeopleDetailsScreenRouteProp,
-} from '../../../types/navigation';
+} from '../../../navigation/types';
 import PeopleDetailHeader from './PeopleDetailHeader';
+import {mockFamily} from '../../mock';
+import {getFamilyDropdownOptions} from '../../../utils';
 
-const initialData = {
-  id: '1',
-  name: 'John Doe',
-  relationship: 'Head',
-  gender: 'Male',
-  members: [
-    {
-      id: '2',
-      name: 'Jane Mom',
-      relationship: 'Wife',
-      parentId: '1',
-      gender: 'Female',
-    },
-    {
-      id: '3',
-      name: 'Abc Doe',
-      relationship: 'Son',
-      parentId: '1',
-      gender: 'Male',
-    },
-    {
-      id: '4',
-      name: 'Abc Doe',
-      relationship: 'Wife',
-      parentId: '3',
-      gender: 'Female',
-    },
-    {
-      id: '5',
-      name: 'Laila',
-      relationship: 'Daughter',
-      parentId: '3',
-      gender: 'Female',
-    },
-  ],
-};
 interface FamilyData {
   id: string;
   name: string;
@@ -63,7 +29,7 @@ interface PeopleDetailsScreenProps {
 const PeopleDetailsContainer: React.FC<PeopleDetailsScreenProps> = ({
   navigation,
 }) => {
-  const [family, setFamily] = useState<FamilyData>(initialData);
+  const [family, setFamily] = useState<FamilyData>(mockFamily);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedMember, setSelectedMember] = useState<FamilyMember | null>(
@@ -77,8 +43,17 @@ const PeopleDetailsContainer: React.FC<PeopleDetailsScreenProps> = ({
     relationshipWith: '',
   });
 
+  const relatedTo = useMemo(() => getFamilyDropdownOptions(family), []);
+
   const handleAddMember = () => {
-    if (!formData.name || !formData.relationship) {
+    if (
+      !formData.name ||
+      !formData.dob ||
+      !formData.gender ||
+      !formData.relationship ||
+      !formData.relationshipWith
+    ) {
+      Alert.alert('Missing Fields', 'Please complete all the required fields.');
       return;
     }
 
@@ -197,6 +172,7 @@ const PeopleDetailsContainer: React.FC<PeopleDetailsScreenProps> = ({
           setShowDatePicker={setShowDatePicker}
           handleUpdateMember={handleUpdateMember}
           handleAddMember={handleAddMember}
+          relatedTo={relatedTo}
         />
       </Modal>
     </>

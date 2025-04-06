@@ -70,20 +70,19 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
   return (
     <View style={styles.container}>
       <PageHeader onBack={() => navigation.goBack()} title={event.title} />
-      <ScrollView style={styles.content}>
-        <Image
-          source={{uri: event.profilePicture}}
-          style={styles.profilePicture}
+
+      <Image
+        source={{uri: event.profilePicture}}
+        style={styles.profilePicture}
+      />
+      <View style={styles.content}>
+        <Tabs
+          tabs={['details', 'contributions', 'expenses']}
+          activeTab={activeTab}
+          onChangeTab={setActiveTab}
         />
-        <View>
-          <Tabs
-            tabs={['details', 'contributions', 'expenses']}
-            activeTab={activeTab}
-            onChangeTab={setActiveTab}
-          />
-          {renderTabContent()}
-        </View>
-      </ScrollView>
+        {renderTabContent()}
+      </View>
     </View>
   );
 };

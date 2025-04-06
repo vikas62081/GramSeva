@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
-import {View, ScrollView, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, FlatList} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import TabHeader from '../common/TabHeader';
 import {Family} from './types';
 import Member from './Member';
-import {FlatList} from 'react-native';
+import {mockHeads} from '../mock';
+import AddFamilyForm from './AddFamilyForm'; // Importing AddFamilyForm component
+import Container from '../common/Container';
 
 type RootStackParamList = {
   PeopleList: undefined;
@@ -21,13 +23,9 @@ interface PeopleScreenProps {
 }
 
 const PeopleContainer: React.FC<PeopleScreenProps> = ({navigation}) => {
-  const [families, setFamilies] = useState<Family[]>([
-    {id: '1', name: 'John Doe', relationship: 'Head', memberCount: 7},
-    {id: '2', name: 'Jane Smith', relationship: 'Manager', memberCount: 5},
-    {id: '3', name: 'Sara Connor', relationship: 'Assistant', memberCount: 4},
-  ]);
-
+  const [families, setFamilies] = useState<Family[]>(mockHeads);
   const [filteredFamilies, setFilteredFamilies] = useState(families);
+  const [isAddingFamily, setIsAddingFamily] = useState(false);
 
   const handleSearch = (query: string) => {
     if (query === '') {
@@ -46,18 +44,45 @@ const PeopleContainer: React.FC<PeopleScreenProps> = ({navigation}) => {
   };
 
   const handleAddFamily = () => {
-    // TODO: Implement add family functionality
-    console.log('Add family pressed');
+    setIsAddingFamily(true);
+  };
+
+  const handleCancelAddFamily = () => {
+    setIsAddingFamily(false);
+  };
+
+  const handleSaveFamily = (family: any) => {
+    const newFamily = {
+      id: new Date().toISOString(),
+      name: family.name,
+      relationship: 'Head',
+      memberCount: 4,
+    };
+
+    setFamilies(prevFamilies => {
+      const updatedFamilies = [...prevFamilies, newFamily];
+      setFilteredFamilies(updatedFamilies);
+      return updatedFamilies;
+    });
+
+    setIsAddingFamily(false);
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <TabHeader
         title="People"
         showSearch
         onSearch={handleSearch}
         onAdd={handleAddFamily}
       />
+      {isAddingFamily && (
+        <AddFamilyForm
+          selectedMember={null}
+          onClose={handleCancelAddFamily}
+          onSave={handleSaveFamily}
+        />
+      )}
       <View style={styles.content}>
         <FlatList
           data={filteredFamilies}
@@ -72,15 +97,11 @@ const PeopleContainer: React.FC<PeopleScreenProps> = ({navigation}) => {
           }
         />
       </View>
-    </View>
+    </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F6FA',
-  },
   content: {
     flex: 1,
     paddingHorizontal: 16,

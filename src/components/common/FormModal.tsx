@@ -7,9 +7,8 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {FormModalProps} from '../types';
-import PageHeader from '../../common/PageHeader';
+import {FormModalProps} from '../events/types';
+import PageHeader from './PageHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const FormModal: React.FC<FormModalProps> = ({

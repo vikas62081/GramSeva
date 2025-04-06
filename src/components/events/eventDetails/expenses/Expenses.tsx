@@ -50,17 +50,16 @@ const Expenses: React.FC<ExpensesProps> = ({
     <TouchableOpacity
       onPress={() => {
         handleEdit(item);
-      }}>
-      <View style={styles.expenseCard}>
-        <View style={styles.iconContainer}>
-          <MaterialIcons name="credit-card" size={28} color="#63C7A6" />
-        </View>
-        <View style={styles.expenseInfo}>
-          <Text style={styles.expenseName}>{item.name}</Text>
-          <Text style={styles.expenseDate}>{formatDate(item.date)}</Text>
-        </View>
-        <Text style={styles.expenseAmount}>₹{item.amount}</Text>
+      }}
+      style={styles.expenseCard}>
+      <View style={styles.iconContainer}>
+        <MaterialIcons name="credit-card" size={28} color="#63C7A6" />
       </View>
+      <View style={styles.expenseInfo}>
+        <Text style={styles.expenseName}>{item.name}</Text>
+        <Text style={styles.expenseDate}>{formatDate(item.date)}</Text>
+      </View>
+      <Text style={styles.expenseAmount}>₹{item.amount}</Text>
     </TouchableOpacity>
   );
 
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 3.84,
+    shadowRadius: 4,
     elevation: 3,
   },
   expenseInfo: {

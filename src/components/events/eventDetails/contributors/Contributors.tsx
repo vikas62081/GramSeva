@@ -38,17 +38,16 @@ const Contributors: React.FC<ContributorsProps> = ({
     <TouchableOpacity
       onPress={() => {
         handleEdit(item);
-      }}>
-      <View style={styles.contributorCard}>
-        <View style={styles.iconContainer}>
-          <MaterialIcons name="person" size={28} color="#63C7A6" />
-        </View>
-        <View style={styles.contributorInfo}>
-          <Text style={styles.contributorName}>{item.name}</Text>
-          <Text style={styles.contributorDate}>{formatDate(item.date)}</Text>
-        </View>
-        <Text style={styles.contributorAmount}>₹{item.amount}</Text>
+      }}
+      style={styles.contributorCard}>
+      <View style={styles.iconContainer}>
+        <MaterialIcons name="person" size={28} color="#63C7A6" />
       </View>
+      <View style={styles.contributorInfo}>
+        <Text style={styles.contributorName}>{item.name}</Text>
+        <Text style={styles.contributorDate}>{formatDate(item.date)}</Text>
+      </View>
+      <Text style={styles.contributorAmount}>₹{item.amount}</Text>
     </TouchableOpacity>
   );
   return (

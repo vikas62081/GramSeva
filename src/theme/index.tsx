@@ -79,3 +79,5 @@ export const getShadow = (elevation: number) => ({
   shadowOpacity: 0.25,
   shadowRadius: elevation,
 });
+
+export const placeholderTextColor = '#B0B0B0';

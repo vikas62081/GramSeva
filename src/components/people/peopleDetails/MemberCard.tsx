@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   memberName: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#444',
   },
   memberDetails: {
     fontSize: 14,

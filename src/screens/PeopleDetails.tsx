@@ -18,7 +18,7 @@ import Pills from '../components/common/Pills';
 import {
   PeopleDetailsScreenNavigationProp,
   PeopleDetailsScreenRouteProp,
-} from '../types/navigation';
+} from '../navigation/types';
 import PeopleDetailsContainer from '../components/people/peopleDetails';
 
 interface PeopleDetailsScreenProps {
@@ -33,9 +33,9 @@ const PeopleDetailsScreen: React.FC<PeopleDetailsScreenProps> = ({
   return (
     <SafeAreaView style={styles.container}>
       <PageHeader title="Family Details" onBack={() => navigation.goBack()} />
-      <ScrollView style={styles.content}>
+      <View style={styles.content}>
         <PeopleDetailsContainer navigation={navigation} route={route} />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

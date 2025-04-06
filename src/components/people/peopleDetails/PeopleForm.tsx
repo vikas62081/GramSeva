@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Modal,
   View,
   Text,
   ScrollView,
@@ -13,6 +12,8 @@ import FormGroup from '../../common/FormGroup';
 import Pills from '../../common/Pills';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {FamilyMember} from '../types';
+import {placeholderTextColor} from '../../../theme';
+import Dropdown from '../../common/Dropdown';
 
 interface PeopleFormProps {
   selectedMember?: FamilyMember | null;
@@ -31,6 +32,7 @@ interface PeopleFormProps {
   handleUpdateMember: () => void;
   handleAddMember: () => void;
   onClose: () => void;
+  relatedTo: any[];
 }
 
 const PeopleForm: React.FC<PeopleFormProps> = ({
@@ -42,6 +44,7 @@ const PeopleForm: React.FC<PeopleFormProps> = ({
   handleUpdateMember,
   handleAddMember,
   onClose,
+  relatedTo,
 }) => {
   return (
     <>
@@ -57,7 +60,7 @@ const PeopleForm: React.FC<PeopleFormProps> = ({
           </View>
 
           <ScrollView style={styles.formContent}>
-            <FormGroup label="Name">
+            <FormGroup label="Full Name">
               <TextInput
                 style={styles.input}
                 value={formData.name}
@@ -65,6 +68,7 @@ const PeopleForm: React.FC<PeopleFormProps> = ({
                   setFormData(prev => ({...prev, name: text}))
                 }
                 placeholder="Enter name"
+                placeholderTextColor={placeholderTextColor}
               />
             </FormGroup>
 
@@ -91,25 +95,29 @@ const PeopleForm: React.FC<PeopleFormProps> = ({
               />
             </FormGroup>
 
-            <FormGroup label="Relationship">
-              <TextInput
-                style={styles.input}
-                value={formData.relationship}
-                onChangeText={text =>
-                  setFormData(prev => ({...prev, relationship: text}))
+            <FormGroup label="Relationship to You">
+              <Dropdown
+                onChange={value =>
+                  setFormData(prev => ({...prev, relationship: value}))
                 }
-                placeholder="Enter relationship"
+                items={[
+                  {label: 'Wife', value: 'Wife'},
+                  {label: 'Son', value: 'Son'},
+                  {label: 'Daughter', value: 'Daughter'},
+                ]}
+                placeholder={{label: 'Choose relationship...', value: null}}
+                value={formData.relationship}
               />
             </FormGroup>
 
-            <FormGroup label="Relationship With">
-              <TextInput
-                style={styles.input}
-                value={formData.relationshipWith}
-                onChangeText={text =>
-                  setFormData(prev => ({...prev, relationshipWith: text}))
+            <FormGroup label="Related To">
+              <Dropdown
+                onChange={value =>
+                  setFormData(prev => ({...prev, relationshipWith: value}))
                 }
-                placeholder="Enter relationship with"
+                items={relatedTo}
+                placeholder={{label: 'Choose person...', value: null}}
+                value={formData.relationshipWith}
               />
             </FormGroup>
           </ScrollView>
@@ -265,6 +273,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#2D3436',
   },
+
   submitButton: {
     backgroundColor: '#63C7A6',
     margin: 16,
@@ -278,4 +287,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
 export default PeopleForm;

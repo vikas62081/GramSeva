@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
-import FormModal from '../FormModal';
+import FormModal from '../../../common/FormModal';
 import {ContributorForm as IContributorForm, Contributor} from '../../types';
+import {placeholderTextColor} from '../../../../theme';
+import FormGroup from '../../../common/FormGroup';
 
 interface ContributorFormProps {
   visible: boolean;
@@ -50,15 +52,16 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
       title={initialData ? 'Edit Contributor' : 'Add Contributor'}
       onSubmit={handleSubmit}
       submitText={initialData ? 'Update' : 'Add'}>
-      <View>
-        <Text style={styles.formLabel}>Name</Text>
+      <FormGroup label="Name">
         <TextInput
           style={styles.input}
           value={form.name}
           onChangeText={text => setForm(prev => ({...prev, name: text}))}
           placeholder="Enter contributor name"
+          placeholderTextColor={placeholderTextColor}
         />
-        <Text style={styles.formLabel}>Amount</Text>
+      </FormGroup>
+      <FormGroup label="Amount">
         <TextInput
           style={styles.input}
           value={form.amount}
@@ -69,25 +72,20 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
           }}
           placeholder="Enter amount"
           keyboardType="numeric"
+          placeholderTextColor={placeholderTextColor}
         />
-      </View>
+      </FormGroup>
     </FormModal>
   );
 };
 
 const styles = StyleSheet.create({
-  formLabel: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 8,
-  },
   input: {
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    padding: 16,
     fontSize: 16,
-    marginBottom: 16,
+    color: '#2D3436',
   },
 });
 

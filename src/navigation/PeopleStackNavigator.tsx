@@ -1,7 +1,7 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import PeopleScreen from '../screens/PeopleScreen';
 import PeopleDetailsScreen from '../screens/PeopleDetails';
-import {RootStackParamList} from '../types/navigation';
+import {RootStackParamList} from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

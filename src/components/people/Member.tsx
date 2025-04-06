@@ -2,26 +2,24 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-interface Member {
-  id: string;
-  name: string;
-  relationship: string;
-  memberCount: number;
-}
-
 interface MemberProps {
-  family: any;
-  onPress: (id: string) => void; // Function to handle navigation
+  family: {
+    id: string;
+    name: string;
+    relationship: string;
+    memberCount: number;
+  };
+  onPress: (id: string) => void;
 }
 
 const Member: React.FC<MemberProps> = ({family, onPress}) => {
   return (
     <TouchableOpacity
-      style={styles.familyCard}
+      style={styles.memberCard}
       onPress={() => onPress(family.id)}>
-      <View style={styles.familyInfo}>
-        <Text style={styles.familyName}>{family.name}</Text>
-        <Text style={styles.familyRole}>{family.relationship}</Text>
+      <View style={styles.memberInfo}>
+        <Text style={styles.memberName}>{family.name}</Text>
+        <Text style={styles.memberRole}>{family.relationship}</Text>
         <Text style={styles.memberCount}>
           {family.memberCount} family members
         </Text>
@@ -32,20 +30,18 @@ const Member: React.FC<MemberProps> = ({family, onPress}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {marginTop: 12},
   memberCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
     shadowOffset: {width: 0, height: 2},
-    shadowRadius: 5,
-    elevation: 3,
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 2,
   },
   memberInfo: {
     flex: 1,
@@ -53,44 +49,10 @@ const styles = StyleSheet.create({
   memberName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
-  },
-  memberDetails: {
-    fontSize: 14,
-    color: '#666',
-    marginVertical: 5,
-  },
-  navigateIcon: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  familyCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  familyInfo: {
-    flex: 1,
-  },
-  familyName: {
-    fontSize: 18,
-    fontWeight: '600',
     color: '#2D3436',
     marginBottom: 4,
   },
-  familyRole: {
+  memberRole: {
     fontSize: 14,
     color: '#636E72',
     marginBottom: 4,

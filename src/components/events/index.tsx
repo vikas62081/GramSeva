@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -9,118 +9,37 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {EventsScreenNavigationProp} from '../../../types/navigation';
-import EventDetailsScreen from './EventDetailsScreen';
-import EventForm from './eventDetails/EventForm';
-import {Event} from './types';
-import {RootStackParamList} from '../../../types/navigation';
+import {Event_, EventsScreenNavigationProp} from './types';
+
 import TabHeader from '../common/TabHeader';
 import {formatDate} from '../../utils';
-
-const sampleEvents: Event[] = [
-  {
-    id: '1',
-    title: 'Annual Temple Festival',
-    description:
-      'Annual celebration with cultural programs and community feast',
-    date: new Date('2024-04-15').toISOString(),
-    time: '9:00 AM - 9:00 PM',
-    venue: 'Village Temple Ground',
-    eventHead: 'Ram Kumar',
-    profilePicture:
-      'https://dims.apnews.com/dims4/default/c90f053/2147483647/strip/true/crop/4500x3001+0+0/resize/2046x1364!/format/webp/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F8f%2F90%2F7895d6e91470dba7c6ccb2d5a4da%2F5a9cb53123a84899a0f3b7a9dc9cc2a5',
-    contributors: [
-      {
-        id: '1',
-        name: 'Rajesh Kumar',
-        amount: 5000,
-        date: new Date().toISOString(),
-      },
-      {
-        id: '2',
-        name: 'Priya Sharma',
-        amount: 3000,
-        date: new Date().toISOString(),
-      },
-    ],
-    expenses: [
-      {
-        id: '1',
-        name: 'Food Materials',
-        amount: 8000,
-        receipt: 'receipt1.jpg',
-        date: new Date().toISOString(),
-      },
-      {
-        id: '2',
-        name: 'Decoration',
-        amount: 5000,
-        receipt: 'receipt2.jpg',
-        date: new Date().toISOString(),
-      },
-    ],
-  },
-  {
-    id: '2',
-    title: 'Youth Sports Day',
-    description: 'Annual sports competition for village youth',
-    date: new Date('2024-04-20').toISOString(),
-    time: '8:00 AM - 5:00 PM',
-    venue: 'Village Sports Ground',
-    eventHead: 'Amit Singh',
-    profilePicture:
-      'https://duendebymadamzozo.com/dbmzz-content/uploads/2024/03/Holi-Indian-Festival-of-Colours.jpg',
-    contributors: [
-      {
-        id: '3',
-        name: 'Sunil Verma',
-        amount: 2000,
-        date: new Date().toISOString(),
-      },
-      {
-        id: '4',
-        name: 'Meera Patel',
-        amount: 1500,
-        date: new Date().toISOString(),
-      },
-    ],
-    expenses: [
-      {
-        id: '3',
-        name: 'Sports Equipment',
-        amount: 3000,
-        receipt: 'receipt3.jpg',
-        date: new Date().toISOString(),
-      },
-      {
-        id: '4',
-        name: 'Refreshments',
-        amount: 2000,
-        receipt: 'receipt4.jpg',
-        date: new Date().toISOString(),
-      },
-    ],
-  },
-];
+import Container from '../common/Container';
+import {sampleEvents} from '../mock';
 
 const EventContainer = (): React.JSX.Element => {
   const navigation = useNavigation<EventsScreenNavigationProp>();
+  const [events, setEvents] = useState<Event_[]>(sampleEvents);
 
   const handleAddEvent = (
-    eventData: Omit<Event, 'id' | 'contributors' | 'expenses'>,
+    eventData: Omit<Event_, 'id' | 'contributors' | 'expenses'>,
   ) => {
-    // TODO: Implement add event logic
+    const newEvent = {
+      ...eventData,
+      id: (events.length + 1).toString(),
+      contributors: [],
+      expenses: [],
+    };
+    setEvents(prevEvents => [...prevEvents, newEvent]);
+
     console.log('Add event:', eventData);
   };
 
-  const handleEditEvent = (event: Event) => {
+  const handleEditEvent = (event: Event_) => {
     // TODO: Implement edit event logic
     console.log('Edit event:', event);
   };
 
-  const renderEventItem = ({item}: {item: Event}) => {
+  const renderEventItem = ({item}: {item: Event_}) => {
     return (
       <TouchableOpacity
         style={styles.eventCard}
@@ -149,26 +68,27 @@ const EventContainer = (): React.JSX.Element => {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <TabHeader
         title="Events"
         onAdd={() => navigation.navigate('EventForm', {})}
       />
-      <FlatList
-        data={sampleEvents}
-        renderItem={renderEventItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+      <View style={styles.content}>
+        <FlatList
+          data={events}
+          renderItem={renderEventItem}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
-    backgroundColor: '#F5F6FA',
     paddingHorizontal: 16,
   },
   listContainer: {
@@ -235,19 +155,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-const EventStack = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="Events" component={EventContainer} />
-      <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
-      <Stack.Screen name="EventForm" component={EventForm} />
-    </Stack.Navigator>
-  );
-};
-
-export default EventStack;
+export default EventContainer;

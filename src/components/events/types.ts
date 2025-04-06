@@ -1,7 +1,7 @@
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp} from '@react-navigation/native';
 
-export interface Event {
+export interface Event_ {
   id: string;
   title: string;
   description: string;
@@ -47,19 +47,19 @@ export interface ExpenseForm {
 }
 
 export interface ExpensesProps {
-  event: Event;
+  event: Event_;
   onAddExpense: (data: {name: string; amount: number; receipt: string}) => void;
   onEditExpense: (expense: Expense) => void;
 }
 
 export interface OverviewProps {
-  event: Event;
+  event: Event_;
 }
 
 export type RootStackParamList = {
   Events: undefined;
-  EventDetails: {event: Event};
-  EventForm: {event?: Event};
+  EventDetails: {event: Event_};
+  EventForm: {event?: Event_};
 };
 
 export type EventsScreenNavigationProp = NativeStackNavigationProp<
@@ -97,9 +97,9 @@ export interface FormModalProps {
 }
 
 export interface EventContainerProps {
-  events: Event[];
-  onAddEvent: (event: Omit<Event, 'id' | 'contributors' | 'expenses'>) => void;
-  onEditEvent: (event: Event) => void;
+  events: Event_[];
+  onAddEvent: (event: Omit<Event_, 'id' | 'contributors' | 'expenses'>) => void;
+  onEditEvent: (event: Event_) => void;
 }
 
 export interface EventDetailsScreenProps {

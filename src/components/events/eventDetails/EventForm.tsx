@@ -15,6 +15,7 @@ import PageHeader from '../../common/PageHeader';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import FormGroup from '../../common/FormGroup';
 import {formatDate} from '../../../utils';
+import {placeholderTextColor} from '../../../theme';
 
 const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
   const initialData = route.params?.event;
@@ -88,6 +89,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
               value={form.title}
               onChangeText={text => setForm(prev => ({...prev, title: text}))}
               placeholder="Enter event title"
+              placeholderTextColor={placeholderTextColor}
             />
           </FormGroup>
           <FormGroup label="Description">
@@ -100,6 +102,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
               placeholder="Enter event description"
               multiline
               numberOfLines={4}
+              placeholderTextColor={placeholderTextColor}
             />
           </FormGroup>
 
@@ -119,6 +122,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
               value={form.venue}
               onChangeText={text => setForm(prev => ({...prev, venue: text}))}
               placeholder="Enter event venue"
+              placeholderTextColor={placeholderTextColor}
             />
           </FormGroup>
           <FormGroup label="Event Head">
@@ -129,6 +133,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
                 setForm(prev => ({...prev, eventHead: text}))
               }
               placeholder="Enter event head name"
+              placeholderTextColor={placeholderTextColor}
             />
           </FormGroup>
           <FormGroup label="Profile Picture URL">
@@ -139,6 +144,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
                 setForm(prev => ({...prev, profilePicture: text}))
               }
               placeholder="Enter profile picture URL"
+              placeholderTextColor={placeholderTextColor}
             />
           </FormGroup>
         </View>

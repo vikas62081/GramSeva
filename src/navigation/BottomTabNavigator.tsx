@@ -3,24 +3,25 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import GramSeva from '../components/GramSeva';
 import PollingStack from './PollsStackNavigator';
 import NoticeListing from '../components/noticeboard';
-import EventStack from '../components/events';
+
 import PeopleStack from './PeopleStackNavigator';
+import EventStack from './EventsStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
 // Tab configuration array
 const tabScreens = [
-  {name: 'Home', component: GramSeva, icon: 'home', hidden: false},
-  {name: 'Polls', component: PollingStack, icon: 'list', hidden: false},
+  {name: 'Home', component: GramSeva, icon: 'home', hidden: true},
+  {name: 'Polls', component: PollingStack, icon: 'list', hidden: true},
   {
     name: 'Notifications',
     component: NoticeListing,
     icon: 'notifications',
-    hidden: false,
+    hidden: true,
   },
   {name: 'Events', component: EventStack, icon: 'event', hidden: false},
   {name: 'People', component: PeopleStack, icon: 'group', hidden: false},
-  {name: 'Profile', component: GramSeva, icon: 'person', hidden: false},
+  {name: 'Profile', component: GramSeva, icon: 'person', hidden: true},
 ];
 
 const MainTabs = () => {
