@@ -1,6 +1,14 @@
 // FamilyDetailsContainer.tsx
 import React, {useMemo, useState} from 'react';
-import {Modal, StyleSheet, FlatList, Text, Alert} from 'react-native';
+import {
+  Modal,
+  StyleSheet,
+  FlatList,
+  Text,
+  Alert,
+  ActivityIndicator,
+  ToastAndroid,
+} from 'react-native';
 
 import MemberCard from './MemberCard';
 
@@ -13,14 +21,11 @@ import {mockFamily} from '../../mock';
 import {getFamilyDropdownOptions} from '../../../utils';
 import FamilyDetailHeader from './FamilyDetailHeader';
 import FamilyForm from './FamilyForm';
-
-interface FamilyData {
-  id: string;
-  name: string;
-  relationship: string;
-  gender: string;
-  members: FamilyMember[];
-}
+import {
+  useAddFamilyMemberMutation,
+  useGetFamilyByIdQuery,
+  useUpdateFamilyMemberMutation,
+} from '../../../store/slices/familyApiSlice';
 
 interface FamilyDetailsScreenProps {
   navigation: FamilyDetailsScreenNavigationProp;
@@ -28,88 +33,81 @@ interface FamilyDetailsScreenProps {
 }
 const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
   navigation,
+  route,
 }) => {
-  const [family, setFamily] = useState<FamilyData>(mockFamily);
+  const {familyId} = route.params || {};
+  const {
+    data: family,
+    isLoading,
+    error,
+    isFetching,
+  } = useGetFamilyByIdQuery(familyId);
+  const [addMember] = useAddFamilyMemberMutation();
+  const [updateMember] = useUpdateFamilyMemberMutation();
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedMember, setSelectedMember] = useState<FamilyMember | null>(
     null,
   );
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FamilyMember>({
     name: '',
     dob: new Date(),
     gender: 'male',
     relationship: '',
-    relationshipWith: '',
+    parentId: '',
   });
 
-  const relatedTo = useMemo(() => getFamilyDropdownOptions(family), []);
-
-  const handleAddMember = () => {
+  const relatedTo = useMemo(() => getFamilyDropdownOptions(family!), [family]);
+  const handleAddMember = async () => {
     if (
       !formData.name ||
       !formData.dob ||
       !formData.gender ||
       !formData.relationship ||
-      !formData.relationshipWith
+      !formData.parentId
     ) {
       Alert.alert('Missing Fields', 'Please complete all the required fields.');
       return;
     }
 
     const newMember: FamilyMember = {
-      id: Date.now().toString(),
       name: formData.name,
-      dob: formData.dob.toISOString(),
+      dob: formData.dob,
       gender: formData.gender,
       relationship: formData.relationship,
-      parentId: formData.relationshipWith || undefined,
+      parentId: formData.parentId || undefined,
     };
 
-    setFamily(prev => ({
-      ...prev,
-      members: [...prev.members, newMember],
-    }));
-
-    setShowAddMemberModal(false);
-    resetForm();
+    try {
+      await addMember({
+        familyId,
+        member: newMember,
+      }).unwrap();
+      setShowAddMemberModal(false);
+      resetForm();
+      ToastAndroid.show('Family member added successfully', ToastAndroid.SHORT);
+    } catch (err) {
+      Alert.alert('Error', 'Failed to add family member');
+    }
   };
 
-  const handleUpdateMember = () => {
+  const handleUpdateMember = async () => {
     if (!selectedMember || !formData.name || !formData.relationship) {
       return;
     }
 
-    const updateMembers = (members: FamilyMember[]): FamilyMember[] => {
-      return members.map(member => {
-        if (member.id === selectedMember.id) {
-          return {
-            ...member,
-            name: formData.name,
-            dob: formData.dob.toISOString(),
-            gender: formData.gender,
-            relationship: formData.relationship,
-            parentId: formData.relationshipWith || undefined,
-          };
-        }
-        if (member.members) {
-          return {
-            ...member,
-            members: updateMembers(member.members),
-          };
-        }
-        return member;
-      });
-    };
-
-    setFamily(prev => ({
-      ...prev,
-      members: updateMembers(prev.members),
-    }));
-
-    setShowAddMemberModal(false);
-    setSelectedMember(null);
-    resetForm();
+    try {
+      await updateMember({
+        familyId,
+        memberId: selectedMember.id!,
+        member: formData,
+      }).unwrap();
+      setShowAddMemberModal(false);
+      setSelectedMember(null);
+      resetForm();
+    } catch (err) {
+      Alert.alert('Error', 'Failed to update family member');
+    }
   };
 
   const resetForm = () => {
@@ -118,7 +116,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
       dob: new Date(),
       gender: 'male',
       relationship: '',
-      relationshipWith: '',
+      parentId: '',
     });
   };
 
@@ -129,7 +127,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
       dob: member.dob ? new Date(member.dob) : new Date(),
       gender: member.gender,
       relationship: member.relationship,
-      relationshipWith: member.parentId || '',
+      parentId: member.parentId || '',
     });
     setShowAddMemberModal(true);
   };
@@ -139,15 +137,19 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
     resetForm();
     setShowAddMemberModal(true);
   };
+  console.log(formData);
+  if (isLoading) {
+    return <ActivityIndicator animating={isFetching || isLoading} />;
+  }
   return (
     <>
       <FamilyDetailHeader
-        name={family.name}
-        relationship={family.relationship}
+        name={family!.name}
+        relationship={family!.relationship}
         onAdd={handleAddBtnClick}
       />
       <FlatList
-        data={family.members}
+        data={family!.members}
         renderItem={({item}) => (
           <MemberCard key={item.id} member={item} onEdit={handleEditMember} />
         )}

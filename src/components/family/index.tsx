@@ -1,12 +1,22 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, FlatList} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import TabHeader from '../common/TabHeader';
 import {Family} from './types';
 import Member from './Member';
-import {mockHeads} from '../mock';
 import AddFamilyForm from './AddFamilyForm'; // Importing AddFamilyForm component
 import Container from '../common/Container';
+import {
+  useCreateFamilyMutation,
+  useGetFamiliesQuery,
+} from '../../store/slices/familyApiSlice';
 
 type RootStackParamList = {
   FamilyList: undefined;
@@ -23,21 +33,17 @@ interface FamilyScreenProps {
 }
 
 const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
-  const [families, setFamilies] = useState<Family[]>(mockHeads);
-  const [filteredFamilies, setFilteredFamilies] = useState(families);
+  const [page, setPage] = useState(1);
+  const {data, isLoading, error, isFetching} = useGetFamiliesQuery({
+    page,
+    limit: 10,
+  });
+
+  const [createFamily, {isError, error: e}] = useCreateFamilyMutation();
+  console.log(e);
   const [isAddingFamily, setIsAddingFamily] = useState(false);
 
-  const handleSearch = (query: string) => {
-    if (query === '') {
-      setFilteredFamilies(families);
-    } else {
-      setFilteredFamilies(
-        families.filter(family =>
-          family.name.toLowerCase().includes(query.toLowerCase()),
-        ),
-      );
-    }
-  };
+  const handleSearch = (query: string) => {};
 
   const handleFamilyPress = (familyId: string) => {
     navigation.navigate('FamilyDetails', {familyId});
@@ -51,21 +57,13 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
     setIsAddingFamily(false);
   };
 
-  const handleSaveFamily = (family: any) => {
-    const newFamily = {
-      id: new Date().toISOString(),
-      name: family.name,
-      relationship: 'Head',
-      memberCount: 4,
-    };
-
-    setFamilies(prevFamilies => {
-      const updatedFamilies = [...prevFamilies, newFamily];
-      setFilteredFamilies(updatedFamilies);
-      return updatedFamilies;
-    });
-
-    setIsAddingFamily(false);
+  const handleSaveFamily = async (family: Family) => {
+    try {
+      await createFamily(family).unwrap();
+      setIsAddingFamily(false);
+    } catch {
+      Alert.alert('Error', 'Failed to create family');
+    }
   };
 
   return (
@@ -83,10 +81,11 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
           onSave={handleSaveFamily}
         />
       )}
+      <ActivityIndicator animating={isFetching || isLoading} />
       <View style={styles.content}>
         <FlatList
-          data={filteredFamilies}
-          keyExtractor={item => item.id}
+          data={data?.data || []}
+          keyExtractor={item => item.id!}
           renderItem={({item}) => (
             <Member key={item.id} family={item} onPress={handleFamilyPress} />
           )}

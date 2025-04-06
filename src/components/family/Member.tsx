@@ -1,14 +1,10 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {Family} from './types';
 
 interface MemberProps {
-  family: {
-    id: string;
-    name: string;
-    relationship: string;
-    memberCount: number;
-  };
+  family: Family;
   onPress: (id: string) => void;
 }
 
@@ -16,13 +12,11 @@ const Member: React.FC<MemberProps> = ({family, onPress}) => {
   return (
     <TouchableOpacity
       style={styles.memberCard}
-      onPress={() => onPress(family.id)}>
+      onPress={() => onPress(family.id!)}>
       <View style={styles.memberInfo}>
         <Text style={styles.memberName}>{family.name}</Text>
-        <Text style={styles.memberRole}>{family.relationship}</Text>
-        <Text style={styles.memberCount}>
-          {family.memberCount} family members
-        </Text>
+        <Text style={styles.memberRole}>{family.gender}</Text>
+        <Text style={styles.memberCount}>{family.members} family members</Text>
       </View>
       <MaterialIcons name="chevron-right" size={24} color="#636E72" />
     </TouchableOpacity>

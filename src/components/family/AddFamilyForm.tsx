@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {ScrollView, TextInput, StyleSheet, Alert} from 'react-native';
-import {FamilyMember} from './types';
+import {Family, FamilyMember} from './types';
 import FormGroup from '../common/FormGroup';
 import FormModal from '../common/FormModal';
+import Pills from '../common/Pills';
 
 interface AddFamilyFormProps {
   selectedMember?: FamilyMember | null;
-  onSave: (data: {name: string; phone: string}) => void;
+  onSave: (family: Family) => void;
   onClose: () => void;
 }
 
@@ -15,9 +16,12 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
   onSave,
   onClose,
 }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Family>({
     name: '',
     phone: '',
+    gender: 'male',
+    members: 0,
+    relationship: 'head',
   });
 
   const handleSave = () => {
@@ -59,6 +63,13 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
               placeholder="Enter phone number"
               placeholderTextColor="#aaa"
               keyboardType="phone-pad"
+            />
+          </FormGroup>
+          <FormGroup label="Gender">
+            <Pills
+              options={['male', 'female']}
+              selectedOption={formData.gender}
+              onSelect={gender => setFormData(prev => ({...prev, gender}))}
             />
           </FormGroup>
         </ScrollView>

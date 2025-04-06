@@ -17,13 +17,7 @@ import Dropdown from '../../common/Dropdown';
 
 interface FamilyFormProps {
   selectedMember?: FamilyMember | null;
-  formData: {
-    name: string;
-    dob: Date;
-    gender: string;
-    relationship: string;
-    relationshipWith: string;
-  };
+  formData: FamilyMember;
   setFormData: React.Dispatch<
     React.SetStateAction<FamilyFormProps['formData']>
   >;
@@ -113,11 +107,11 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
             <FormGroup label="Related To">
               <Dropdown
                 onChange={value =>
-                  setFormData(prev => ({...prev, relationshipWith: value}))
+                  setFormData(prev => ({...prev, parentId: value}))
                 }
                 items={relatedTo}
                 placeholder={{label: 'Choose person...', value: null}}
-                value={formData.relationshipWith}
+                value={formData.parentId}
               />
             </FormGroup>
           </ScrollView>
@@ -134,8 +128,9 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
 
       <DateTimePickerModal
         isVisible={showDatePicker}
-        mode="date"
+        mode="datetime"
         onConfirm={date => {
+          console.log(date);
           setFormData(prev => ({...prev, dob: date}));
           setShowDatePicker(false);
         }}

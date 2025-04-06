@@ -10,18 +10,20 @@ export interface MemberCardProps {
 }
 
 export interface Family {
-  id: string;
+  id?: string;
   name: string;
+  gender: string;
   relationship: string;
-  memberCount: number;
+  members: number;
+  phone: string;
 }
 
 export interface FamilyMember {
-  id: string;
+  id?: string;
   name: string;
+  gender: string;
+  dob: Date;
   relationship: string;
   parentId?: string;
-  gender: string;
-  dob?: string;
   members?: FamilyMember[];
 }

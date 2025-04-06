@@ -4,6 +4,8 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {enableScreens} from 'react-native-screens';
+import {Provider} from 'react-redux';
+import {store} from './src/store';
 import MainTabs from './src/navigation/BottomTabNavigator';
 import {ThemeProvider} from './src/context/ThemeContext';
 
@@ -21,19 +23,21 @@ const App = (): React.JSX.Element => {
   );
 
   return (
-    <ThemeProvider>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <StatusBar
-            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-            backgroundColor={backgroundStyle.backgroundColor}
-          />
-          <SafeAreaView style={backgroundStyle}>
-            <MainTabs />
-          </SafeAreaView>
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <StatusBar
+              barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+              backgroundColor={backgroundStyle.backgroundColor}
+            />
+            <SafeAreaView style={backgroundStyle}>
+              <MainTabs />
+            </SafeAreaView>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </ThemeProvider>
+    </Provider>
   );
 };
 
