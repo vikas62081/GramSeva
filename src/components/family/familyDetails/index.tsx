@@ -1,18 +1,18 @@
-// PeopleDetailsContainer.tsx
+// FamilyDetailsContainer.tsx
 import React, {useMemo, useState} from 'react';
 import {Modal, StyleSheet, FlatList, Text, Alert} from 'react-native';
 
 import MemberCard from './MemberCard';
-import PeopleForm from './PeopleForm';
 
 import {FamilyMember} from '../types';
 import {
-  PeopleDetailsScreenNavigationProp,
-  PeopleDetailsScreenRouteProp,
+  FamilyDetailsScreenNavigationProp,
+  FamilyDetailsScreenRouteProp,
 } from '../../../navigation/types';
-import PeopleDetailHeader from './PeopleDetailHeader';
 import {mockFamily} from '../../mock';
 import {getFamilyDropdownOptions} from '../../../utils';
+import FamilyDetailHeader from './FamilyDetailHeader';
+import FamilyForm from './FamilyForm';
 
 interface FamilyData {
   id: string;
@@ -22,11 +22,11 @@ interface FamilyData {
   members: FamilyMember[];
 }
 
-interface PeopleDetailsScreenProps {
-  navigation: PeopleDetailsScreenNavigationProp;
-  route: PeopleDetailsScreenRouteProp;
+interface FamilyDetailsScreenProps {
+  navigation: FamilyDetailsScreenNavigationProp;
+  route: FamilyDetailsScreenRouteProp;
 }
-const PeopleDetailsContainer: React.FC<PeopleDetailsScreenProps> = ({
+const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
   navigation,
 }) => {
   const [family, setFamily] = useState<FamilyData>(mockFamily);
@@ -141,7 +141,7 @@ const PeopleDetailsContainer: React.FC<PeopleDetailsScreenProps> = ({
   };
   return (
     <>
-      <PeopleDetailHeader
+      <FamilyDetailHeader
         name={family.name}
         relationship={family.relationship}
         onAdd={handleAddBtnClick}
@@ -159,7 +159,7 @@ const PeopleDetailsContainer: React.FC<PeopleDetailsScreenProps> = ({
       />
 
       <Modal visible={showAddMemberModal} animationType="slide" transparent>
-        <PeopleForm
+        <FamilyForm
           selectedMember={selectedMember}
           formData={formData}
           setFormData={setFormData}
@@ -189,4 +189,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PeopleDetailsContainer;
+export default FamilyDetailsContainer;

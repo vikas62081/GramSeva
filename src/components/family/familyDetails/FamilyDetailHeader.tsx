@@ -2,13 +2,13 @@ import React from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-interface PeopleDetailHeaderProps {
+interface FamilyDetailHeaderProps {
   name: string;
   relationship: string;
   onAdd: () => void;
 }
 
-const PeopleDetailHeader: React.FC<PeopleDetailHeaderProps> = ({
+const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
   name,
   relationship,
   onAdd,
@@ -75,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PeopleDetailHeader;
+export default FamilyDetailHeader;

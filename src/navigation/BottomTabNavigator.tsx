@@ -4,8 +4,8 @@ import GramSeva from '../components/GramSeva';
 import PollingStack from './PollsStackNavigator';
 import NoticeListing from '../components/noticeboard';
 
-import PeopleStack from './PeopleStackNavigator';
 import EventStack from './EventsStackNavigator';
+import FamilyStack from './FamilyStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,7 +20,7 @@ const tabScreens = [
     hidden: true,
   },
   {name: 'Events', component: EventStack, icon: 'event', hidden: false},
-  {name: 'People', component: PeopleStack, icon: 'group', hidden: false},
+  {name: 'Family', component: FamilyStack, icon: 'group', hidden: false},
   {name: 'Profile', component: GramSeva, icon: 'person', hidden: true},
 ];
 

@@ -9,20 +9,20 @@ import AddFamilyForm from './AddFamilyForm'; // Importing AddFamilyForm componen
 import Container from '../common/Container';
 
 type RootStackParamList = {
-  PeopleList: undefined;
-  PeopleDetails: {familyId: string};
+  FamilyList: undefined;
+  FamilyDetails: {familyId: string};
 };
 
-type PeopleScreenNavigationProp = NativeStackNavigationProp<
+type FamilyScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'PeopleList'
+  'FamilyList'
 >;
 
-interface PeopleScreenProps {
-  navigation: PeopleScreenNavigationProp;
+interface FamilyScreenProps {
+  navigation: FamilyScreenNavigationProp;
 }
 
-const PeopleContainer: React.FC<PeopleScreenProps> = ({navigation}) => {
+const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   const [families, setFamilies] = useState<Family[]>(mockHeads);
   const [filteredFamilies, setFilteredFamilies] = useState(families);
   const [isAddingFamily, setIsAddingFamily] = useState(false);
@@ -40,7 +40,7 @@ const PeopleContainer: React.FC<PeopleScreenProps> = ({navigation}) => {
   };
 
   const handleFamilyPress = (familyId: string) => {
-    navigation.navigate('PeopleDetails', {familyId});
+    navigation.navigate('FamilyDetails', {familyId});
   };
 
   const handleAddFamily = () => {
@@ -71,7 +71,7 @@ const PeopleContainer: React.FC<PeopleScreenProps> = ({navigation}) => {
   return (
     <Container>
       <TabHeader
-        title="People"
+        title="Family"
         showSearch
         onSearch={handleSearch}
         onAdd={handleAddFamily}
@@ -108,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PeopleContainer;
+export default FamilyContainer;

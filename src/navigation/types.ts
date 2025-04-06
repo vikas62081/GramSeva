@@ -3,30 +3,30 @@ import {RouteProp} from '@react-navigation/native';
 
 // Define the parameter list for the entire stack
 export type RootStackParamList = {
-  PeopleList: undefined; // No params needed for the PeopleList screen
-  PeopleDetails: {familyId: string}; // Pass params to PeopleDetails screen (familyId)
+  FamilyList: undefined; // No params needed for the FamilyList screen
+  FamilyDetails: {familyId: string}; // Pass params to FamilyDetails screen (familyId)
 
   Events: undefined;
   EventDetails: {event: Event};
   EventForm: {event?: Event};
 };
 
-// Define the navigation prop for the PeopleList screen
-export type PeopleScreenNavigationProp = NativeStackNavigationProp<
+// Define the navigation prop for the FamilyList screen
+export type FamilyScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'PeopleList'
+  'FamilyList'
 >;
 
-// Define the navigation prop for the PeopleDetails screen
-export type PeopleDetailsScreenNavigationProp = NativeStackNavigationProp<
+// Define the navigation prop for the FamilyDetails screen
+export type FamilyDetailsScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'PeopleDetails'
+  'FamilyDetails'
 >;
 
-// Define the route prop for the PeopleDetails screen (for access to route params)
-export type PeopleDetailsScreenRouteProp = RouteProp<
+// Define the route prop for the FamilyDetails screen (for access to route params)
+export type FamilyDetailsScreenRouteProp = RouteProp<
   RootStackParamList,
-  'PeopleDetails'
+  'FamilyDetails'
 >;
 
 export type EventsScreenNavigationProp = NativeStackNavigationProp<

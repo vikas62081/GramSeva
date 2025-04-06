@@ -1,4 +1,4 @@
-import {FamilyMember} from '../components/people/types';
+import {FamilyMember} from '../components/family/types';
 
 export const getFamilyDropdownOptions = (family: FamilyMember) => {
   if (!family) return [];

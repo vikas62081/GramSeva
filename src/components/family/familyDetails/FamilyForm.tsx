@@ -15,7 +15,7 @@ import {FamilyMember} from '../types';
 import {placeholderTextColor} from '../../../theme';
 import Dropdown from '../../common/Dropdown';
 
-interface PeopleFormProps {
+interface FamilyFormProps {
   selectedMember?: FamilyMember | null;
   formData: {
     name: string;
@@ -25,7 +25,7 @@ interface PeopleFormProps {
     relationshipWith: string;
   };
   setFormData: React.Dispatch<
-    React.SetStateAction<PeopleFormProps['formData']>
+    React.SetStateAction<FamilyFormProps['formData']>
   >;
   showDatePicker: boolean;
   setShowDatePicker: (val: boolean) => void;
@@ -35,7 +35,7 @@ interface PeopleFormProps {
   relatedTo: any[];
 }
 
-const PeopleForm: React.FC<PeopleFormProps> = ({
+const FamilyForm: React.FC<FamilyFormProps> = ({
   selectedMember,
   formData,
   setFormData,
@@ -288,4 +288,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PeopleForm;
+export default FamilyForm;
