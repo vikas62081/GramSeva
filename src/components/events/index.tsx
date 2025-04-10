@@ -12,12 +12,19 @@ import {useNavigation} from '@react-navigation/native';
 import {Event_, EventsScreenNavigationProp} from './types';
 
 import TabHeader from '../common/TabHeader';
-import {formatDate} from '../../utils';
+import {formatDate, getTime} from '../../utils';
 import Container from '../common/Container';
 import {sampleEvents} from '../mock';
+import {useGetEventsQuery} from '../../store/slices/eventApiSlice';
 
 const EventContainer = (): React.JSX.Element => {
+  const [page, setPage] = useState(1);
   const navigation = useNavigation<EventsScreenNavigationProp>();
+  const {data, isLoading, error, isFetching} = useGetEventsQuery({
+    page,
+    limit: 10,
+  });
+
   const [events, setEvents] = useState<Event_[]>(sampleEvents);
 
   const handleAddEvent = (
@@ -59,7 +66,7 @@ const EventContainer = (): React.JSX.Element => {
             </View>
             <View style={styles.timeContainer}>
               <MaterialIcons name="schedule" size={16} color="#666" />
-              <Text style={styles.time}>{item.time}</Text>
+              <Text style={styles.time}>{getTime(item.date)}</Text>
             </View>
           </View>
         </View>
@@ -75,7 +82,7 @@ const EventContainer = (): React.JSX.Element => {
       />
       <View style={styles.content}>
         <FlatList
-          data={events}
+          data={data?.data || []}
           renderItem={renderEventItem}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContainer}

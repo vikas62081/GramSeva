@@ -1,25 +1,20 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {OverviewProps, Contributor, Expense} from '../types';
-import {formatDate} from '../../../utils';
+import {OverviewProps, Contributor} from '../types';
+import {formatDate, getTime} from '../../../utils';
 
 const Overview: React.FC<OverviewProps> = ({event}) => {
   const calculateTotalContributions = () => {
-    return event.contributors.reduce(
-      (sum: number, contributor: Contributor) => sum + contributor.amount,
-      0,
-    );
+    return 100;
   };
 
   const calculateTotalExpenses = () => {
-    return event.expenses.reduce(
-      (sum: number, expense: Expense) => sum + expense.amount,
-      0,
-    );
+    return 200;
   };
 
   const getHighestContributor = () => {
+    return null;
     if (event.contributors.length === 0) return null;
     return event.contributors.reduce((max: Contributor, current: Contributor) =>
       current.amount > max.amount ? current : max,
@@ -70,7 +65,7 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
         </View>
         <View style={styles.detailRow}>
           <MaterialIcons name="schedule" size={20} color="#666" />
-          <Text style={styles.detailText}>{event.time}</Text>
+          <Text style={styles.detailText}>{getTime(event.date)}</Text>
         </View>
         <View style={styles.detailRow}>
           <MaterialIcons name="location-on" size={20} color="#666" />

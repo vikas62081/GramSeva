@@ -1,10 +1,11 @@
 import {getFromStorage, saveToStorage} from './AsyncStorage';
-import {formatDate, getTimeLeft} from './datetime';
+import {formatDate, getTime, getTimeLeft} from './datetime';
 import {isAndroid, isIOS} from './device';
 import {getFamilyDropdownOptions} from './family';
 
 export {
   formatDate,
+  getTime,
   isIOS,
   isAndroid,
   saveToStorage,

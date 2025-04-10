@@ -4,38 +4,41 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Modal,
-  TextInput,
-  Image,
-  Alert,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {ExpensesProps, Expense} from '../../types';
+import {Expense} from '../../types';
 import ExpenseForm from './ExpenseForm';
 import {formatDate} from '../../../../utils';
+import {
+  useAddExpenseMutation,
+  useGetExpensesQuery,
+  useUpdateExpenseMutation,
+} from '../../../../store/slices/eventApiSlice';
 
-const Expenses: React.FC<ExpensesProps> = ({
-  event,
-  onAddExpense,
-  onEditExpense,
-}) => {
+export interface ExpensesProps {
+  eventId: string;
+}
+
+const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
+  const {
+    data: expenses,
+    isLoading,
+    error,
+    isFetching,
+  } = useGetExpensesQuery(eventId);
   const [showForm, setShowForm] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | undefined>();
 
-  const handleSubmit = (data: {
-    name: string;
-    amount: number;
-    receipt: string;
-  }) => {
+  const [addExpense] = useAddExpenseMutation();
+  const [updateExpense] = useUpdateExpenseMutation();
+
+  const handleSubmit = (data: Expense) => {
     if (selectedExpense) {
-      onEditExpense({
-        ...data,
-        id: selectedExpense.id,
-        date: '',
-      });
+      updateExpense({eventId, expenseId: selectedExpense.id!, expense: data});
     } else {
-      onAddExpense(data);
+      addExpense({eventId, expense: data});
     }
     setShowForm(false);
     setSelectedExpense(undefined);
@@ -56,10 +59,10 @@ const Expenses: React.FC<ExpensesProps> = ({
         <MaterialIcons name="credit-card" size={28} color="#63C7A6" />
       </View>
       <View style={styles.expenseInfo}>
-        <Text style={styles.expenseName}>{item.name}</Text>
-        <Text style={styles.expenseDate}>{formatDate(item.date)}</Text>
+        <Text style={styles.expenseName}>{item.item}</Text>
+        <Text style={styles.expenseDate}>{formatDate(item.created_at!)}</Text>
       </View>
-      <Text style={styles.expenseAmount}>₹{item.amount}</Text>
+      <Text style={styles.expenseAmount}>₹{item.cost}</Text>
     </TouchableOpacity>
   );
 
@@ -76,14 +79,13 @@ const Expenses: React.FC<ExpensesProps> = ({
           <MaterialIcons name="add" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
-
+      <ActivityIndicator animating={isFetching || isLoading} />
       <FlatList
-        data={event.expenses}
+        data={expenses || []}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
       />
-
       <ExpenseForm
         visible={showForm}
         onClose={() => {

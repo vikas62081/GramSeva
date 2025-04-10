@@ -1,13 +1,15 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {setupListeners} from '@reduxjs/toolkit/query';
 import {familyApi} from './slices/familyApiSlice';
+import {eventApi} from './slices/eventApiSlice';
 
 export const store = configureStore({
   reducer: {
     [familyApi.reducerPath]: familyApi.reducer,
+    [eventApi.reducerPath]: eventApi.reducer,
   },
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(familyApi.middleware),
+    getDefaultMiddleware().concat(familyApi.middleware, eventApi.middleware),
 });
 
 // setupListeners(store.dispatch);

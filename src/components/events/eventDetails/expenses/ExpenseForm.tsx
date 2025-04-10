@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import FormModal from '../../../common/FormModal';
-import {ExpenseForm as IExpenseForm, Expense} from '../../types';
+import {Expense} from '../../types';
 import {placeholderTextColor} from '../../../../theme';
 import FormGroup from '../../../common/FormGroup';
 
 interface ExpenseFormProps {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (data: {name: string; amount: number; receipt: string}) => void;
+  onSubmit: (expense: Expense) => void;
   initialData?: Expense;
 }
 
@@ -18,34 +18,28 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
   onSubmit,
   initialData,
 }) => {
-  const [form, setForm] = useState<IExpenseForm>({
-    name: '',
-    amount: '',
-    receipt: '',
+  const [form, setForm] = useState({
+    item: '',
+    cost: '',
+    receipt_url: '',
   });
 
   useEffect(() => {
     if (initialData) {
       setForm({
-        name: initialData.name,
-        amount: initialData.amount.toString(),
-        receipt: initialData.receipt,
+        item: initialData.item,
+        cost: initialData.cost.toString(),
+        receipt_url: initialData.receipt_url,
       });
-    } else {
-      setForm({name: '', amount: '', receipt: ''});
     }
   }, [initialData]);
 
   const handleSubmit = () => {
-    if (!form.name || !form.amount) {
+    if (!form.item || !form.cost) {
       // You might want to show an error message here
       return;
     }
-    onSubmit({
-      name: form.name,
-      amount: parseFloat(form.amount),
-      receipt: form.receipt,
-    });
+    onSubmit(form as unknown as Expense);
   };
 
   return (
@@ -55,11 +49,11 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
       title={initialData ? 'Edit Expense' : 'Add Expense'}
       onSubmit={handleSubmit}
       submitText={initialData ? 'Update' : 'Add'}>
-      <FormGroup label="Name">
+      <FormGroup label="Item">
         <TextInput
           style={styles.input}
-          value={form.name}
-          onChangeText={text => setForm(prev => ({...prev, name: text}))}
+          value={form.item}
+          onChangeText={text => setForm(prev => ({...prev, item: text}))}
           placeholder="Enter expense name"
           placeholderTextColor={placeholderTextColor}
         />
@@ -67,11 +61,11 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
       <FormGroup label="Amount">
         <TextInput
           style={styles.input}
-          value={form.amount}
+          value={form.cost}
           onChangeText={text => {
             // Only allow numbers and decimal point
             const filtered = text.replace(/[^0-9.]/g, '');
-            setForm(prev => ({...prev, amount: filtered}));
+            setForm(prev => ({...prev, cost: filtered}));
           }}
           placeholder="Enter amount"
           keyboardType="numeric"

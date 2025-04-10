@@ -8,7 +8,7 @@ import FormGroup from '../../../common/FormGroup';
 interface ContributorFormProps {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (data: {name: string; amount: number}) => void;
+  onSubmit: (data: Contributor) => void;
   initialData?: Contributor;
 }
 
@@ -42,6 +42,7 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
     onSubmit({
       name: form.name,
       amount: parseFloat(form.amount),
+      user_id: 'string',
     });
   };
 

@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
-import {View, ScrollView, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {
   EventDetailsScreenNavigationProp,
   EventDetailsScreenRouteProp,
-  Contributor,
   Expense,
 } from './types';
 import Overview from './eventDetails/Overview';
@@ -22,46 +21,14 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
   const {event} = route.params;
   const [activeTab, setActiveTab] = useState<string>('details');
 
-  const handleAddContributor = (data: {name: string; amount: number}) => {
-    console.log('Add contributor:', data);
-  };
-
-  const handleEditContributor = (contributor: Contributor) => {
-    console.log('Edit contributor:', contributor);
-  };
-
-  const handleAddExpense = (data: {
-    name: string;
-    amount: number;
-    receipt: string;
-  }) => {
-    console.log('Add expense:', data);
-  };
-
-  const handleEditExpense = (expense: Expense) => {
-    console.log('Edit expense:', expense);
-  };
-
   const renderTabContent = () => {
     switch (activeTab) {
       case 'details':
         return <Overview event={event} />;
       case 'contributions':
-        return (
-          <Contributors
-            contributors={event.contributors}
-            onAddContributor={handleAddContributor}
-            onEditContributor={handleEditContributor}
-          />
-        );
+        return <Contributors eventId={event.id} />;
       case 'expenses':
-        return (
-          <Expenses
-            event={event}
-            onAddExpense={handleAddExpense}
-            onEditExpense={handleEditExpense}
-          />
-        );
+        return <Expenses eventId={event.id} />;
       default:
         return null;
     }
@@ -72,7 +39,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
       <PageHeader onBack={() => navigation.goBack()} title={event.title} />
 
       <Image
-        source={{uri: event.profilePicture}}
+        source={{uri: event.thumbnail_url}}
         style={styles.profilePicture}
       />
       <View style={styles.content}>

@@ -1,29 +1,51 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {ContributorsProps, Contributor} from '../../types';
+import {Contributor} from '../../types';
 import ContributorForm from './ContributorForm';
 import {formatDate} from '../../../../utils';
+import {
+  useAddContributorMutation,
+  useGetContributorsQuery,
+  useUpdateContributorMutation,
+} from '../../../../store/slices/eventApiSlice';
 
-const Contributors: React.FC<ContributorsProps> = ({
-  contributors,
-  onAddContributor,
-  onEditContributor,
-}) => {
+export interface ContributorsProps {
+  eventId: string;
+}
+
+const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
+  const {
+    data: contributors,
+    isLoading,
+    error,
+    isFetching,
+  } = useGetContributorsQuery(eventId);
+
+  const [addContribution] = useAddContributorMutation();
+  const [updateContribution] = useUpdateContributorMutation();
+
   const [showForm, setShowForm] = useState(false);
   const [selectedContributor, setSelectedContributor] = useState<
     Contributor | undefined
   >();
 
-  const handleSubmit = (data: {name: string; amount: number}) => {
+  const handleSubmit = (data: Contributor) => {
     if (selectedContributor) {
-      onEditContributor({
-        ...data,
-        id: selectedContributor.id,
-        date: selectedContributor.date,
+      updateContribution({
+        eventId,
+        contributorId: selectedContributor.id!,
+        contributor: data,
       });
     } else {
-      onAddContributor(data);
+      addContribution({eventId, contributor: data});
     }
     setShowForm(false);
     setSelectedContributor(undefined);
@@ -45,7 +67,9 @@ const Contributors: React.FC<ContributorsProps> = ({
       </View>
       <View style={styles.contributorInfo}>
         <Text style={styles.contributorName}>{item.name}</Text>
-        <Text style={styles.contributorDate}>{formatDate(item.date)}</Text>
+        <Text style={styles.contributorDate}>
+          {formatDate(item.created_at!)}
+        </Text>
       </View>
       <Text style={styles.contributorAmount}>₹{item.amount}</Text>
     </TouchableOpacity>
@@ -63,10 +87,11 @@ const Contributors: React.FC<ContributorsProps> = ({
           <MaterialIcons name="add" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
+      <ActivityIndicator animating={isFetching || isLoading} />
       <FlatList
-        data={contributors}
+        data={contributors || []}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id!}
         contentContainerStyle={styles.list}
       />
       <ContributorForm

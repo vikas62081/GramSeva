@@ -9,16 +9,17 @@ export interface Event_ {
   time: string;
   venue: string;
   eventHead: string;
-  profilePicture: string;
+  thumbnail_url: string;
   contributors: Contributor[];
   expenses: Expense[];
 }
 
 export interface Contributor {
-  id: string;
+  id?: string;
   name: string;
   amount: number;
-  date: string;
+  user_id: string;
+  created_at?: string;
 }
 
 export interface ContributorForm {
@@ -26,30 +27,18 @@ export interface ContributorForm {
   amount: string;
 }
 
-export interface ContributorsProps {
-  contributors: Contributor[];
-  onAddContributor: (data: {name: string; amount: number}) => void;
-  onEditContributor: (contributor: Contributor) => void;
-}
-
 export interface Expense {
   id: string;
-  name: string;
-  amount: number;
-  receipt: string;
-  date: string;
+  item: string;
+  cost: number;
+  receipt_url: string;
+  created_at?: string;
 }
 
 export interface ExpenseForm {
   name: string;
   amount: string;
   receipt: string;
-}
-
-export interface ExpensesProps {
-  event: Event_;
-  onAddExpense: (data: {name: string; amount: number; receipt: string}) => void;
-  onEditExpense: (expense: Expense) => void;
 }
 
 export interface OverviewProps {
