@@ -10,6 +10,7 @@ interface ExpenseFormProps {
   onClose: () => void;
   onSubmit: (expense: Expense) => void;
   initialData?: Expense;
+  isLoading: boolean;
 }
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({
@@ -17,6 +18,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
   onClose,
   onSubmit,
   initialData,
+  isLoading,
 }) => {
   const [form, setForm] = useState({
     item: '',
@@ -44,6 +46,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
 
   return (
     <FormModal
+      isLoading={isLoading}
       visible={visible}
       onClose={onClose}
       title={initialData ? 'Edit Expense' : 'Add Expense'}

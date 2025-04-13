@@ -9,12 +9,14 @@ interface AddFamilyFormProps {
   selectedMember?: FamilyMember | null;
   onSave: (family: Family) => void;
   onClose: () => void;
+  isLoading: boolean;
 }
 
 const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
   selectedMember,
   onSave,
   onClose,
+  isLoading,
 }) => {
   const [formData, setFormData] = useState<Family>({
     name: '',
@@ -35,6 +37,7 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
   return (
     <>
       <FormModal
+        isLoading={isLoading}
         visible={true}
         onClose={onClose}
         title={selectedMember ? 'Edit Family' : 'Add Family'}

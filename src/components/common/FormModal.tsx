@@ -10,6 +10,7 @@ import {
 import {FormModalProps} from '../events/types';
 import PageHeader from './PageHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import LoadingSpinner from './LoadingSpinner';
 
 const FormModal: React.FC<FormModalProps> = ({
   visible,
@@ -18,6 +19,7 @@ const FormModal: React.FC<FormModalProps> = ({
   onSubmit,
   submitText,
   children,
+  isLoading,
 }) => {
   return (
     <Modal
@@ -25,19 +27,21 @@ const FormModal: React.FC<FormModalProps> = ({
       transparent={true}
       visible={visible}
       onRequestClose={onClose}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.content}>
-          <PageHeader onBack={onClose} title={title} />
-          <ScrollView
-            style={styles.formContent}
-            showsVerticalScrollIndicator={false}>
-            {children}
-          </ScrollView>
-          <TouchableOpacity style={styles.submitButton} onPress={onSubmit}>
-            <Text style={styles.submitButtonText}>{submitText}</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <LoadingSpinner loading={isLoading}>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.content}>
+            <PageHeader onBack={onClose} title={title} />
+            <ScrollView
+              style={styles.formContent}
+              showsVerticalScrollIndicator={false}>
+              {children}
+            </ScrollView>
+            <TouchableOpacity style={styles.submitButton} onPress={onSubmit}>
+              <Text style={styles.submitButtonText}>{submitText}</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </LoadingSpinner>
     </Modal>
   );
 };

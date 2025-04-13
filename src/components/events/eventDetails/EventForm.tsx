@@ -8,38 +8,54 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {EventFormScreenProps} from '../types';
+import {EventFormScreenProps, Event_} from '../types';
 import PageHeader from '../../common/PageHeader';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import FormGroup from '../../common/FormGroup';
 import {formatDate} from '../../../utils';
 import {placeholderTextColor} from '../../../theme';
+import {useCreateEventMutation} from '../../../store/slices/eventApiSlice';
+import LoadingSpinner from '../../common/LoadingSpinner';
+
+interface EventForm {
+  title: string;
+  description: string;
+  date: Date;
+  venue: string;
+  eventHead: {
+    id: string;
+    name: string;
+  };
+  thumbnail_url: string;
+}
 
 const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
   const initialData = route.params?.event;
-  const [form, setForm] = useState({
+  const [createEvent, {isLoading}] = useCreateEventMutation();
+  const [form, setForm] = useState<EventForm>({
     title: '',
     description: '',
     date: new Date(),
-    time: '',
     venue: '',
-    eventHead: '',
-    profilePicture: '',
+    eventHead: {id: 'head_id', name: ''},
+    thumbnail_url: '',
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     if (initialData) {
+      const {title, description, date, venue, eventHead, thumbnail_url} =
+        initialData;
       setForm({
-        title: initialData.title,
-        description: initialData.description,
-        date: new Date(initialData.date),
-        time: initialData.time,
-        venue: initialData.venue,
-        eventHead: initialData.eventHead,
-        profilePicture: initialData.profilePicture,
+        title,
+        description,
+        date: new Date(date),
+        venue,
+        eventHead,
+        thumbnail_url,
       });
     }
   }, [initialData]);
@@ -51,112 +67,116 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.title || !form.venue || !form.eventHead) {
-      // Show error message
+      Alert.alert('Missing Fields', 'Please complete all the required fields.');
       return;
     }
 
     const eventData = {
       title: form.title,
       description: form.description,
-      date: form.date.toISOString().split('T')[0], // Format as YYYY-MM-DD
-      time: form.time,
+      date: new Date(form.date).toISOString(),
       venue: form.venue,
-      eventHead: form.eventHead,
-      profilePicture: form.profilePicture,
+      eventHead: {id: 'string', name: form.eventHead.name},
+      thumbnail_url: form.thumbnail_url,
     };
+    try {
+      await createEvent(eventData).unwrap();
 
-    // TODO: Implement event creation/update logic
-    console.log('Submit event:', eventData);
-    navigation.goBack();
+      console.log('Submit event:', eventData);
+      navigation.goBack();
+    } catch {}
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <PageHeader
-        onBack={() => navigation.goBack()}
-        title={initialData ? 'Edit Event' : 'Add Event'}
-      />
+      <LoadingSpinner loading={isLoading}>
+        <PageHeader
+          onBack={() => navigation.goBack()}
+          title={initialData ? 'Edit Event' : 'Add Event'}
+        />
+        <ScrollView style={styles.content}>
+          <View style={styles.formSection}>
+            <FormGroup label="Event Title">
+              <TextInput
+                style={styles.input}
+                value={form.title}
+                onChangeText={text => setForm(prev => ({...prev, title: text}))}
+                placeholder="Enter event title"
+                placeholderTextColor={placeholderTextColor}
+              />
+            </FormGroup>
+            <FormGroup label="Description">
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                value={form.description}
+                onChangeText={text =>
+                  setForm(prev => ({...prev, description: text}))
+                }
+                placeholder="Enter event description"
+                multiline
+                numberOfLines={4}
+                placeholderTextColor={placeholderTextColor}
+              />
+            </FormGroup>
 
-      <ScrollView style={styles.content}>
-        <View style={styles.formSection}>
-          <FormGroup label="Event Title">
-            <TextInput
-              style={styles.input}
-              value={form.title}
-              onChangeText={text => setForm(prev => ({...prev, title: text}))}
-              placeholder="Enter event title"
-              placeholderTextColor={placeholderTextColor}
-            />
-          </FormGroup>
-          <FormGroup label="Description">
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              value={form.description}
-              onChangeText={text =>
-                setForm(prev => ({...prev, description: text}))
-              }
-              placeholder="Enter event description"
-              multiline
-              numberOfLines={4}
-              placeholderTextColor={placeholderTextColor}
-            />
-          </FormGroup>
-
-          <FormGroup label="Date">
-            <TouchableOpacity
-              style={styles.dateButton}
-              onPress={() => setShowDatePicker(true)}>
-              <MaterialIcons name="event" size={24} color="#63C7A6" />
-              <Text style={styles.dateText}>
-                {formatDate(form.date.toISOString())}
-              </Text>
-            </TouchableOpacity>
-          </FormGroup>
-          <FormGroup label="Venue">
-            <TextInput
-              style={styles.input}
-              value={form.venue}
-              onChangeText={text => setForm(prev => ({...prev, venue: text}))}
-              placeholder="Enter event venue"
-              placeholderTextColor={placeholderTextColor}
-            />
-          </FormGroup>
-          <FormGroup label="Event Head">
-            <TextInput
-              style={styles.input}
-              value={form.eventHead}
-              onChangeText={text =>
-                setForm(prev => ({...prev, eventHead: text}))
-              }
-              placeholder="Enter event head name"
-              placeholderTextColor={placeholderTextColor}
-            />
-          </FormGroup>
-          <FormGroup label="Profile Picture URL">
-            <TextInput
-              style={styles.input}
-              value={form.profilePicture}
-              onChangeText={text =>
-                setForm(prev => ({...prev, profilePicture: text}))
-              }
-              placeholder="Enter profile picture URL"
-              placeholderTextColor={placeholderTextColor}
-            />
-          </FormGroup>
+            <FormGroup label="Date">
+              <TouchableOpacity
+                style={styles.dateButton}
+                onPress={() => setShowDatePicker(true)}>
+                <MaterialIcons name="event" size={24} color="#63C7A6" />
+                <Text style={styles.dateText}>
+                  {formatDate(form.date.toISOString())}
+                </Text>
+              </TouchableOpacity>
+            </FormGroup>
+            <FormGroup label="Venue">
+              <TextInput
+                style={styles.input}
+                value={form.venue}
+                onChangeText={text => setForm(prev => ({...prev, venue: text}))}
+                placeholder="Enter event venue"
+                placeholderTextColor={placeholderTextColor}
+              />
+            </FormGroup>
+            <FormGroup label="Event Head">
+              <TextInput
+                style={styles.input}
+                value={form.eventHead.name}
+                onChangeText={text =>
+                  setForm(prev => ({
+                    ...prev,
+                    eventHead: {...prev.eventHead, name: text},
+                  }))
+                }
+                placeholder="Enter event head name"
+                placeholderTextColor={placeholderTextColor}
+              />
+            </FormGroup>
+            <FormGroup label="Profile Picture URL">
+              <TextInput
+                style={styles.input}
+                value={form.thumbnail_url}
+                onChangeText={text =>
+                  setForm(prev => ({...prev, thumbnail_url: text}))
+                }
+                placeholder="Enter profile picture URL"
+                placeholderTextColor={placeholderTextColor}
+              />
+            </FormGroup>
+          </View>
+        </ScrollView>
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+            <Text style={styles.submitButtonText}>
+              {initialData ? 'Update Event' : 'Create Event'}
+            </Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>
-            {initialData ? 'Update Event' : 'Create Event'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      </LoadingSpinner>
 
       <DateTimePickerModal
         isVisible={showDatePicker}

@@ -17,6 +17,7 @@ import {
   useCreateFamilyMutation,
   useGetFamiliesQuery,
 } from '../../store/slices/familyApiSlice';
+import EmptyComponent from '../common/EmptyComponent';
 
 type RootStackParamList = {
   FamilyList: undefined;
@@ -39,8 +40,8 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
     limit: 10,
   });
 
-  const [createFamily, {isError, error: e}] = useCreateFamilyMutation();
-  console.log(e);
+  const [createFamily, {isLoading: creatingFamily}] = useCreateFamilyMutation();
+
   const [isAddingFamily, setIsAddingFamily] = useState(false);
 
   const handleSearch = (query: string) => {};
@@ -79,6 +80,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
           selectedMember={null}
           onClose={handleCancelAddFamily}
           onSave={handleSaveFamily}
+          isLoading={creatingFamily}
         />
       )}
       <ActivityIndicator animating={isFetching || isLoading} />
@@ -90,9 +92,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
             <Member key={item.id} family={item} onPress={handleFamilyPress} />
           )}
           ListEmptyComponent={
-            <Text style={{textAlign: 'center', marginTop: 120}}>
-              No members found.
-            </Text>
+            <EmptyComponent msg="No family found."></EmptyComponent>
           }
         />
       </View>

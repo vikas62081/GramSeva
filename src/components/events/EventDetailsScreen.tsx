@@ -4,13 +4,13 @@ import {useNavigation} from '@react-navigation/native';
 import type {
   EventDetailsScreenNavigationProp,
   EventDetailsScreenRouteProp,
-  Expense,
 } from './types';
 import Overview from './eventDetails/Overview';
 import Contributors from './eventDetails/contributors/Contributors';
 import Expenses from './eventDetails/expenses/Expenses';
 import PageHeader from '../common/PageHeader';
 import Tabs from '../common/Tabs';
+import {SegmentedButtons} from 'react-native-paper';
 
 interface EventDetailsScreenProps {
   route: EventDetailsScreenRouteProp;
@@ -43,11 +43,26 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
         style={styles.profilePicture}
       />
       <View style={styles.content}>
-        <Tabs
+        <SegmentedButtons
+          value={activeTab}
+          onValueChange={setActiveTab}
+          buttons={[
+            {
+              value: 'details',
+              label: 'Overview',
+            },
+            {
+              value: 'contributions',
+              label: 'contributions',
+            },
+            {value: 'expenses', label: 'expenses'},
+          ]}
+        />
+        {/* <Tabs
           tabs={['details', 'contributions', 'expenses']}
           activeTab={activeTab}
           onChangeTab={setActiveTab}
-        />
+        /> */}
         {renderTabContent()}
       </View>
     </View>
@@ -61,6 +76,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    marginTop: 12,
   },
   profilePicture: {
     width: '100%',

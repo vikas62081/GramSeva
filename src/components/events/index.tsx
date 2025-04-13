@@ -16,6 +16,7 @@ import {formatDate, getTime} from '../../utils';
 import Container from '../common/Container';
 import {sampleEvents} from '../mock';
 import {useGetEventsQuery} from '../../store/slices/eventApiSlice';
+import EmptyComponent from '../common/EmptyComponent';
 
 const EventContainer = (): React.JSX.Element => {
   const [page, setPage] = useState(1);
@@ -87,6 +88,9 @@ const EventContainer = (): React.JSX.Element => {
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <EmptyComponent msg="No events found."></EmptyComponent>
+          }
         />
       </View>
     </Container>

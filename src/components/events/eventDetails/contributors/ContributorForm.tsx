@@ -10,6 +10,7 @@ interface ContributorFormProps {
   onClose: () => void;
   onSubmit: (data: Contributor) => void;
   initialData?: Contributor;
+  isLoading: boolean;
 }
 
 const ContributorForm: React.FC<ContributorFormProps> = ({
@@ -17,6 +18,7 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
   onClose,
   onSubmit,
   initialData,
+  isLoading,
 }) => {
   const [form, setForm] = useState<IContributorForm>({
     name: '',
@@ -48,6 +50,7 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
 
   return (
     <FormModal
+      isLoading={isLoading}
       visible={visible}
       onClose={onClose}
       title={initialData ? 'Edit Contributor' : 'Add Contributor'}

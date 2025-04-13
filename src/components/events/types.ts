@@ -8,7 +8,10 @@ export interface Event_ {
   date: string;
   time: string;
   venue: string;
-  eventHead: string;
+  eventHead: {
+    id: string;
+    name: string;
+  };
   thumbnail_url: string;
   contributors: Contributor[];
   expenses: Expense[];
@@ -83,6 +86,7 @@ export interface FormModalProps {
   onSubmit: () => void;
   submitText: string;
   children: React.ReactNode;
+  isLoading: boolean;
 }
 
 export interface EventContainerProps {

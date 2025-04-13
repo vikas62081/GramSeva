@@ -4,6 +4,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CreateNoticeModal from './CreateNotice';
 import NoticeDetailsModal from './NoticeDetailsModal';
 import TabHeader from '../common/TabHeader';
+import EmptyComponent from '../common/EmptyComponent';
 
 interface Notice {
   id: string;
@@ -169,6 +170,9 @@ const NoticeListing = (): React.JSX.Element => {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <EmptyComponent msg="No Notice found."></EmptyComponent>
+        }
       />
       <NoticeDetailsModal
         visible={modalVisible}

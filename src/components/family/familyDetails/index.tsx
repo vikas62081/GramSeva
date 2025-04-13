@@ -26,6 +26,8 @@ import {
   useGetFamilyByIdQuery,
   useUpdateFamilyMemberMutation,
 } from '../../../store/slices/familyApiSlice';
+import LoadingSpinner from '../../common/LoadingSpinner';
+import EmptyComponent from '../../common/EmptyComponent';
 
 interface FamilyDetailsScreenProps {
   navigation: FamilyDetailsScreenNavigationProp;
@@ -42,8 +44,9 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
     error,
     isFetching,
   } = useGetFamilyByIdQuery(familyId);
-  const [addMember] = useAddFamilyMemberMutation();
-  const [updateMember] = useUpdateFamilyMemberMutation();
+  const [addMember, {isLoading: isAdding}] = useAddFamilyMemberMutation();
+  const [updateMember, {isLoading: isUpdating}] =
+    useUpdateFamilyMemberMutation();
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedMember, setSelectedMember] = useState<FamilyMember | null>(
@@ -154,28 +157,28 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
           <MemberCard key={item.id} member={item} onEdit={handleEditMember} />
         )}
         ListEmptyComponent={
-          <Text style={{textAlign: 'center', marginTop: 120}}>
-            No members found.
-          </Text>
+          <EmptyComponent msg="No expense found."></EmptyComponent>
         }
       />
 
       <Modal visible={showAddMemberModal} animationType="slide" transparent>
-        <FamilyForm
-          selectedMember={selectedMember}
-          formData={formData}
-          setFormData={setFormData}
-          onClose={() => {
-            setShowAddMemberModal(false);
-            resetForm();
-            setSelectedMember(null);
-          }}
-          showDatePicker={showDatePicker}
-          setShowDatePicker={setShowDatePicker}
-          handleUpdateMember={handleUpdateMember}
-          handleAddMember={handleAddMember}
-          relatedTo={relatedTo}
-        />
+        <LoadingSpinner loading={isAdding || isUpdating}>
+          <FamilyForm
+            selectedMember={selectedMember}
+            formData={formData}
+            setFormData={setFormData}
+            onClose={() => {
+              setShowAddMemberModal(false);
+              resetForm();
+              setSelectedMember(null);
+            }}
+            showDatePicker={showDatePicker}
+            setShowDatePicker={setShowDatePicker}
+            handleUpdateMember={handleUpdateMember}
+            handleAddMember={handleAddMember}
+            relatedTo={relatedTo}
+          />
+        </LoadingSpinner>
       </Modal>
     </>
   );

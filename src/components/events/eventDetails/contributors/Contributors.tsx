@@ -16,6 +16,7 @@ import {
   useGetContributorsQuery,
   useUpdateContributorMutation,
 } from '../../../../store/slices/eventApiSlice';
+import EmptyComponent from '../../../common/EmptyComponent';
 
 export interface ContributorsProps {
   eventId: string;
@@ -29,8 +30,9 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
     isFetching,
   } = useGetContributorsQuery(eventId);
 
-  const [addContribution] = useAddContributorMutation();
-  const [updateContribution] = useUpdateContributorMutation();
+  const [addContribution, {isLoading: isAdding}] = useAddContributorMutation();
+  const [updateContribution, {isLoading: isUpdating}] =
+    useUpdateContributorMutation();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedContributor, setSelectedContributor] = useState<
@@ -93,9 +95,13 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
         renderItem={renderItem}
         keyExtractor={item => item.id!}
         contentContainerStyle={styles.list}
+        ListEmptyComponent={
+          <EmptyComponent msg="No contribution found."></EmptyComponent>
+        }
       />
       <ContributorForm
         visible={showForm}
+        isLoading={isAdding || isUpdating}
         onClose={() => {
           setShowForm(false);
           setSelectedContributor(undefined);

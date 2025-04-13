@@ -16,6 +16,7 @@ import {
   useGetExpensesQuery,
   useUpdateExpenseMutation,
 } from '../../../../store/slices/eventApiSlice';
+import EmptyComponent from '../../../common/EmptyComponent';
 
 export interface ExpensesProps {
   eventId: string;
@@ -31,8 +32,8 @@ const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | undefined>();
 
-  const [addExpense] = useAddExpenseMutation();
-  const [updateExpense] = useUpdateExpenseMutation();
+  const [addExpense, {isLoading: isAdding}] = useAddExpenseMutation();
+  const [updateExpense, {isLoading: isUpdating}] = useUpdateExpenseMutation();
 
   const handleSubmit = (data: Expense) => {
     if (selectedExpense) {
@@ -85,9 +86,13 @@ const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
+        ListEmptyComponent={
+          <EmptyComponent msg="No expense found."></EmptyComponent>
+        }
       />
       <ExpenseForm
         visible={showForm}
+        isLoading={isAdding || isUpdating}
         onClose={() => {
           setShowForm(false);
           setSelectedExpense(undefined);

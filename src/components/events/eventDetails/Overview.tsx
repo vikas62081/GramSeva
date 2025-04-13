@@ -73,7 +73,7 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
         </View>
         <View style={styles.detailRow}>
           <MaterialIcons name="person" size={20} color="#666" />
-          <Text style={styles.detailText}>{event.eventHead}</Text>
+          <Text style={styles.detailText}>{event.eventHead.name}</Text>
         </View>
         <Text style={styles.sectionTitle}>Description</Text>
         <Text style={styles.description}>{event.description}</Text>
