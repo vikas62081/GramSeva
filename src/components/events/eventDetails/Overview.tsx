@@ -26,7 +26,7 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
   const highestContributor = getHighestContributor();
 
   return (
-    <View style={styles.container}>
+    <>
       <View style={styles.dashboard}>
         <View style={styles.dashboardCard}>
           <View style={styles.cardHeader}>
@@ -78,19 +78,16 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
         <Text style={styles.sectionTitle}>Description</Text>
         <Text style={styles.description}>{event.description}</Text>
       </View>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-  },
   dashboard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
+    paddingTop: 16,
   },
   dashboardCard: {
     flex: 1,

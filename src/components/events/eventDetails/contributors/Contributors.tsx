@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   FlatList,
@@ -17,6 +16,7 @@ import {
   useUpdateContributorMutation,
 } from '../../../../store/slices/eventApiSlice';
 import EmptyComponent from '../../../common/EmptyComponent';
+import {Button, IconButton, Text} from 'react-native-paper';
 
 export interface ContributorsProps {
   eventId: string;
@@ -77,24 +77,24 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
     </TouchableOpacity>
   );
   return (
-    <View style={styles.container}>
+    <>
       <View style={styles.header}>
-        <Text style={styles.title}>Contributors</Text>
-        <TouchableOpacity
-          style={styles.addButton}
+        <Text variant="titleMedium">Contributors</Text>
+        <Button
+          icon="add"
+          mode="contained-tonal"
           onPress={() => {
             setSelectedContributor(undefined);
             setShowForm(true);
           }}>
-          <MaterialIcons name="add" size={24} color="#fff" />
-        </TouchableOpacity>
+          Add
+        </Button>
       </View>
       <ActivityIndicator animating={isFetching || isLoading} />
       <FlatList
         data={contributors || []}
         renderItem={renderItem}
         keyExtractor={item => item.id!}
-        contentContainerStyle={styles.list}
         ListEmptyComponent={
           <EmptyComponent msg="No contribution found."></EmptyComponent>
         }
@@ -109,38 +109,20 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
         onSubmit={handleSubmit}
         initialData={selectedContributor}
       />
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingTop: 8,
+
     borderBottomColor: '#f0f0f0',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333',
-  },
-  addButton: {
-    backgroundColor: '#4CAF50',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  list: {
-    padding: 20,
-  },
+
   contributorCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',

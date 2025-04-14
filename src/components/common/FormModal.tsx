@@ -11,6 +11,7 @@ import {FormModalProps} from '../events/types';
 import PageHeader from './PageHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import LoadingSpinner from './LoadingSpinner';
+import {Appbar} from 'react-native-paper';
 
 const FormModal: React.FC<FormModalProps> = ({
   visible,
@@ -31,6 +32,10 @@ const FormModal: React.FC<FormModalProps> = ({
         <SafeAreaView style={styles.container}>
           <View style={styles.content}>
             <PageHeader onBack={onClose} title={title} />
+            {/* <Appbar.Header>
+              <Appbar.BackAction onPress={onClose} />
+              <Appbar.Content title={title} />
+            </Appbar.Header> */}
             <ScrollView
               style={styles.formContent}
               showsVerticalScrollIndicator={false}>

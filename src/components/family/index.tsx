@@ -1,14 +1,6 @@
 import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
+import {View, StyleSheet, FlatList, Alert} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import TabHeader from '../common/TabHeader';
 import {Family} from './types';
 import Member from './Member';
 import AddFamilyForm from './AddFamilyForm'; // Importing AddFamilyForm component
@@ -18,6 +10,8 @@ import {
   useGetFamiliesQuery,
 } from '../../store/slices/familyApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
+import {Appbar} from 'react-native-paper';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 type RootStackParamList = {
   FamilyList: undefined;
@@ -69,12 +63,17 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
 
   return (
     <Container>
-      <TabHeader
+      {/* <TabHeader
         title="Family"
         showSearch
         onSearch={handleSearch}
         onAdd={handleAddFamily}
-      />
+      /> */}
+      <Appbar.Header>
+        <Appbar.Content title="Family" />
+        <Appbar.Action icon="search" onPress={() => handleSearch} />
+        <Appbar.Action icon="add" onPress={handleAddFamily} />
+      </Appbar.Header>
       {isAddingFamily && (
         <AddFamilyForm
           selectedMember={null}
@@ -83,19 +82,19 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
           isLoading={creatingFamily}
         />
       )}
-      <ActivityIndicator animating={isFetching || isLoading} />
-      <View style={styles.content}>
-        <FlatList
-          data={data?.data || []}
-          keyExtractor={item => item.id!}
-          renderItem={({item}) => (
-            <Member key={item.id} family={item} onPress={handleFamilyPress} />
-          )}
-          ListEmptyComponent={
-            <EmptyComponent msg="No family found."></EmptyComponent>
-          }
-        />
-      </View>
+      <LoadingSpinner loading={isLoading || isFetching}>
+        <View style={styles.content}>
+          <FlatList
+            data={data?.data || []}
+            keyExtractor={item => item.id!}
+            renderItem={({item}) => (
+              <Member key={item.id} family={item} onPress={handleFamilyPress} />
+            )}
+            contentContainerStyle={styles.listContainer}
+            ListEmptyComponent={<EmptyComponent msg="No family found." />}
+          />
+        </View>
+      </LoadingSpinner>
     </Container>
   );
 };
@@ -104,6 +103,10 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 16,
+  },
+  listContainer: {
+    paddingBottom: 80,
+    gap: 12,
   },
 });
 

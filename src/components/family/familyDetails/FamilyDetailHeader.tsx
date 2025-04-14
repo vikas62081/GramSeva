@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Avatar} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 interface FamilyDetailHeaderProps {
@@ -16,11 +17,11 @@ const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
   return (
     <>
       <View style={styles.header}>
-        <Image
+        <Avatar.Image
+          size={100}
           source={{
             uri: 'https://buildingontheword.org/files/2014/12/family.jpg',
           }}
-          style={styles.familyImage}
         />
         <Text style={styles.familyName}>{name}</Text>
         <Text style={styles.familyRole}>{relationship}</Text>

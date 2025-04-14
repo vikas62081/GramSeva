@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   FlatList,
@@ -17,6 +16,7 @@ import {
   useUpdateExpenseMutation,
 } from '../../../../store/slices/eventApiSlice';
 import EmptyComponent from '../../../common/EmptyComponent';
+import {Button, Text} from 'react-native-paper';
 
 export interface ExpensesProps {
   eventId: string;
@@ -68,24 +68,24 @@ const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
   );
 
   return (
-    <View style={styles.container}>
+    <>
       <View style={styles.header}>
-        <Text style={styles.title}>Expenses</Text>
-        <TouchableOpacity
-          style={styles.addButton}
+        <Text variant="titleMedium">Expenses</Text>
+        <Button
+          icon="add"
+          mode="contained-tonal"
           onPress={() => {
             setSelectedExpense(undefined);
             setShowForm(true);
           }}>
-          <MaterialIcons name="add" size={24} color="#fff" />
-        </TouchableOpacity>
+          Add
+        </Button>
       </View>
       <ActivityIndicator animating={isFetching || isLoading} />
       <FlatList
         data={expenses || []}
         renderItem={renderItem}
         keyExtractor={item => item.id}
-        contentContainerStyle={styles.list}
         ListEmptyComponent={
           <EmptyComponent msg="No expense found."></EmptyComponent>
         }
@@ -100,38 +100,20 @@ const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
         onSubmit={handleSubmit}
         initialData={selectedExpense}
       />
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingTop: 8,
     paddingHorizontal: 20,
     borderBottomColor: '#f0f0f0',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333',
-  },
-  addButton: {
-    backgroundColor: '#4CAF50',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  list: {
-    padding: 20,
-  },
+
   expenseCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',

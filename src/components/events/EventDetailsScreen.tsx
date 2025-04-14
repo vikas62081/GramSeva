@@ -10,7 +10,7 @@ import Contributors from './eventDetails/contributors/Contributors';
 import Expenses from './eventDetails/expenses/Expenses';
 import PageHeader from '../common/PageHeader';
 import Tabs from '../common/Tabs';
-import {SegmentedButtons} from 'react-native-paper';
+import {Card, SegmentedButtons} from 'react-native-paper';
 
 interface EventDetailsScreenProps {
   route: EventDetailsScreenRouteProp;
@@ -37,34 +37,30 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
   return (
     <View style={styles.container}>
       <PageHeader onBack={() => navigation.goBack()} title={event.title} />
-
-      <Image
-        source={{uri: event.thumbnail_url}}
-        style={styles.profilePicture}
-      />
-      <View style={styles.content}>
-        <SegmentedButtons
-          value={activeTab}
-          onValueChange={setActiveTab}
-          buttons={[
-            {
-              value: 'details',
-              label: 'Overview',
-            },
-            {
-              value: 'contributions',
-              label: 'contributions',
-            },
-            {value: 'expenses', label: 'expenses'},
-          ]}
+      <Card>
+        <Card.Cover
+          style={styles.profilePicture}
+          source={{uri: event.thumbnail_url}}
         />
-        {/* <Tabs
-          tabs={['details', 'contributions', 'expenses']}
-          activeTab={activeTab}
-          onChangeTab={setActiveTab}
-        /> */}
-        {renderTabContent()}
-      </View>
+        <Card.Content>
+          <SegmentedButtons
+            value={activeTab}
+            onValueChange={setActiveTab}
+            buttons={[
+              {
+                value: 'details',
+                label: 'Overview',
+              },
+              {
+                value: 'contributions',
+                label: 'contributions',
+              },
+              {value: 'expenses', label: 'expenses'},
+            ]}
+          />
+          {renderTabContent()}
+        </Card.Content>
+      </Card>
     </View>
   );
 };
@@ -76,12 +72,13 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginTop: 12,
   },
   profilePicture: {
     width: '100%',
-    height: 200,
-    resizeMode: 'cover',
+    // height: 200,
+    // resizeMode: 'cover',
+    borderRadius: 0,
+    marginBottom: 12,
   },
 });
 
