@@ -14,6 +14,18 @@ export const getTime = (date: string) => {
   });
 };
 
+export const formatDateTime = (date: string) => {
+  const d = new Date(date);
+  return d.toLocaleString('en-IN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+};
+
 export const getTimeLeft = (endDate: Date) => {
   const now = new Date();
   const diff = endDate.getTime() - now.getTime();

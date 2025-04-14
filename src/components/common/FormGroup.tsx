@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
+import {Text} from 'react-native-paper';
 
 interface FormGroupProps {
   label?: string;
@@ -9,7 +10,11 @@ interface FormGroupProps {
 const FormGroup: React.FC<FormGroupProps> = ({label, children}) => {
   return (
     <View style={styles.group}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && (
+        <Text style={styles.label} variant="titleMedium">
+          {label}
+        </Text>
+      )}
       {children}
     </View>
   );
@@ -17,13 +22,12 @@ const FormGroup: React.FC<FormGroupProps> = ({label, children}) => {
 
 const styles = StyleSheet.create({
   group: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   label: {
-    fontSize: 16,
     fontWeight: '600',
-    color: '#666',
-    marginBottom: 8,
+    marginBottom: 4,
+    opacity: 0.6,
   },
 });
 

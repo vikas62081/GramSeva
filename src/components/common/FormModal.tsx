@@ -41,6 +41,7 @@ const FormModal: React.FC<FormModalProps> = ({
               showsVerticalScrollIndicator={false}>
               {children}
             </ScrollView>
+
             <TouchableOpacity style={styles.submitButton} onPress={onSubmit}>
               <Text style={styles.submitButtonText}>{submitText}</Text>
             </TouchableOpacity>

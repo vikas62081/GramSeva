@@ -157,7 +157,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
           <MemberCard key={item.id} member={item} onEdit={handleEditMember} />
         )}
         ListEmptyComponent={
-          <EmptyComponent msg="No expense found."></EmptyComponent>
+          <EmptyComponent msg="No member found."></EmptyComponent>
         }
       />
 

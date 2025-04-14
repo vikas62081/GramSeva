@@ -1,17 +1,13 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {Text, Paragraph, Divider} from 'react-native-paper';
 import {OverviewProps, Contributor} from '../types';
 import {formatDate, getTime} from '../../../utils';
 
 const Overview: React.FC<OverviewProps> = ({event}) => {
-  const calculateTotalContributions = () => {
-    return 100;
-  };
-
-  const calculateTotalExpenses = () => {
-    return 200;
-  };
+  const calculateTotalContributions = () => 100;
+  const calculateTotalExpenses = () => 200;
 
   const getHighestContributor = () => {
     return null;
@@ -24,154 +20,130 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
   const totalContributions = calculateTotalContributions();
   const totalExpenses = calculateTotalExpenses();
   const highestContributor = getHighestContributor();
+  const balance = totalContributions - totalExpenses;
 
   return (
-    <>
-      <View style={styles.dashboard}>
-        <View style={styles.dashboardCard}>
-          <View style={styles.cardHeader}>
-            <MaterialIcons
-              name="account-balance-wallet"
-              size={24}
-              color="#4CAF50"
-            />
-            <Text style={styles.cardTitle}>Contributions</Text>
-          </View>
-          <Text style={styles.cardAmount}>₹{totalContributions}</Text>
-          {highestContributor && (
-            <Text style={styles.cardSubtext}>
-              Highest: {highestContributor.name} (₹{highestContributor.amount})
-            </Text>
-          )}
-        </View>
+    <View style={styles.container}>
+      {/* Summary Section */}
+      <Text style={styles.sectionTitle}>Summary</Text>
+      <Divider style={styles.divider} />
 
-        <View style={styles.dashboardCard}>
-          <View style={styles.cardHeader}>
-            <MaterialIcons name="receipt" size={24} color="#FF6B6B" />
-            <Text style={styles.cardTitle}>Expenses</Text>
-          </View>
-          <Text style={styles.cardAmount}>₹{totalExpenses}</Text>
-          <Text style={styles.cardSubtext}>
-            Balance: ₹{totalContributions - totalExpenses}
+      <View style={styles.block}>
+        <StatRow
+          icon="account-balance-wallet"
+          label="Contributions"
+          value={`₹${totalContributions}`}
+          color="#4CAF50"
+        />
+        {highestContributor && (
+          <Text style={styles.subText}>
+            Highest: {highestContributor.name} (₹{highestContributor.amount})
           </Text>
-        </View>
+        )}
+        <StatRow
+          icon="receipt"
+          label="Expenses"
+          value={`₹${totalExpenses}`}
+          color="#FF6B6B"
+        />
+        <StatRow
+          icon="account-balance"
+          label="Balance"
+          value={`₹${balance}`}
+          color={balance >= 0 ? '#4CAF50' : '#FF6B6B'}
+        />
       </View>
 
-      <View style={styles.detailsSection}>
-        <Text style={styles.sectionTitle}>Event Details</Text>
-        <View style={styles.detailRow}>
-          <MaterialIcons name="event" size={20} color="#666" />
-          <Text style={styles.detailText}>{formatDate(event.date)}</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <MaterialIcons name="schedule" size={20} color="#666" />
-          <Text style={styles.detailText}>{getTime(event.date)}</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <MaterialIcons name="location-on" size={20} color="#666" />
-          <Text style={styles.detailText}>{event.venue}</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <MaterialIcons name="person" size={20} color="#666" />
-          <Text style={styles.detailText}>{event.eventHead.name}</Text>
-        </View>
-        <Text style={styles.sectionTitle}>Description</Text>
-        <Text style={styles.description}>{event.description}</Text>
+      {/* Event Details */}
+      <Text style={styles.sectionTitle}>Event Details</Text>
+      <Divider style={styles.divider} />
+      <View style={styles.block}>
+        <DetailItem icon="event" text={formatDate(event.date)} />
+        <DetailItem icon="schedule" text={getTime(event.date)} />
+        <DetailItem icon="location-on" text={event.venue} />
+        <DetailItem icon="person" text={event.eventHead.name} />
       </View>
-    </>
+
+      {/* Description */}
+      <Text style={styles.sectionTitle}>Description</Text>
+      <Divider style={styles.divider} />
+      <View style={styles.block}>
+        <Paragraph>{event.description}</Paragraph>
+      </View>
+    </View>
   );
 };
 
+const StatRow = ({
+  icon,
+  label,
+  value,
+  color,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  color: string;
+}) => (
+  <View style={styles.statRow}>
+    <MaterialIcons name={icon} size={20} color={color} />
+    <Text variant="bodyMedium">
+      {label}: <Text style={{color}}>{value}</Text>
+    </Text>
+  </View>
+);
+
+const DetailItem = ({icon, text}: {icon: string; text: string}) => (
+  <View style={styles.detailRow}>
+    <MaterialIcons name={icon} size={20} color="#666" />
+    <Text variant="bodyMedium">{text}</Text>
+  </View>
+);
+
 const styles = StyleSheet.create({
-  dashboard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-    paddingTop: 16,
-  },
-  dashboardCard: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 12,
+  container: {
     padding: 16,
-    marginHorizontal: 4,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginLeft: 8,
-  },
-  cardAmount: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#333',
-    marginBottom: 4,
-  },
-  cardSubtext: {
-    fontSize: 14,
-    color: '#666',
-  },
-  detailsSection: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 4,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 6,
+  },
+  divider: {
+    marginBottom: 4,
+  },
+  block: {
+    borderRadius: 8,
+    padding: 12,
+  },
+  statRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+    gap: 8,
+  },
+  statText: {
+    fontSize: 16,
+    marginLeft: 8,
     color: '#333',
-    marginBottom: 16,
+  },
+  subText: {
+    fontSize: 14,
+    marginLeft: 28,
+    color: '#666',
+    marginBottom: 8,
   },
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 10,
+    gap: 12,
   },
-  detailText: {
-    fontSize: 16,
-    color: '#333',
-    marginLeft: 12,
-  },
-  descriptionSection: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  description: {
-    fontSize: 16,
-    color: '#333',
-    lineHeight: 24,
+
+  paragraph: {
+    fontSize: 15,
+    color: '#444',
   },
 });
 

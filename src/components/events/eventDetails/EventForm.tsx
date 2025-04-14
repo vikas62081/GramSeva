@@ -11,14 +11,15 @@ import {
   Alert,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {EventFormScreenProps, Event_} from '../types';
+import {EventFormScreenProps} from '../types';
 import PageHeader from '../../common/PageHeader';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import FormGroup from '../../common/FormGroup';
-import {formatDate} from '../../../utils';
+import {formatDateTime} from '../../../utils';
 import {placeholderTextColor} from '../../../theme';
 import {useCreateEventMutation} from '../../../store/slices/eventApiSlice';
 import LoadingSpinner from '../../common/LoadingSpinner';
+import {Button} from 'react-native-paper';
 
 interface EventForm {
   title: string;
@@ -129,7 +130,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
                 onPress={() => setShowDatePicker(true)}>
                 <MaterialIcons name="event" size={24} color="#63C7A6" />
                 <Text style={styles.dateText}>
-                  {formatDate(form.date.toISOString())}
+                  {formatDateTime(form.date.toISOString())}
                 </Text>
               </TouchableOpacity>
             </FormGroup>
@@ -170,11 +171,9 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
           </View>
         </ScrollView>
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>
-              {initialData ? 'Update Event' : 'Create Event'}
-            </Text>
-          </TouchableOpacity>
+          <Button mode="contained" onPress={handleSubmit}>
+            {initialData ? 'Update Event' : 'Create Event'}
+          </Button>
         </View>
       </LoadingSpinner>
 
@@ -244,25 +243,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E1E1E1',
-  },
-  submitButton: {
-    backgroundColor: '#63C7A6',
-    padding: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  submitButtonText: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: '600',
   },
 });
 

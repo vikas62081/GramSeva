@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
+import {FlatList, View, StyleSheet} from 'react-native';
 import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
+  Avatar,
+  Button,
+  Divider,
+  List,
   ActivityIndicator,
-} from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+  Text,
+} from 'react-native-paper';
+
 import {Contributor} from '../../types';
 import ContributorForm from './ContributorForm';
 import {formatDate} from '../../../../utils';
@@ -16,7 +18,6 @@ import {
   useUpdateContributorMutation,
 } from '../../../../store/slices/eventApiSlice';
 import EmptyComponent from '../../../common/EmptyComponent';
-import {Button, IconButton, Text} from 'react-native-paper';
 
 export interface ContributorsProps {
   eventId: string;
@@ -26,12 +27,11 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
   const {
     data: contributors,
     isLoading,
-    error,
     isFetching,
   } = useGetContributorsQuery(eventId);
 
-  const [addContribution, {isLoading: isAdding}] = useAddContributorMutation();
-  const [updateContribution, {isLoading: isUpdating}] =
+  const [addContributor, {isLoading: isAdding}] = useAddContributorMutation();
+  const [updateContributor, {isLoading: isUpdating}] =
     useUpdateContributorMutation();
 
   const [showForm, setShowForm] = useState(false);
@@ -41,13 +41,13 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
 
   const handleSubmit = (data: Contributor) => {
     if (selectedContributor) {
-      updateContribution({
+      updateContributor({
         eventId,
         contributorId: selectedContributor.id!,
         contributor: data,
       });
     } else {
-      addContribution({eventId, contributor: data});
+      addContributor({eventId, contributor: data});
     }
     setShowForm(false);
     setSelectedContributor(undefined);
@@ -59,23 +59,15 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
   };
 
   const renderItem = ({item}: {item: Contributor}) => (
-    <TouchableOpacity
-      onPress={() => {
-        handleEdit(item);
-      }}
-      style={styles.contributorCard}>
-      <View style={styles.iconContainer}>
-        <MaterialIcons name="person" size={28} color="#63C7A6" />
-      </View>
-      <View style={styles.contributorInfo}>
-        <Text style={styles.contributorName}>{item.name}</Text>
-        <Text style={styles.contributorDate}>
-          {formatDate(item.created_at!)}
-        </Text>
-      </View>
-      <Text style={styles.contributorAmount}>₹{item.amount}</Text>
-    </TouchableOpacity>
+    <List.Item
+      title={item.name}
+      description={formatDate(item.created_at!)}
+      onPress={() => handleEdit(item)}
+      left={props => <Avatar.Icon icon="person" size={40} />}
+      right={() => <Text style={styles.amountText}>₹{item.amount}</Text>}
+    />
   );
+
   return (
     <>
       <View style={styles.header}>
@@ -90,15 +82,17 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
           Add
         </Button>
       </View>
-      <ActivityIndicator animating={isFetching || isLoading} />
+
+      {(isLoading || isFetching) && <ActivityIndicator animating />}
+
       <FlatList
         data={contributors || []}
         renderItem={renderItem}
         keyExtractor={item => item.id!}
-        ListEmptyComponent={
-          <EmptyComponent msg="No contribution found."></EmptyComponent>
-        }
+        ItemSeparatorComponent={Divider}
+        ListEmptyComponent={<EmptyComponent msg="No contribution found." />}
       />
+
       <ContributorForm
         visible={showForm}
         isLoading={isAdding || isUpdating}
@@ -118,53 +112,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 8,
-
-    borderBottomColor: '#f0f0f0',
+    marginVertical: 8,
   },
-
-  contributorCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 8,
-    borderRadius: 12,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 3,
-  },
-  contributorInfo: {
-    flex: 1,
-  },
-
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#B2E6D5', // Light blue background
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-
-  contributorName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  contributorDate: {
-    fontSize: 13,
-    color: '#777',
-  },
-  contributorAmount: {
-    fontSize: 16,
+  amountText: {
+    alignSelf: 'center',
     fontWeight: 'bold',
     color: '#28A745',
   },

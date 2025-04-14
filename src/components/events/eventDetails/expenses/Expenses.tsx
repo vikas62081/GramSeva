@@ -6,7 +6,6 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Expense} from '../../types';
 import ExpenseForm from './ExpenseForm';
 import {formatDate} from '../../../../utils';
@@ -16,7 +15,7 @@ import {
   useUpdateExpenseMutation,
 } from '../../../../store/slices/eventApiSlice';
 import EmptyComponent from '../../../common/EmptyComponent';
-import {Button, Text} from 'react-native-paper';
+import {Avatar, Button, Card, Divider, List, Text} from 'react-native-paper';
 
 export interface ExpensesProps {
   eventId: string;
@@ -29,6 +28,7 @@ const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
     error,
     isFetching,
   } = useGetExpensesQuery(eventId);
+
   const [showForm, setShowForm] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | undefined>();
 
@@ -51,19 +51,13 @@ const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
   };
 
   const renderItem = ({item}: {item: Expense}) => (
-    <TouchableOpacity
-      onPress={() => {
-        handleEdit(item);
-      }}
-      style={styles.expenseCard}>
-      <View style={styles.iconContainer}>
-        <MaterialIcons name="credit-card" size={28} color="#63C7A6" />
-      </View>
-      <View style={styles.expenseInfo}>
-        <Text style={styles.expenseName}>{item.item}</Text>
-        <Text style={styles.expenseDate}>{formatDate(item.created_at!)}</Text>
-      </View>
-      <Text style={styles.expenseAmount}>₹{item.cost}</Text>
+    <TouchableOpacity onPress={() => handleEdit(item)}>
+      <List.Item
+        title={item.item}
+        description={formatDate(item.created_at!)}
+        left={props => <Avatar.Icon size={40} icon="credit-card" />}
+        right={() => <Text style={styles.amountText}>₹{item.cost}</Text>}
+      />
     </TouchableOpacity>
   );
 
@@ -81,15 +75,17 @@ const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
           Add
         </Button>
       </View>
-      <ActivityIndicator animating={isFetching || isLoading} />
+
+      <ActivityIndicator animating={isLoading || isFetching} />
+
       <FlatList
         data={expenses || []}
         renderItem={renderItem}
         keyExtractor={item => item.id}
-        ListEmptyComponent={
-          <EmptyComponent msg="No expense found."></EmptyComponent>
-        }
+        ItemSeparatorComponent={Divider}
+        ListEmptyComponent={<EmptyComponent msg="No expense found." />}
       />
+
       <ExpenseForm
         visible={showForm}
         isLoading={isAdding || isUpdating}
@@ -109,52 +105,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 8,
-    paddingHorizontal: 20,
-    borderBottomColor: '#f0f0f0',
+    marginVertical: 8,
   },
-
-  expenseCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 8,
-    borderRadius: 12,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  expenseInfo: {
-    flex: 1,
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#B2E6D5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-
-  expenseName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  expenseDate: {
-    fontSize: 13,
-    color: '#777',
-  },
-  expenseAmount: {
-    fontSize: 16,
+  amountText: {
+    alignSelf: 'center',
     fontWeight: 'bold',
     color: '#DC3545',
   },

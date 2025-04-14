@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 16,
+    paddingTop: 8,
   },
   listContainer: {
     gap: 12,

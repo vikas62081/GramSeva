@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image, ScrollView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {
   EventDetailsScreenNavigationProp,
@@ -37,30 +37,32 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
   return (
     <View style={styles.container}>
       <PageHeader onBack={() => navigation.goBack()} title={event.title} />
-      <Card>
-        <Card.Cover
-          style={styles.profilePicture}
-          source={{uri: event.thumbnail_url}}
-        />
-        <Card.Content>
-          <SegmentedButtons
-            value={activeTab}
-            onValueChange={setActiveTab}
-            buttons={[
-              {
-                value: 'details',
-                label: 'Overview',
-              },
-              {
-                value: 'contributions',
-                label: 'contributions',
-              },
-              {value: 'expenses', label: 'expenses'},
-            ]}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Card style={{minHeight: '100%'}}>
+          <Card.Cover
+            style={styles.profilePicture}
+            source={{uri: event.thumbnail_url}}
           />
-          {renderTabContent()}
-        </Card.Content>
-      </Card>
+          <Card.Content>
+            <SegmentedButtons
+              value={activeTab}
+              onValueChange={setActiveTab}
+              buttons={[
+                {
+                  value: 'details',
+                  label: 'Overview',
+                },
+                {
+                  value: 'contributions',
+                  label: 'Contributor',
+                },
+                {value: 'expenses', label: 'Expense'},
+              ]}
+            />
+            {renderTabContent()}
+          </Card.Content>
+        </Card>
+      </ScrollView>
     </View>
   );
 };
