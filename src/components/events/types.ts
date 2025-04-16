@@ -9,7 +9,7 @@ export interface Event_ {
   time: string;
   venue: string;
   eventHead: {
-    id: string;
+    user_id: string;
     name: string;
   };
   thumbnail_url: string;

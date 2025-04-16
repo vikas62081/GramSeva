@@ -27,7 +27,7 @@ interface EventForm {
   date: Date;
   venue: string;
   eventHead: {
-    id: string;
+    user_id: string;
     name: string;
   };
   thumbnail_url: string;
@@ -41,7 +41,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
     description: '',
     date: new Date(),
     venue: '',
-    eventHead: {id: 'head_id', name: ''},
+    eventHead: {user_id: 'head_id', name: ''},
     thumbnail_url: '',
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -79,7 +79,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
       description: form.description,
       date: new Date(form.date).toISOString(),
       venue: form.venue,
-      eventHead: {id: 'string', name: form.eventHead.name},
+      eventHead: {user_id: 'string', name: form.eventHead.name},
       thumbnail_url: form.thumbnail_url,
     };
     try {

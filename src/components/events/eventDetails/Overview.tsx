@@ -16,13 +16,14 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
 
   const balance = total_contribution - total_expenditure;
   const contributionPercent = useMemo(() => {
-    if (total_contribution == 0 || total_expenditure == 0) return 0;
+    if (total_contribution == 0 || total_expenditure == 0) return 1;
     try {
-      return (total_expenditure / total_contribution)?.toFixed(2);
+      return total_contribution / (total_expenditure + total_contribution);
     } catch {
       return 0;
     }
   }, [total_expenditure, total_contribution]);
+
   return (
     <Card style={styles.container}>
       <Card.Content>
@@ -41,31 +42,52 @@ const Overview: React.FC<OverviewProps> = ({event}) => {
         </View>
         <View style={styles.row}>
           <Text style={[styles.label]}>Contributions vs Expenses</Text>
-          <Text style={styles.percentText}>
-            {Number(contributionPercent) * 100}%
-          </Text>
+          {/* <Text style={styles.percentText}>{contributionPercent}%</Text> */}
         </View>
-
-        <ProgressBar
+        {/* <ProgressBar
           animatedValue={Number(contributionPercent)}
           progress={Number(contributionPercent)}
           color={balance > 0 ? MD3Colors.primary60 : MD3Colors.error60}
-        />
-
+        /> */}
+        <View style={[styles.progressContainer]}>
+          <View
+            style={[
+              styles.progress,
+              {
+                width: `${Math.min(Number(contributionPercent) * 100, 100)}%`,
+              },
+            ]}
+          />
+        </View>
         <Text style={[styles.label, {marginTop: 10}]}>Balance</Text>
         <Text style={balance > 0 ? styles.green : styles.red}>₹{balance}</Text>
-        <Text variant="titleMedium" style={[styles.heading, {marginTop: 16}]}>
-          Top Contributor
-        </Text>
-        <Text style={styles.label}>Highest contribution to this event</Text>
-
-        <View style={[styles.row, {marginTop: 10}]}>
+        {top_contributor?.amount && (
           <View>
-            <Text variant="labelLarge">{top_contributor?.name || 'N/A'}</Text>
-            <Text style={styles.label}>Contributed 42% of total</Text>
+            <Text
+              variant="titleMedium"
+              style={[styles.heading, {marginTop: 16}]}>
+              Top Contributor
+            </Text>
+            <View style={[{marginTop: 10}]}>
+              <Text style={styles.label}>
+                <Text variant="labelLarge">
+                  {top_contributor?.name || 'N/A'}
+                </Text>{' '}
+                is the top contributor to this event with a{' '}
+                <Text variant="labelLarge">
+                  {(
+                    (top_contributor?.amount / total_contribution) *
+                    100
+                  ).toFixed(0)}
+                  %{` `}
+                </Text>
+                share of the total contributions.{' '}
+              </Text>
+
+              {/* <Text style={styles.green}>₹{top_contributor?.amount}</Text> */}
+            </View>
           </View>
-          <Text style={styles.green}>₹{top_contributor?.amount}</Text>
-        </View>
+        )}
       </Card.Content>
     </Card>
   );
@@ -76,6 +98,18 @@ export default Overview;
 const styles = StyleSheet.create({
   container: {
     marginTop: 12,
+  },
+  progressContainer: {
+    marginTop: 4,
+    width: '100%',
+    borderRadius: 4,
+    overflow: 'hidden',
+    height: 4,
+    backgroundColor: 'red',
+  },
+  progress: {
+    height: '100%',
+    backgroundColor: 'green',
   },
   card: {
     marginBottom: 16,

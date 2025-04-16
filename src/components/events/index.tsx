@@ -32,7 +32,7 @@ const EventContainer = (): React.JSX.Element => {
   const navigation = useNavigation<EventsScreenNavigationProp>();
   const {data, isLoading, error, isFetching} = useGetEventsQuery({
     page,
-    limit: 10,
+    limit: 100,
   });
 
   const [events, setEvents] = useState<Event_[]>(sampleEvents);
