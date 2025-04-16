@@ -19,9 +19,10 @@ import {Avatar, Button, Card, Divider, List, Text} from 'react-native-paper';
 
 export interface ExpensesProps {
   eventId: string;
+  refetch: () => void;
 }
 
-const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
+const Expenses: React.FC<ExpensesProps> = ({eventId, refetch}) => {
   const {
     data: expenses,
     isLoading,
@@ -35,12 +36,17 @@ const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
   const [addExpense, {isLoading: isAdding}] = useAddExpenseMutation();
   const [updateExpense, {isLoading: isUpdating}] = useUpdateExpenseMutation();
 
-  const handleSubmit = (data: Expense) => {
+  const handleSubmit = async (data: Expense) => {
     if (selectedExpense) {
-      updateExpense({eventId, expenseId: selectedExpense.id!, expense: data});
+      await updateExpense({
+        eventId,
+        expenseId: selectedExpense.id!,
+        expense: data,
+      });
     } else {
-      addExpense({eventId, expense: data});
+      await addExpense({eventId, expense: data});
     }
+    await refetch();
     setShowForm(false);
     setSelectedExpense(undefined);
   };
@@ -76,7 +82,7 @@ const Expenses: React.FC<ExpensesProps> = ({eventId}) => {
         </Button>
       </View>
 
-      <ActivityIndicator animating={isLoading || isFetching} />
+      {(isLoading || isFetching) && <ActivityIndicator animating />}
 
       <FlatList
         data={expenses || []}

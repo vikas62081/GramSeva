@@ -1,150 +1,116 @@
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Text, Paragraph, Divider} from 'react-native-paper';
-import {OverviewProps, Contributor} from '../types';
-import {formatDate, getTime} from '../../../utils';
+import React, {useMemo} from 'react';
+import {View, StyleSheet} from 'react-native';
+import {Card, Text, Divider, ProgressBar, MD3Colors} from 'react-native-paper';
+import {Event_} from '../types';
+
+interface OverviewProps {
+  event: Event_;
+}
 
 const Overview: React.FC<OverviewProps> = ({event}) => {
-  const calculateTotalContributions = () => 100;
-  const calculateTotalExpenses = () => 200;
+  const {
+    total_contribution = 0,
+    total_expenditure = 0,
+    top_contributor,
+  } = event || {};
 
-  const getHighestContributor = () => {
-    return null;
-    if (event.contributors.length === 0) return null;
-    return event.contributors.reduce((max: Contributor, current: Contributor) =>
-      current.amount > max.amount ? current : max,
-    );
-  };
-
-  const totalContributions = calculateTotalContributions();
-  const totalExpenses = calculateTotalExpenses();
-  const highestContributor = getHighestContributor();
-  const balance = totalContributions - totalExpenses;
-
+  const balance = total_contribution - total_expenditure;
+  const contributionPercent = useMemo(() => {
+    if (total_contribution == 0 || total_expenditure == 0) return 0;
+    try {
+      return (total_expenditure / total_contribution)?.toFixed(2);
+    } catch {
+      return 0;
+    }
+  }, [total_expenditure, total_contribution]);
   return (
-    <View style={styles.container}>
-      {/* Summary Section */}
-      <Text style={styles.sectionTitle}>Summary</Text>
-      <Divider style={styles.divider} />
-
-      <View style={styles.block}>
-        <StatRow
-          icon="account-balance-wallet"
-          label="Contributions"
-          value={`₹${totalContributions}`}
-          color="#4CAF50"
-        />
-        {highestContributor && (
-          <Text style={styles.subText}>
-            Highest: {highestContributor.name} (₹{highestContributor.amount})
+    <Card style={styles.container}>
+      <Card.Content>
+        <Text variant="titleMedium" style={styles.heading}>
+          Financial Summary
+        </Text>
+        <View style={styles.row}>
+          <View>
+            <Text style={styles.label}>Total Contributions</Text>
+            <Text style={styles.green}>₹{total_contribution}</Text>
+          </View>
+          <View>
+            <Text style={styles.label}>Total Expenses</Text>
+            <Text style={styles.red}>₹{total_expenditure}</Text>
+          </View>
+        </View>
+        <View style={styles.row}>
+          <Text style={[styles.label]}>Contributions vs Expenses</Text>
+          <Text style={styles.percentText}>
+            {Number(contributionPercent) * 100}%
           </Text>
-        )}
-        <StatRow
-          icon="receipt"
-          label="Expenses"
-          value={`₹${totalExpenses}`}
-          color="#FF6B6B"
-        />
-        <StatRow
-          icon="account-balance"
-          label="Balance"
-          value={`₹${balance}`}
-          color={balance >= 0 ? '#4CAF50' : '#FF6B6B'}
-        />
-      </View>
+        </View>
 
-      {/* Event Details */}
-      <Text style={styles.sectionTitle}>Event Details</Text>
-      <Divider style={styles.divider} />
-      <View style={styles.block}>
-        <DetailItem icon="event" text={formatDate(event.date)} />
-        <DetailItem icon="schedule" text={getTime(event.date)} />
-        <DetailItem icon="location-on" text={event.venue} />
-        <DetailItem icon="person" text={event.eventHead.name} />
-      </View>
+        <ProgressBar
+          animatedValue={Number(contributionPercent)}
+          progress={Number(contributionPercent)}
+          color={balance > 0 ? MD3Colors.primary60 : MD3Colors.error60}
+        />
 
-      {/* Description */}
-      <Text style={styles.sectionTitle}>Description</Text>
-      <Divider style={styles.divider} />
-      <View style={styles.block}>
-        <Paragraph>{event.description}</Paragraph>
-      </View>
-    </View>
+        <Text style={[styles.label, {marginTop: 10}]}>Balance</Text>
+        <Text style={balance > 0 ? styles.green : styles.red}>₹{balance}</Text>
+        <Text variant="titleMedium" style={[styles.heading, {marginTop: 16}]}>
+          Top Contributor
+        </Text>
+        <Text style={styles.label}>Highest contribution to this event</Text>
+
+        <View style={[styles.row, {marginTop: 10}]}>
+          <View>
+            <Text variant="labelLarge">{top_contributor?.name || 'N/A'}</Text>
+            <Text style={styles.label}>Contributed 42% of total</Text>
+          </View>
+          <Text style={styles.green}>₹{top_contributor?.amount}</Text>
+        </View>
+      </Card.Content>
+    </Card>
   );
 };
 
-const StatRow = ({
-  icon,
-  label,
-  value,
-  color,
-}: {
-  icon: string;
-  label: string;
-  value: string;
-  color: string;
-}) => (
-  <View style={styles.statRow}>
-    <MaterialIcons name={icon} size={20} color={color} />
-    <Text variant="bodyMedium">
-      {label}: <Text style={{color}}>{value}</Text>
-    </Text>
-  </View>
-);
-
-const DetailItem = ({icon, text}: {icon: string; text: string}) => (
-  <View style={styles.detailRow}>
-    <MaterialIcons name={icon} size={20} color="#666" />
-    <Text variant="bodyMedium">{text}</Text>
-  </View>
-);
+export default Overview;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    marginTop: 12,
   },
-  sectionTitle: {
-    fontSize: 18,
+  card: {
+    marginBottom: 16,
+    borderRadius: 12,
+  },
+  heading: {
     fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 6,
   },
-  divider: {
-    marginBottom: 4,
-  },
-  block: {
-    borderRadius: 8,
-    padding: 12,
-  },
-  statRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-    gap: 8,
-  },
-  statText: {
-    fontSize: 16,
-    marginLeft: 8,
-    color: '#333',
-  },
-  subText: {
+  label: {
+    color: '#6b6b6b',
     fontSize: 14,
-    marginLeft: 28,
-    color: '#666',
-    marginBottom: 8,
   },
-  detailRow: {
+  green: {
+    color: 'green',
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginTop: 2,
+  },
+  red: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginTop: 2,
+  },
+  row: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    gap: 12,
+    justifyContent: 'space-between',
+    marginVertical: 6,
   },
-
-  paragraph: {
-    fontSize: 15,
-    color: '#444',
+  percentText: {
+    marginLeft: 8,
+    fontWeight: 'bold',
+  },
+  bold: {
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
-
-export default Overview;

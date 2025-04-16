@@ -25,17 +25,13 @@ const FormModal: React.FC<FormModalProps> = ({
   return (
     <Modal
       animationType="slide"
-      transparent={true}
+      // transparent={true}
       visible={visible}
       onRequestClose={onClose}>
       <LoadingSpinner loading={isLoading}>
         <SafeAreaView style={styles.container}>
           <View style={styles.content}>
             <PageHeader onBack={onClose} title={title} />
-            {/* <Appbar.Header>
-              <Appbar.BackAction onPress={onClose} />
-              <Appbar.Content title={title} />
-            </Appbar.Header> */}
             <ScrollView
               style={styles.formContent}
               showsVerticalScrollIndicator={false}>

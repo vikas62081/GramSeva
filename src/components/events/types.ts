@@ -13,8 +13,14 @@ export interface Event_ {
     name: string;
   };
   thumbnail_url: string;
-  contributors: Contributor[];
-  expenses: Expense[];
+  total_contribution?: number;
+  total_expenditure?: number;
+  top_contributor?: {
+    user_id: string;
+    name: string;
+    amount: number;
+    transaction_id: string;
+  };
 }
 
 export interface Contributor {

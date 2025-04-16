@@ -58,7 +58,7 @@ const EventContainer = (): React.JSX.Element => {
 
   const renderEventItem = ({item}: {item: Event_}) => {
     return (
-      <Pressable
+      <TouchableOpacity
         onPress={() => navigation.navigate('EventDetails', {event: item})}>
         <Card mode="contained">
           <Card.Title
@@ -73,7 +73,6 @@ const EventContainer = (): React.JSX.Element => {
             )}
           />
           <Card.Content>
-            {/* <Divider /> */}
             <View style={styles.footerRow}>
               <View style={styles.dateContainer}>
                 <MaterialIcons name="event" size={16} color="#666" />
@@ -86,7 +85,7 @@ const EventContainer = (): React.JSX.Element => {
             </View>
           </Card.Content>
         </Card>
-      </Pressable>
+      </TouchableOpacity>
     );
   };
 
@@ -106,7 +105,7 @@ const EventContainer = (): React.JSX.Element => {
           renderItem={renderEventItem}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <EmptyComponent msg="No events found."></EmptyComponent>
           }

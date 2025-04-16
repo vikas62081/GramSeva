@@ -69,7 +69,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
   };
 
   const handleSubmit = async () => {
-    if (!form.title || !form.venue || !form.eventHead) {
+    if (!form.title || !form.venue || !form.eventHead.name) {
       Alert.alert('Missing Fields', 'Please complete all the required fields.');
       return;
     }

@@ -21,9 +21,10 @@ import EmptyComponent from '../../../common/EmptyComponent';
 
 export interface ContributorsProps {
   eventId: string;
+  refetch: () => void;
 }
 
-const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
+const Contributors: React.FC<ContributorsProps> = ({eventId, refetch}) => {
   const {
     data: contributors,
     isLoading,
@@ -39,16 +40,17 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
     Contributor | undefined
   >();
 
-  const handleSubmit = (data: Contributor) => {
+  const handleSubmit = async (data: Contributor) => {
     if (selectedContributor) {
-      updateContributor({
+      await updateContributor({
         eventId,
         contributorId: selectedContributor.id!,
         contributor: data,
       });
     } else {
-      addContributor({eventId, contributor: data});
+      await addContributor({eventId, contributor: data});
     }
+    await refetch();
     setShowForm(false);
     setSelectedContributor(undefined);
   };
@@ -90,6 +92,7 @@ const Contributors: React.FC<ContributorsProps> = ({eventId}) => {
         renderItem={renderItem}
         keyExtractor={item => item.id!}
         ItemSeparatorComponent={Divider}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={<EmptyComponent msg="No contribution found." />}
       />
 
