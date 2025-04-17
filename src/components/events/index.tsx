@@ -1,31 +1,16 @@
 import React, {useState} from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Pressable,
-} from 'react-native';
+import {View, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import {Event_, EventsScreenNavigationProp} from './types';
 
-import TabHeader from '../common/TabHeader';
-import {formatDate, getTime, isAndroid, isIOS} from '../../utils';
+import {formatDate, getTime} from '../../utils';
 import Container from '../common/Container';
 import {sampleEvents} from '../mock';
 import {useGetEventsQuery} from '../../store/slices/eventApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
-import {
-  Appbar,
-  Avatar,
-  Button,
-  Card,
-  Divider,
-  IconButton,
-  Text,
-} from 'react-native-paper';
+import {Appbar, Card, IconButton, Text} from 'react-native-paper';
+import LazyLoader from '../common/LazyLoader';
 
 const EventContainer = (): React.JSX.Element => {
   const [page, setPage] = useState(1);
@@ -34,27 +19,6 @@ const EventContainer = (): React.JSX.Element => {
     page,
     limit: 100,
   });
-
-  const [events, setEvents] = useState<Event_[]>(sampleEvents);
-
-  const handleAddEvent = (
-    eventData: Omit<Event_, 'id' | 'contributors' | 'expenses'>,
-  ) => {
-    const newEvent = {
-      ...eventData,
-      id: (events.length + 1).toString(),
-      contributors: [],
-      expenses: [],
-    };
-    setEvents(prevEvents => [...prevEvents, newEvent]);
-
-    console.log('Add event:', eventData);
-  };
-
-  const handleEditEvent = (event: Event_) => {
-    // TODO: Implement edit event logic
-    console.log('Edit event:', event);
-  };
 
   const renderEventItem = ({item}: {item: Event_}) => {
     return (
@@ -100,16 +64,16 @@ const EventContainer = (): React.JSX.Element => {
         />
       </Appbar.Header>
       <View style={styles.content}>
-        <FlatList
-          data={data?.data || []}
-          renderItem={renderEventItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <EmptyComponent msg="No events found."></EmptyComponent>
-          }
-        />
+        <LazyLoader loading={isLoading || isFetching}>
+          <FlatList
+            data={data?.data || []}
+            renderItem={renderEventItem}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={<EmptyComponent msg="No events found." />}
+          />
+        </LazyLoader>
       </View>
     </Container>
   );

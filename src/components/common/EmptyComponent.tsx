@@ -15,12 +15,9 @@ const EmptyComponent: React.FC<EmptyComponentProps> = ({msg}) => {
 
 const styles = StyleSheet.create({
   container: {
-    // ...StyleSheet.absoluteFillObject,
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     paddingHorizontal: 20,
-    height: '100%',
+    marginTop: '20%',
   },
   message: {
     textAlign: 'center',

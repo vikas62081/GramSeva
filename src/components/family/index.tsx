@@ -11,7 +11,7 @@ import {
 } from '../../store/slices/familyApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
 import {Appbar} from 'react-native-paper';
-import LoadingSpinner from '../common/LoadingSpinner';
+import LazyLoader from '../common/LazyLoader';
 
 type RootStackParamList = {
   FamilyList: undefined;
@@ -82,8 +82,9 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
           isLoading={creatingFamily}
         />
       )}
-      <LoadingSpinner loading={isLoading || isFetching}>
-        <View style={styles.content}>
+
+      <View style={styles.content}>
+        <LazyLoader loading={isLoading || isFetching}>
           <FlatList
             data={data?.data || []}
             keyExtractor={item => item.id!}
@@ -93,8 +94,8 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
             contentContainerStyle={styles.listContainer}
             ListEmptyComponent={<EmptyComponent msg="No family found." />}
           />
-        </View>
-      </LoadingSpinner>
+        </LazyLoader>
+      </View>
     </Container>
   );
 };

@@ -1,13 +1,6 @@
 import React, {useState} from 'react';
 import {FlatList, View, StyleSheet} from 'react-native';
-import {
-  Avatar,
-  Button,
-  Divider,
-  List,
-  ActivityIndicator,
-  Text,
-} from 'react-native-paper';
+import {Avatar, Button, Divider, List, Text, FAB} from 'react-native-paper';
 
 import {Contributor} from '../../types';
 import ContributorForm from './ContributorForm';
@@ -18,6 +11,7 @@ import {
   useUpdateContributorMutation,
 } from '../../../../store/slices/eventApiSlice';
 import EmptyComponent from '../../../common/EmptyComponent';
+import LazyLoader from '../../../common/LazyLoader';
 
 export interface ContributorsProps {
   eventId: string;
@@ -71,31 +65,35 @@ const Contributors: React.FC<ContributorsProps> = ({eventId, refetch}) => {
   );
 
   return (
-    <>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text variant="titleMedium">Contributors</Text>
-        <Button
-          icon="add"
-          mode="contained-tonal"
-          onPress={() => {
-            setSelectedContributor(undefined);
-            setShowForm(true);
-          }}>
-          Add
-        </Button>
+        <Button>View All</Button>
       </View>
 
-      {(isLoading || isFetching) && <ActivityIndicator animating />}
+      <LazyLoader loading={isLoading || isFetching} position="top">
+        <FlatList
+          data={contributors || []}
+          renderItem={renderItem}
+          keyExtractor={item => item.id!}
+          ItemSeparatorComponent={Divider}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<EmptyComponent msg="No contribution found." />}
+          contentContainerStyle={
+            (contributors?.length ?? 0) === 0 ? {flex: 1} : undefined
+          }
+        />
+      </LazyLoader>
 
-      <FlatList
-        data={contributors || []}
-        renderItem={renderItem}
-        keyExtractor={item => item.id!}
-        ItemSeparatorComponent={Divider}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={<EmptyComponent msg="No contribution found." />}
+      <FAB
+        icon="add"
+        style={styles.fab}
+        label="Add"
+        onPress={() => {
+          setSelectedContributor(undefined);
+          setShowForm(true);
+        }}
       />
-
       <ContributorForm
         visible={showForm}
         isLoading={isAdding || isUpdating}
@@ -106,16 +104,26 @@ const Contributors: React.FC<ContributorsProps> = ({eventId, refetch}) => {
         onSubmit={handleSubmit}
         initialData={selectedContributor}
       />
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 8,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
   amountText: {
     alignSelf: 'center',
