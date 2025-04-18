@@ -152,37 +152,26 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
         showsVerticalScrollIndicator={false}
       />
 
-      <Modal visible={showAddMemberModal} animationType="slide">
-        <LoadingSpinner loading={isAdding || isUpdating}>
-          <FamilyForm
-            selectedMember={selectedMember}
-            formData={formData}
-            setFormData={setFormData}
-            onClose={() => {
-              setShowAddMemberModal(false);
-              resetForm();
-              setSelectedMember(null);
-            }}
-            showDatePicker={showDatePicker}
-            setShowDatePicker={setShowDatePicker}
-            handleUpdateMember={handleUpdateMember}
-            handleAddMember={handleAddMember}
-            relatedTo={relatedTo}
-          />
-        </LoadingSpinner>
-      </Modal>
+      {showAddMemberModal && (
+        <FamilyForm
+          isLoading={isAdding || isUpdating}
+          selectedMember={selectedMember}
+          formData={formData}
+          setFormData={setFormData}
+          onClose={() => {
+            setShowAddMemberModal(false);
+            resetForm();
+            setSelectedMember(null);
+          }}
+          showDatePicker={showDatePicker}
+          setShowDatePicker={setShowDatePicker}
+          handleUpdateMember={handleUpdateMember}
+          handleAddMember={handleAddMember}
+          relatedTo={relatedTo}
+        />
+      )}
     </>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F6FA',
-  },
-  content: {
-    flex: 1,
-    padding: 16,
-  },
-});
 
 export default FamilyDetailsContainer;

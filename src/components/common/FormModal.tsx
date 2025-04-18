@@ -57,34 +57,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    width: '90%',
-    maxHeight: '80%',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333',
-  },
-  closeButton: {
-    padding: 8,
-  },
   footer: {
     padding: 20,
     backgroundColor: '#FFFFFF',

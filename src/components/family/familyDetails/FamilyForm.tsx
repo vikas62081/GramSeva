@@ -13,8 +13,9 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {FamilyMember} from '../types';
 import {placeholderTextColor} from '../../../theme';
 import Dropdown from '../../common/Dropdown';
-import {Button, Text, useTheme} from 'react-native-paper';
+import {Text, useTheme} from 'react-native-paper';
 import {genderOptions, relationshipOptions} from '../constants';
+import FormModal from '../../common/FormModal';
 
 interface FamilyFormProps {
   selectedMember?: FamilyMember | null;
@@ -28,6 +29,7 @@ interface FamilyFormProps {
   handleAddMember: () => void;
   onClose: () => void;
   relatedTo: any[];
+  isLoading: boolean;
 }
 
 const FamilyForm: React.FC<FamilyFormProps> = ({
@@ -40,88 +42,77 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
   handleAddMember,
   onClose,
   relatedTo,
+  isLoading,
 }) => {
   const {colors} = useTheme();
   return (
     <>
-      <View>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text variant="titleLarge">
-              {selectedMember ? 'Edit Member' : 'Add Family Member'}
-            </Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <MaterialIcons name="close" size={24} color="#666" />
+      <FormModal
+        isLoading={isLoading}
+        visible={true}
+        onClose={onClose}
+        title={selectedMember ? 'Edit Member' : 'Add Family Member'}
+        onSubmit={selectedMember ? handleUpdateMember : handleAddMember}
+        submitText={selectedMember ? 'Update Member' : 'Add Member'}>
+        <ScrollView style={styles.formContent}>
+          <FormGroup label="Full Name">
+            <TextInput
+              style={styles.input}
+              value={formData.name}
+              onChangeText={text =>
+                setFormData(prev => ({...prev, name: text}))
+              }
+              placeholder="Enter name"
+              placeholderTextColor={placeholderTextColor}
+            />
+          </FormGroup>
+
+          <FormGroup label="Date of Birth">
+            <TouchableOpacity
+              style={styles.dateButton}
+              onPress={() => setShowDatePicker(true)}>
+              <MaterialIcons
+                name="calendar-today"
+                size={24}
+                color={colors.primary}
+              />
+              <Text style={styles.dateButtonText}>
+                {formData.dob.toLocaleDateString()}
+              </Text>
             </TouchableOpacity>
-          </View>
+          </FormGroup>
 
-          <ScrollView style={styles.formContent}>
-            <FormGroup label="Full Name">
-              <TextInput
-                style={styles.input}
-                value={formData.name}
-                onChangeText={text =>
-                  setFormData(prev => ({...prev, name: text}))
-                }
-                placeholder="Enter name"
-                placeholderTextColor={placeholderTextColor}
-              />
-            </FormGroup>
+          <FormGroup label="Gender">
+            <Pills
+              options={genderOptions}
+              selectedOption={formData.gender}
+              onSelect={gender => setFormData(prev => ({...prev, gender}))}
+            />
+          </FormGroup>
 
-            <FormGroup label="Date of Birth">
-              <TouchableOpacity
-                style={styles.dateButton}
-                onPress={() => setShowDatePicker(true)}>
-                <MaterialIcons
-                  name="calendar-today"
-                  size={24}
-                  color={colors.primary}
-                />
-                <Text style={styles.dateButtonText}>
-                  {formData.dob.toLocaleDateString()}
-                </Text>
-              </TouchableOpacity>
-            </FormGroup>
+          <FormGroup label="Relationship to You">
+            <Dropdown
+              onChange={value =>
+                setFormData(prev => ({...prev, relationship: value}))
+              }
+              items={relationshipOptions}
+              placeholder={{label: 'Choose relationship...', value: null}}
+              value={formData.relationship}
+            />
+          </FormGroup>
 
-            <FormGroup label="Gender">
-              <Pills
-                options={genderOptions}
-                selectedOption={formData.gender}
-                onSelect={gender => setFormData(prev => ({...prev, gender}))}
-              />
-            </FormGroup>
-
-            <FormGroup label="Relationship to You">
-              <Dropdown
-                onChange={value =>
-                  setFormData(prev => ({...prev, relationship: value}))
-                }
-                items={relationshipOptions}
-                placeholder={{label: 'Choose relationship...', value: null}}
-                value={formData.relationship}
-              />
-            </FormGroup>
-
-            <FormGroup label="Related To">
-              <Dropdown
-                onChange={value =>
-                  setFormData(prev => ({...prev, parentId: value}))
-                }
-                items={relatedTo}
-                placeholder={{label: 'Choose person...', value: null}}
-                value={formData.parentId}
-              />
-            </FormGroup>
-          </ScrollView>
-          <Button
-            mode="contained"
-            style={styles.submitButton}
-            onPress={selectedMember ? handleUpdateMember : handleAddMember}>
-            {selectedMember ? 'Update Member' : 'Add Member'}
-          </Button>
-        </View>
-      </View>
-
+          <FormGroup label="Related To">
+            <Dropdown
+              onChange={value =>
+                setFormData(prev => ({...prev, parentId: value}))
+              }
+              items={relatedTo}
+              placeholder={{label: 'Choose person...', value: null}}
+              value={formData.parentId}
+            />
+          </FormGroup>
+        </ScrollView>
+      </FormModal>
       <DateTimePickerModal
         isVisible={showDatePicker}
         mode="date"
@@ -138,112 +129,8 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F6FA',
-  },
-  content: {
-    flex: 1,
-    padding: 16,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  familyImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 16,
-  },
-  familyName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2D3436',
-    marginBottom: 8,
-  },
-  familyRole: {
-    fontSize: 16,
-    color: '#636E72',
-  },
-  membersSection: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2D3436',
-  },
-  addButton: {
-    backgroundColor: '#63C7A6',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  memberItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  memberInfo: {
-    flex: 1,
-  },
-  memberName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#2D3436',
-    marginBottom: 4,
-  },
-  memberDetails: {
-    fontSize: 14,
-    color: '#636E72',
-  },
-  editButton: {
-    padding: 8,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    // maxHeight: '80%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#2D3436',
-  },
-  closeButton: {
-    padding: 8,
-  },
   formContent: {
-    padding: 16,
+    paddingTop: 12,
   },
   input: {
     backgroundColor: '#F8F9FA',
@@ -260,14 +147,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   dateButtonText: {
-    marginLeft: 12,
+    marginLeft: 10,
     fontSize: 16,
-    color: '#2D3436',
-  },
-
-  submitButton: {
-    margin: 8,
-    padding: 8,
+    color: '#000',
   },
 });
 
