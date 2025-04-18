@@ -83,9 +83,7 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
 };
 
 const styles = StyleSheet.create({
-  formContent: {
-    paddingHorizontal: 8,
-  },
+  formContent: {},
   input: {
     backgroundColor: '#F8F9FA',
     borderRadius: 12,

@@ -10,11 +10,10 @@ export interface EventHead {
 
 export interface SuccessResponse<T> {
   data: Event_[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-  };
+  page: number;
+  limit: number;
+  total_pages: number;
+  total_count: number;
 }
 
 export const eventApi = createApi({

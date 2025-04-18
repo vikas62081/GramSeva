@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {View, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
@@ -6,52 +6,74 @@ import {Event_, EventsScreenNavigationProp} from './types';
 
 import {formatDate, getTime} from '../../utils';
 import Container from '../common/Container';
-import {sampleEvents} from '../mock';
 import {useGetEventsQuery} from '../../store/slices/eventApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
 import {Appbar, Card, IconButton, Text} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
+import usePagination from '../../hooks/usePagination';
+const initialValues = {data: [], total_count: 0, total_pages: 0, page: 1};
 
 const EventContainer = (): React.JSX.Element => {
-  const [page, setPage] = useState(1);
   const navigation = useNavigation<EventsScreenNavigationProp>();
-  const {data, isLoading, error, isFetching} = useGetEventsQuery({
-    page,
-    limit: 100,
-  });
+  const {
+    setData,
+    paginationState,
+    updatePage,
+    updateSearch,
+    data: allEvents,
+    updateData,
+  } = usePagination<Event_>();
+  const {page, search} = paginationState;
+  const {
+    data: events = initialValues,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useGetEventsQuery({page});
 
-  const renderEventItem = ({item}: {item: Event_}) => {
-    return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate('EventDetails', {event: item})}>
-        <Card mode="contained">
-          <Card.Title
-            titleVariant="titleMedium"
-            title={item.title}
-            subtitle={item.description}
-            subtitleNumberOfLines={1}
-            subtitleVariant="bodySmall"
-            titleNumberOfLines={1}
-            right={props => (
-              <IconButton {...props} icon="chevron-right" onPress={() => {}} />
-            )}
-          />
-          <Card.Content>
-            <View style={styles.footerRow}>
-              <View style={styles.dateContainer}>
-                <MaterialIcons name="event" size={16} color="#666" />
-                <Text variant="labelMedium">{formatDate(item.date)}</Text>
-              </View>
-              <View style={styles.timeContainer}>
-                <MaterialIcons name="schedule" size={16} color="#666" />
-                <Text variant="labelMedium">{getTime(item.date)}</Text>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-      </TouchableOpacity>
-    );
+  useEffect(() => {
+    if (events) {
+      updateData(events.data);
+    }
+  }, [events]);
+
+  const handleLoadMore = () => {
+    const {total_pages = -1, page: currentPage} = events;
+    if (!isFetching && page < total_pages) {
+      updatePage(page);
+    }
   };
+
+  const renderEventItem = ({item}: {item: Event_}) => (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('EventDetails', {event: item})}>
+      <Card mode="contained">
+        <Card.Title
+          titleVariant="titleMedium"
+          title={item.title}
+          subtitle={item.description}
+          subtitleNumberOfLines={1}
+          subtitleVariant="bodySmall"
+          titleNumberOfLines={1}
+          right={props => (
+            <IconButton {...props} icon="chevron-right" onPress={() => {}} />
+          )}
+        />
+        <Card.Content>
+          <View style={styles.footerRow}>
+            <View style={styles.dateContainer}>
+              <MaterialIcons name="event" size={16} color="#666" />
+              <Text variant="labelMedium">{formatDate(item.date)}</Text>
+            </View>
+            <View style={styles.timeContainer}>
+              <MaterialIcons name="schedule" size={16} color="#666" />
+              <Text variant="labelMedium">{getTime(item.date)}</Text>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
+  );
 
   return (
     <Container>
@@ -65,14 +87,16 @@ const EventContainer = (): React.JSX.Element => {
         />
       </Appbar.Header>
       <View style={styles.content}>
-        <LazyLoader loading={isLoading || isFetching}>
+        <LazyLoader loading={isLoading && page === 1}>
           <FlatList
-            data={data?.data || []}
+            data={allEvents}
             renderItem={renderEventItem}
             keyExtractor={item => item.id}
             contentContainerStyle={styles.listContainer}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={<EmptyComponent msg="No events found." />}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
           />
         </LazyLoader>
       </View>
@@ -90,7 +114,6 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingBottom: 80,
   },
-
   footerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

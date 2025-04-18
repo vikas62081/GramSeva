@@ -63,12 +63,6 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
 
   return (
     <Container>
-      {/* <TabHeader
-        title="Family"
-        showSearch
-        onSearch={handleSearch}
-        onAdd={handleAddFamily}
-      /> */}
       <Appbar.Header>
         <Appbar.Content title="Family" />
         <Appbar.Action icon="search" onPress={() => handleSearch} />
