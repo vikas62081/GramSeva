@@ -13,7 +13,7 @@ const EventStack = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Events" component={EventContainer} />
+      <Stack.Screen name="EventContainer" component={EventContainer} />
       <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
       <Stack.Screen name="EventForm" component={EventForm} />
     </Stack.Navigator>

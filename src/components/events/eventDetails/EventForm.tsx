@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -20,7 +20,9 @@ import {placeholderTextColor} from '../../../theme';
 import {useCreateEventMutation} from '../../../store/slices/eventApiSlice';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import {Button} from 'react-native-paper';
-
+import {useGetFamiliesQuery} from '../../../store/slices/familyApiSlice';
+import Dropdown from '../../common/Dropdown';
+import {useTheme} from 'react-native-paper';
 interface EventForm {
   title: string;
   description: string;
@@ -35,7 +37,12 @@ interface EventForm {
 
 const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
   const initialData = route.params?.event;
+  const {colors} = useTheme();
   const [createEvent, {isLoading}] = useCreateEventMutation();
+  const {data: people} = useGetFamiliesQuery({
+    limit: 100,
+  });
+
   const [form, setForm] = useState<EventForm>({
     title: '',
     description: '',
@@ -69,26 +76,30 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
   };
 
   const handleSubmit = async () => {
-    if (!form.title || !form.venue || !form.eventHead.name) {
+    if (!form.title || !form.venue || !form.eventHead.user_id) {
       Alert.alert('Missing Fields', 'Please complete all the required fields.');
       return;
     }
-
+    const [user_id, name] = form.eventHead.user_id.split('-');
     const eventData = {
       title: form.title,
       description: form.description,
       date: new Date(form.date).toISOString(),
       venue: form.venue,
-      eventHead: {user_id: 'string', name: form.eventHead.name},
+      eventHead: {user_id, name},
       thumbnail_url: form.thumbnail_url,
     };
     try {
       await createEvent(eventData).unwrap();
-
       console.log('Submit event:', eventData);
       navigation.goBack();
     } catch {}
   };
+
+  const users = useMemo(
+    () => people?.data.map(p => ({label: p.name, value: p.id + '-' + p.name})),
+    [people],
+  );
 
   return (
     <KeyboardAvoidingView
@@ -128,7 +139,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
               <TouchableOpacity
                 style={styles.dateButton}
                 onPress={() => setShowDatePicker(true)}>
-                <MaterialIcons name="event" size={24} color="#63C7A6" />
+                <MaterialIcons name="event" size={24} color={colors.primary} />
                 <Text style={styles.dateText}>
                   {formatDateTime(form.date.toISOString())}
                 </Text>
@@ -144,17 +155,16 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
               />
             </FormGroup>
             <FormGroup label="Event Head">
-              <TextInput
-                style={styles.input}
-                value={form.eventHead.name}
-                onChangeText={text =>
+              <Dropdown
+                onChange={value => {
                   setForm(prev => ({
                     ...prev,
-                    eventHead: {...prev.eventHead, name: text},
-                  }))
-                }
-                placeholder="Enter event head name"
-                placeholderTextColor={placeholderTextColor}
+                    eventHead: {user_id: value, name: value},
+                  }));
+                }}
+                items={users || []}
+                placeholder={{label: 'Choose Event Head...', value: null}}
+                value={form.eventHead.user_id}
               />
             </FormGroup>
             <FormGroup label="Profile Picture URL">
@@ -171,7 +181,10 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
           </View>
         </ScrollView>
         <View style={styles.footer}>
-          <Button mode="contained" onPress={handleSubmit}>
+          <Button
+            mode="contained"
+            style={{height: 50, justifyContent: 'center'}}
+            onPress={handleSubmit}>
             {initialData ? 'Update Event' : 'Create Event'}
           </Button>
         </View>

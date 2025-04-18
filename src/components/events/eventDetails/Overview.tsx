@@ -70,7 +70,7 @@ const Overview: React.FC<OverviewProps> = ({event, loading}) => {
             <Text style={balance > 0 ? styles.green : styles.red}>
               ₹{balance}
             </Text>
-            {top_contributor?.amount && (
+            {top_contributor?.amount ? (
               <View>
                 <Text
                   variant="titleMedium"
@@ -96,6 +96,8 @@ const Overview: React.FC<OverviewProps> = ({event, loading}) => {
                   {/* <Text style={styles.green}>₹{top_contributor?.amount}</Text> */}
                 </View>
               </View>
+            ) : (
+              <></>
             )}
           </View>
         </LazyLoader>

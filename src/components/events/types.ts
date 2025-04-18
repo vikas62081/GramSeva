@@ -55,14 +55,14 @@ export interface OverviewProps {
 }
 
 export type RootStackParamList = {
-  Events: undefined;
+  EventContainer: undefined;
   EventDetails: {event: Event_};
   EventForm: {event?: Event_};
 };
 
 export type EventsScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'Events'
+  'EventContainer'
 >;
 
 export type EventDetailsScreenNavigationProp = NativeStackNavigationProp<

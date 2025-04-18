@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
   subtitle: {
     color: '#6c6c6c',

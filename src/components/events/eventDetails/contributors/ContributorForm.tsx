@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import FormModal from '../../../common/FormModal';
 import {ContributorForm as IContributorForm, Contributor} from '../../types';
 import {placeholderTextColor} from '../../../../theme';
 import FormGroup from '../../../common/FormGroup';
+import {useGetFamiliesQuery} from '../../../../store/slices/familyApiSlice';
+import Dropdown from '../../../common/Dropdown';
 
 interface ContributorFormProps {
   visible: boolean;
@@ -25,10 +27,13 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
     amount: '',
   });
 
+  const {data: people} = useGetFamiliesQuery({
+    limit: 100,
+  });
   useEffect(() => {
     if (initialData) {
       setForm({
-        name: initialData.name,
+        name: initialData.user_id + '-' + initialData.name,
         amount: initialData.amount.toString(),
       });
     } else {
@@ -41,13 +46,18 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
       // You might want to show an error message here
       return;
     }
+    const [user_id, name] = form.name.split('-');
     onSubmit({
-      name: form.name,
+      name,
       amount: parseFloat(form.amount),
-      user_id: 'string',
+      user_id,
     });
   };
 
+  const users = useMemo(
+    () => people?.data.map(p => ({label: p.name, value: p.id + '-' + p.name})),
+    [people],
+  );
   return (
     <FormModal
       isLoading={isLoading}
@@ -57,12 +67,16 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
       onSubmit={handleSubmit}
       submitText={initialData ? 'Update' : 'Add'}>
       <FormGroup label="Name">
-        <TextInput
-          style={styles.input}
+        <Dropdown
+          onChange={value => {
+            setForm(prev => ({
+              ...prev,
+              name: value,
+            }));
+          }}
+          items={users || []}
+          placeholder={{label: 'Select contributor', value: null}}
           value={form.name}
-          onChangeText={text => setForm(prev => ({...prev, name: text}))}
-          placeholder="Enter contributor name"
-          placeholderTextColor={placeholderTextColor}
         />
       </FormGroup>
       <FormGroup label="Amount">
@@ -70,7 +84,6 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
           style={styles.input}
           value={form.amount}
           onChangeText={text => {
-            // Only allow numbers and decimal point
             const filtered = text.replace(/[^0-9.]/g, '');
             setForm(prev => ({...prev, amount: filtered}));
           }}
