@@ -28,7 +28,8 @@ const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
         <View style={styles.titleContainer}>
           <Text variant="titleMedium">{name}</Text>
           <Text variant="bodyMedium" style={styles.subtitle}>
-            {relationship} • Total members: {familyCount}
+            {relationship} •{' '}
+            {familyCount !== 0 ? `Total members: ${familyCount}` : `None`}
           </Text>
         </View>
       </View>

@@ -141,6 +141,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
         name={family!.name}
         relationship={family!.relationship}
         onAdd={handleAddBtnClick}
+        familyCount={family!.members?.length || 0}
       />
 
       <FlatList
