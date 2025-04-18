@@ -1,22 +1,11 @@
-// FamilyDetailsContainer.tsx
 import React, {useMemo, useState} from 'react';
-import {
-  Modal,
-  StyleSheet,
-  FlatList,
-  Alert,
-  ActivityIndicator,
-  ToastAndroid,
-} from 'react-native';
-
+import {Modal, StyleSheet, FlatList, Alert, ToastAndroid} from 'react-native';
 import MemberCard from './MemberCard';
-
 import {FamilyMember} from '../types';
 import {
   FamilyDetailsScreenNavigationProp,
   FamilyDetailsScreenRouteProp,
 } from '../../../navigation/types';
-import {mockFamily} from '../../mock';
 import {getFamilyDropdownOptions} from '../../../utils';
 import FamilyDetailHeader from './FamilyDetailHeader';
 import FamilyForm from './FamilyForm';
@@ -28,6 +17,7 @@ import {
 import LoadingSpinner from '../../common/LoadingSpinner';
 import EmptyComponent from '../../common/EmptyComponent';
 import {useHideTabBar} from '../../../hooks/ useHideTabBar';
+import {ActivityIndicator} from 'react-native-paper';
 
 interface FamilyDetailsScreenProps {
   navigation: FamilyDetailsScreenNavigationProp;
@@ -141,9 +131,9 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
     resetForm();
     setShowAddMemberModal(true);
   };
-  console.log(formData);
-  if (isLoading) {
-    return <ActivityIndicator animating={isFetching || isLoading} />;
+
+  if (isFetching || isLoading) {
+    return <ActivityIndicator animating />;
   }
   return (
     <>
@@ -152,17 +142,17 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
         relationship={family!.relationship}
         onAdd={handleAddBtnClick}
       />
+
       <FlatList
-        data={family!.members}
+        data={family!.members || []}
         renderItem={({item}) => (
           <MemberCard key={item.id} member={item} onEdit={handleEditMember} />
         )}
-        ListEmptyComponent={
-          <EmptyComponent msg="No member found."></EmptyComponent>
-        }
+        ListEmptyComponent={<EmptyComponent msg="No member found." />}
+        showsVerticalScrollIndicator={false}
       />
 
-      <Modal visible={showAddMemberModal} animationType="slide" transparent>
+      <Modal visible={showAddMemberModal} animationType="slide">
         <LoadingSpinner loading={isAdding || isUpdating}>
           <FamilyForm
             selectedMember={selectedMember}

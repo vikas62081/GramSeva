@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Text,
   ScrollView,
   TextInput,
   TouchableOpacity,
@@ -14,6 +13,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {FamilyMember} from '../types';
 import {placeholderTextColor} from '../../../theme';
 import Dropdown from '../../common/Dropdown';
+import {Button, Text, useTheme} from 'react-native-paper';
 
 interface FamilyFormProps {
   selectedMember?: FamilyMember | null;
@@ -40,12 +40,13 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
   onClose,
   relatedTo,
 }) => {
+  const {colors} = useTheme();
   return (
     <>
-      <View style={styles.modalOverlay}>
+      <View>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>
+            <Text variant="titleLarge">
               {selectedMember ? 'Edit Member' : 'Add Family Member'}
             </Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -73,7 +74,7 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
                 <MaterialIcons
                   name="calendar-today"
                   size={24}
-                  color="#63C7A6"
+                  color={colors.primary}
                 />
                 <Text style={styles.dateButtonText}>
                   {formData.dob.toLocaleDateString()}
@@ -115,14 +116,12 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
               />
             </FormGroup>
           </ScrollView>
-
-          <TouchableOpacity
+          <Button
+            mode="contained"
             style={styles.submitButton}
             onPress={selectedMember ? handleUpdateMember : handleAddMember}>
-            <Text style={styles.submitButtonText}>
-              {selectedMember ? 'Update Member' : 'Add Member'}
-            </Text>
-          </TouchableOpacity>
+            {selectedMember ? 'Update Member' : 'Add Member'}
+          </Button>
         </View>
       </View>
 
@@ -228,13 +227,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '80%',
+    // maxHeight: '80%',
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
@@ -270,16 +269,8 @@ const styles = StyleSheet.create({
   },
 
   submitButton: {
-    backgroundColor: '#63C7A6',
-    margin: 16,
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    margin: 8,
+    padding: 8,
   },
 });
 

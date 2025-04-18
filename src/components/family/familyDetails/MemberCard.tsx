@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {View, StyleSheet} from 'react-native';
 import {FamilyMember} from '../types';
+import {IconButton, Text} from 'react-native-paper';
 
 interface MemberCardProps {
   member: FamilyMember;
@@ -12,16 +12,12 @@ const MemberCard: React.FC<MemberCardProps> = ({member, onEdit}) => {
   return (
     <View key={member.id} style={[styles.memberItem]}>
       <View style={styles.memberInfo}>
-        <Text style={styles.memberName}>{member.name}</Text>
-        <Text style={styles.memberDetails}>
+        <Text variant="labelLarge">{member.name}</Text>
+        <Text variant="bodySmall">
           {member.relationship} • {member.gender}
         </Text>
       </View>
-      <TouchableOpacity
-        onPress={() => onEdit(member)}
-        style={styles.editButton}>
-        <MaterialIcons name="edit" size={24} color="#63C7A6" />
-      </TouchableOpacity>
+      <IconButton onPress={() => onEdit(member)} icon="edit"></IconButton>
     </View>
   );
 };
@@ -31,7 +27,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     marginBottom: 8,
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -43,18 +40,6 @@ const styles = StyleSheet.create({
   },
   memberInfo: {
     flex: 1,
-  },
-  memberName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#444',
-  },
-  memberDetails: {
-    fontSize: 14,
-    color: '#666',
-  },
-  editButton: {
-    padding: 4,
   },
 });
 

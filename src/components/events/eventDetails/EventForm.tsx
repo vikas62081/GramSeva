@@ -24,6 +24,7 @@ import {useGetFamiliesQuery} from '../../../store/slices/familyApiSlice';
 import Dropdown from '../../common/Dropdown';
 import {useTheme} from 'react-native-paper';
 import {useHideTabBar} from '../../../hooks/ useHideTabBar';
+
 interface EventForm {
   title: string;
   description: string;
@@ -185,7 +186,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
         <View style={styles.footer}>
           <Button
             mode="contained"
-            style={{height: 50, justifyContent: 'center'}}
+            style={styles.submitButton}
             onPress={handleSubmit}>
             {initialData ? 'Update Event' : 'Create Event'}
           </Button>
@@ -258,6 +259,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E1E1E1',
+  },
+  submitButton: {
+    padding: 8,
   },
 });
 

@@ -1,17 +1,10 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  ScrollView,
-} from 'react-native';
+import {View, StyleSheet, Modal, ScrollView} from 'react-native';
 import {FormModalProps} from '../events/types';
 import PageHeader from './PageHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import LoadingSpinner from './LoadingSpinner';
-import {Appbar} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 
 const FormModal: React.FC<FormModalProps> = ({
   visible,
@@ -37,10 +30,14 @@ const FormModal: React.FC<FormModalProps> = ({
               showsVerticalScrollIndicator={false}>
               {children}
             </ScrollView>
-
-            <TouchableOpacity style={styles.submitButton} onPress={onSubmit}>
-              <Text style={styles.submitButtonText}>{submitText}</Text>
-            </TouchableOpacity>
+            <View style={styles.footer}>
+              <Button
+                mode="contained"
+                style={styles.submitButton}
+                onPress={onSubmit}>
+                {submitText}
+              </Button>
+            </View>
           </View>
         </SafeAreaView>
       </LoadingSpinner>
@@ -88,25 +85,14 @@ const styles = StyleSheet.create({
   closeButton: {
     padding: 8,
   },
-  submitButton: {
-    backgroundColor: '#63C7A6',
-    padding: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    margin: 16,
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+  footer: {
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#E1E1E1',
   },
-  submitButtonText: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: '600',
+  submitButton: {
+    padding: 8,
   },
 });
 

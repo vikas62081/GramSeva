@@ -29,8 +29,8 @@ const MainTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        // tabBarStyle: {backgroundColor: '#fff', paddingBottom: 5, height: 60},
-        // tabBarLabelStyle: {fontSize: 12, fontWeight: 'bold'},
+        tabBarStyle: {backgroundColor: '#fff', paddingBottom: 6, height: 60},
+        tabBarLabelStyle: {fontSize: 12, fontWeight: 'bold'},
         headerShown: false,
         tabBarIcon: ({color, size}) => {
           const tab = tabScreens.find(tab => tab.name === route.name);
