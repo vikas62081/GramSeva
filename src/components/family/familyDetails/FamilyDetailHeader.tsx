@@ -22,7 +22,7 @@ const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
             uri: 'https://buildingontheword.org/files/2014/12/family.jpg',
           }}
         />
-        <Text variant="headlineMedium">{name}</Text>
+        <Text variant="headlineSmall">{name}</Text>
         {relationship && <Text style={styles.familyRole}>{relationship}</Text>}
       </View>
       <View style={styles.sectionHeader}>

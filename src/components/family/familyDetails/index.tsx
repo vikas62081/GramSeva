@@ -46,7 +46,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
   const [formData, setFormData] = useState<FamilyMember>({
     name: '',
     dob: new Date(),
-    gender: 'male',
+    gender: 'Male',
     relationship: '',
     parentId: '',
   });
@@ -108,7 +108,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
     setFormData({
       name: '',
       dob: new Date(),
-      gender: 'male',
+      gender: 'Male',
       relationship: '',
       parentId: '',
     });

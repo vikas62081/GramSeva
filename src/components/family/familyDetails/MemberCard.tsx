@@ -17,7 +17,12 @@ const MemberCard: React.FC<MemberCardProps> = ({member, onEdit}) => {
           {member.relationship} • {member.gender}
         </Text>
       </View>
-      <IconButton onPress={() => onEdit(member)} icon="edit"></IconButton>
+      <IconButton
+        size={20}
+        style={{opacity: 0.7}}
+        onPress={() => onEdit(member)}
+        icon="mode-edit-outline"
+      />
     </View>
   );
 };

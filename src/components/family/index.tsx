@@ -72,7 +72,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
       <Appbar.Header>
         <Appbar.Content title="Family" />
         <Appbar.Action icon="search" onPress={() => handleSearch} />
-        <Appbar.Action icon="add" onPress={handleAddFamily} />
+        <Appbar.Action mode="contained" icon="add" onPress={handleAddFamily} />
       </Appbar.Header>
       {isAddingFamily && (
         <AddFamilyForm

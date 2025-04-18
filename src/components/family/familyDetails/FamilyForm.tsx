@@ -14,6 +14,7 @@ import {FamilyMember} from '../types';
 import {placeholderTextColor} from '../../../theme';
 import Dropdown from '../../common/Dropdown';
 import {Button, Text, useTheme} from 'react-native-paper';
+import {genderOptions, relationshipOptions} from '../constants';
 
 interface FamilyFormProps {
   selectedMember?: FamilyMember | null;
@@ -84,7 +85,7 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
 
             <FormGroup label="Gender">
               <Pills
-                options={['male', 'female']}
+                options={genderOptions}
                 selectedOption={formData.gender}
                 onSelect={gender => setFormData(prev => ({...prev, gender}))}
               />
@@ -95,11 +96,7 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
                 onChange={value =>
                   setFormData(prev => ({...prev, relationship: value}))
                 }
-                items={[
-                  {label: 'Wife', value: 'Wife'},
-                  {label: 'Son', value: 'Son'},
-                  {label: 'Daughter', value: 'Daughter'},
-                ]}
+                items={relationshipOptions}
                 placeholder={{label: 'Choose relationship...', value: null}}
                 value={formData.relationship}
               />
@@ -127,7 +124,7 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
 
       <DateTimePickerModal
         isVisible={showDatePicker}
-        mode="datetime"
+        mode="date"
         onConfirm={date => {
           console.log(date);
           setFormData(prev => ({...prev, dob: date}));

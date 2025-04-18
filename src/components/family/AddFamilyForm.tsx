@@ -4,6 +4,7 @@ import {Family, FamilyMember} from './types';
 import FormGroup from '../common/FormGroup';
 import FormModal from '../common/FormModal';
 import Pills from '../common/Pills';
+import {genderOptions} from './constants';
 
 interface AddFamilyFormProps {
   selectedMember?: FamilyMember | null;
@@ -21,7 +22,7 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
   const [formData, setFormData] = useState<Family>({
     name: '',
     phone: '',
-    gender: 'male',
+    gender: 'Male',
     members: 0,
     relationship: 'head',
   });
@@ -70,7 +71,7 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
           </FormGroup>
           <FormGroup label="Gender">
             <Pills
-              options={['male', 'female']}
+              options={genderOptions}
               selectedOption={formData.gender}
               onSelect={gender => setFormData(prev => ({...prev, gender}))}
             />

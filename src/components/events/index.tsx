@@ -60,6 +60,7 @@ const EventContainer = (): React.JSX.Element => {
         <Appbar.Action icon="search" onPress={() => {}} />
         <Appbar.Action
           icon="add"
+          mode="contained"
           onPress={() => navigation.navigate('EventForm', {})}
         />
       </Appbar.Header>

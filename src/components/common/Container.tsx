@@ -13,7 +13,6 @@ const Container: React.FC<ContainerProps> = ({children, padding = true}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F6FA',
   },
 });
 
