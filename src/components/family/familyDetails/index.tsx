@@ -4,7 +4,6 @@ import {
   Modal,
   StyleSheet,
   FlatList,
-  Text,
   Alert,
   ActivityIndicator,
   ToastAndroid,
@@ -28,6 +27,7 @@ import {
 } from '../../../store/slices/familyApiSlice';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import EmptyComponent from '../../common/EmptyComponent';
+import {useHideTabBar} from '../../../hooks/ useHideTabBar';
 
 interface FamilyDetailsScreenProps {
   navigation: FamilyDetailsScreenNavigationProp;
@@ -37,6 +37,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
   navigation,
   route,
 }) => {
+  useHideTabBar();
   const {familyId} = route.params || {};
   const {
     data: family,

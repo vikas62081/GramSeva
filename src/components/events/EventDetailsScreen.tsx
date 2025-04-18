@@ -13,6 +13,7 @@ import PageHeader from '../common/PageHeader';
 import {Card, SegmentedButtons} from 'react-native-paper';
 import EventDetailsHeader from './eventDetails/EventDetailsHeader';
 import {useGetEventByIdQuery} from '../../store/slices/eventApiSlice';
+import {useHideTabBar} from '../../hooks/ useHideTabBar';
 
 interface EventDetailsScreenProps {
   route: EventDetailsScreenRouteProp;
@@ -20,6 +21,7 @@ interface EventDetailsScreenProps {
 
 const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
   const navigation = useNavigation<EventDetailsScreenNavigationProp>();
+  useHideTabBar();
   const {event} = route.params;
   const {
     data: eventDetails = {} as Event_,

@@ -23,6 +23,7 @@ import {Button} from 'react-native-paper';
 import {useGetFamiliesQuery} from '../../../store/slices/familyApiSlice';
 import Dropdown from '../../common/Dropdown';
 import {useTheme} from 'react-native-paper';
+import {useHideTabBar} from '../../../hooks/ useHideTabBar';
 interface EventForm {
   title: string;
   description: string;
@@ -36,6 +37,7 @@ interface EventForm {
 }
 
 const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
+  useHideTabBar();
   const initialData = route.params?.event;
   const {colors} = useTheme();
   const [createEvent, {isLoading}] = useCreateEventMutation();

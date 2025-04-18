@@ -6,10 +6,10 @@ import NoticeListing from '../components/noticeboard';
 
 import EventStack from './EventsStackNavigator';
 import FamilyStack from './FamilyStackNavigator';
+import {useTheme} from 'react-native-paper';
 
 const Tab = createBottomTabNavigator();
 
-// Tab configuration array
 const tabScreens = [
   {name: 'Home', component: GramSeva, icon: 'home', hidden: true},
   {name: 'Polls', component: PollingStack, icon: 'list', hidden: true},
@@ -25,11 +25,12 @@ const tabScreens = [
 ];
 
 const MainTabs = () => {
+  const {colors} = useTheme();
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarStyle: {backgroundColor: '#fff', paddingBottom: 5, height: 60},
-        tabBarLabelStyle: {fontSize: 12, fontWeight: 'bold'},
+        // tabBarStyle: {backgroundColor: '#fff', paddingBottom: 5, height: 60},
+        // tabBarLabelStyle: {fontSize: 12, fontWeight: 'bold'},
         headerShown: false,
         tabBarIcon: ({color, size}) => {
           const tab = tabScreens.find(tab => tab.name === route.name);
@@ -37,11 +38,11 @@ const MainTabs = () => {
             <MaterialIcon name={tab.icon} size={size} color={color} />
           ) : null;
         },
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: '#8E8E93',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.secondary,
       })}>
       {tabScreens
-        .filter(tab => !tab.hidden) // Exclude hidden tabs
+        .filter(tab => !tab.hidden)
         .map(tab => (
           <Tab.Screen
             key={tab.name}
