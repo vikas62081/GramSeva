@@ -12,6 +12,7 @@ import {
 import EmptyComponent from '../common/EmptyComponent';
 import {Appbar} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
+import {useSnackbar} from '../../context/SnackbarContext';
 
 type RootStackParamList = {
   FamilyList: undefined;
@@ -28,6 +29,7 @@ interface FamilyScreenProps {
 }
 
 const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
+  const {showSnackbar} = useSnackbar();
   const [page, setPage] = useState(1);
   const {data, isLoading, error, isFetching} = useGetFamiliesQuery({
     page,
@@ -55,9 +57,10 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   const handleSaveFamily = async (family: Family) => {
     try {
       await createFamily(family).unwrap();
+      showSnackbar('Family added successfully');
       setIsAddingFamily(false);
     } catch {
-      Alert.alert('Error', 'Failed to create family');
+      showSnackbar('Failed to add family', 'error');
     }
   };
 

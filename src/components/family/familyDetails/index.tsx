@@ -18,6 +18,7 @@ import LoadingSpinner from '../../common/LoadingSpinner';
 import EmptyComponent from '../../common/EmptyComponent';
 import {useHideTabBar} from '../../../hooks/ useHideTabBar';
 import {ActivityIndicator} from 'react-native-paper';
+import {useSnackbar} from '../../../context/SnackbarContext';
 
 interface FamilyDetailsScreenProps {
   navigation: FamilyDetailsScreenNavigationProp;
@@ -28,6 +29,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
   route,
 }) => {
   useHideTabBar();
+  const {showSnackbar} = useSnackbar();
   const {familyId} = route.params || {};
   const {
     data: family,
@@ -79,9 +81,9 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
       }).unwrap();
       setShowAddMemberModal(false);
       resetForm();
-      ToastAndroid.show('Family member added successfully', ToastAndroid.SHORT);
+      showSnackbar('Family member added successfully');
     } catch (err) {
-      Alert.alert('Error', 'Failed to add family member');
+      showSnackbar('Failed to add family member', 'error');
     }
   };
 
@@ -96,11 +98,12 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
         memberId: selectedMember.id!,
         member: formData,
       }).unwrap();
+      showSnackbar('Family member updated successfully');
       setShowAddMemberModal(false);
       setSelectedMember(null);
       resetForm();
     } catch (err) {
-      Alert.alert('Error', 'Failed to update family member');
+      showSnackbar('Failed to update family member', 'error');
     }
   };
 

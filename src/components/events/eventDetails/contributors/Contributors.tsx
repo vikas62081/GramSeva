@@ -12,6 +12,7 @@ import {
 } from '../../../../store/slices/eventApiSlice';
 import EmptyComponent from '../../../common/EmptyComponent';
 import LazyLoader from '../../../common/LazyLoader';
+import {useSnackbar} from '../../../../context/SnackbarContext';
 
 export interface ContributorsProps {
   eventId: string;
@@ -19,6 +20,7 @@ export interface ContributorsProps {
 }
 
 const Contributors: React.FC<ContributorsProps> = ({eventId, refetch}) => {
+  const {showSnackbar} = useSnackbar();
   const {
     data: contributors,
     isLoading,
@@ -35,15 +37,18 @@ const Contributors: React.FC<ContributorsProps> = ({eventId, refetch}) => {
   >();
 
   const handleSubmit = async (data: Contributor) => {
+    let msg = 'Contribution added successfully';
     if (selectedContributor) {
       await updateContributor({
         eventId,
         contributorId: selectedContributor.id!,
         contributor: data,
       });
+      msg = 'Contribution updated successfully';
     } else {
       await addContributor({eventId, contributor: data});
     }
+    showSnackbar(msg);
     await refetch();
     setShowForm(false);
     setSelectedContributor(undefined);

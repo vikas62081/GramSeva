@@ -11,7 +11,8 @@ import {ThemeProvider} from './src/context/ThemeContext';
 import {PaperProvider} from 'react-native-paper';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import 'react-native-gesture-handler';
-import 'react-native-reanimated'; // <- must come before react-native-paper or navigation
+import 'react-native-reanimated';
+import {SnackbarProvider} from './src/context/SnackbarContext';
 enableScreens();
 
 const App = (): React.JSX.Element => {
@@ -30,21 +31,23 @@ const App = (): React.JSX.Element => {
       settings={{
         icon: props => <MaterialIcon {...props} />,
       }}>
-      <Provider store={store}>
-        <ThemeProvider>
-          <SafeAreaProvider>
-            <NavigationContainer>
-              <StatusBar
-                barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                backgroundColor={backgroundStyle.backgroundColor}
-              />
-              <SafeAreaView style={backgroundStyle}>
-                <MainTabs />
-              </SafeAreaView>
-            </NavigationContainer>
-          </SafeAreaProvider>
-        </ThemeProvider>
-      </Provider>
+      <SnackbarProvider>
+        <Provider store={store}>
+          <ThemeProvider>
+            <SafeAreaProvider>
+              <NavigationContainer>
+                <StatusBar
+                  barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+                  backgroundColor={backgroundStyle.backgroundColor}
+                />
+                <SafeAreaView style={backgroundStyle}>
+                  <MainTabs />
+                </SafeAreaView>
+              </NavigationContainer>
+            </SafeAreaProvider>
+          </ThemeProvider>
+        </Provider>
+      </SnackbarProvider>
     </PaperProvider>
   );
 };

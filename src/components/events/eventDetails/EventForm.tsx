@@ -24,6 +24,7 @@ import {useGetFamiliesQuery} from '../../../store/slices/familyApiSlice';
 import Dropdown from '../../common/Dropdown';
 import {useTheme} from 'react-native-paper';
 import {useHideTabBar} from '../../../hooks/ useHideTabBar';
+import {useSnackbar} from '../../../context/SnackbarContext';
 
 interface EventForm {
   title: string;
@@ -41,6 +42,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
   useHideTabBar();
   const initialData = route.params?.event;
   const {colors} = useTheme();
+  const {showSnackbar} = useSnackbar();
   const [createEvent, {isLoading}] = useCreateEventMutation();
   const {data: people} = useGetFamiliesQuery({
     limit: 100,
@@ -94,9 +96,11 @@ const EventForm: React.FC<EventFormScreenProps> = ({route, navigation}) => {
     };
     try {
       await createEvent(eventData).unwrap();
-      console.log('Submit event:', eventData);
+      showSnackbar('Event created successfully');
       navigation.goBack();
-    } catch {}
+    } catch {
+      showSnackbar('Something went wrong', 'error');
+    }
   };
 
   const users = useMemo(

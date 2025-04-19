@@ -11,6 +11,7 @@ import {
 import EmptyComponent from '../../../common/EmptyComponent';
 import {Avatar, Button, Divider, FAB, List, Text} from 'react-native-paper';
 import LazyLoader from '../../../common/LazyLoader';
+import {useSnackbar} from '../../../../context/SnackbarContext';
 
 export interface ExpensesProps {
   eventId: string;
@@ -24,6 +25,7 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, refetch}) => {
     error,
     isFetching,
   } = useGetExpensesQuery(eventId);
+  const {showSnackbar} = useSnackbar();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | undefined>();
@@ -32,15 +34,18 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, refetch}) => {
   const [updateExpense, {isLoading: isUpdating}] = useUpdateExpenseMutation();
 
   const handleSubmit = async (data: Expense) => {
+    let msg = 'Expense added successfully';
     if (selectedExpense) {
       await updateExpense({
         eventId,
         expenseId: selectedExpense.id!,
         expense: data,
       });
+      msg = 'Expense updated successfully';
     } else {
       await addExpense({eventId, expense: data});
     }
+    showSnackbar(msg);
     await refetch();
     setShowForm(false);
     setSelectedExpense(undefined);
