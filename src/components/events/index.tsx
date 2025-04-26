@@ -1,16 +1,16 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import {Event_, EventsScreenNavigationProp} from './types';
 
 import {formatDate, getTime} from '../../utils';
-import Container from '../common/Container';
 import {useGetEventsQuery} from '../../store/slices/eventApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
-import {Appbar, Card, IconButton, Text} from 'react-native-paper';
+import {Appbar, Card, IconButton, Surface, Text} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
 import usePagination from '../../hooks/usePagination';
+import EventForm from './eventDetails/EventForm';
 const initialValues = {data: [], total_count: 0, total_pages: 0, page: 1};
 
 const EventContainer = (): React.JSX.Element => {
@@ -23,13 +23,14 @@ const EventContainer = (): React.JSX.Element => {
     data: allEvents,
     updateData,
   } = usePagination<Event_>();
+  const [isAddingEvent, setIsAddingEvent] = useState(false);
   const {page, search} = paginationState;
   const {
     data: events = initialValues,
     isLoading,
     isFetching,
     refetch,
-  } = useGetEventsQuery({page});
+  } = useGetEventsQuery({page, limit: 8});
 
   useEffect(() => {
     if (events) {
@@ -43,6 +44,21 @@ const EventContainer = (): React.JSX.Element => {
       updatePage(page);
     }
   };
+
+  const onEventAdded = () => {
+    setData([]);
+    updatePage(0);
+    if (page == 1) {
+      refetch();
+    }
+  };
+
+  // const debouncedSearch = useCallback(
+  //   debounce(term => {
+  //     updateSearch(term);
+  //   }, 500),
+  //   [],
+  // );
 
   const renderEventItem = ({item}: {item: Event_}) => (
     <TouchableOpacity
@@ -76,18 +92,18 @@ const EventContainer = (): React.JSX.Element => {
   );
 
   return (
-    <Container>
+    <Surface style={{flex: 1}}>
       <Appbar.Header>
         <Appbar.Content title="Events" />
         <Appbar.Action icon="search" onPress={() => {}} />
         <Appbar.Action
           icon="add"
           mode="contained"
-          onPress={() => navigation.navigate('EventForm', {})}
+          onPress={() => setIsAddingEvent(true)}
         />
       </Appbar.Header>
       <View style={styles.content}>
-        <LazyLoader loading={isLoading && page === 1}>
+        <LazyLoader loading={isLoading || isFetching || allEvents.length == 0}>
           <FlatList
             data={allEvents}
             renderItem={renderEventItem}
@@ -100,7 +116,13 @@ const EventContainer = (): React.JSX.Element => {
           />
         </LazyLoader>
       </View>
-    </Container>
+      {isAddingEvent && (
+        <EventForm
+          onSuccess={onEventAdded}
+          onClose={() => setIsAddingEvent(false)}
+        />
+      )}
+    </Surface>
   );
 };
 

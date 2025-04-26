@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, SafeAreaView} from 'react-native';
+import {StyleSheet, SafeAreaView} from 'react-native';
 import PageHeader from '../components/common/PageHeader';
 
 import {
@@ -7,6 +7,7 @@ import {
   FamilyDetailsScreenRouteProp,
 } from '../navigation/types';
 import FamilyDetailsContainer from '../components/family/familyDetails';
+import {Surface} from 'react-native-paper';
 
 interface FamilyDetailsScreenProps {
   navigation: FamilyDetailsScreenNavigationProp;
@@ -20,9 +21,9 @@ const FamilyDetailsScreen: React.FC<FamilyDetailsScreenProps> = ({
   return (
     <SafeAreaView style={styles.container}>
       <PageHeader title="Family Details" onBack={() => navigation.goBack()} />
-      <View style={styles.content}>
+      <Surface style={styles.content}>
         <FamilyDetailsContainer navigation={navigation} route={route} />
-      </View>
+      </Surface>
     </SafeAreaView>
   );
 };
@@ -30,7 +31,6 @@ const FamilyDetailsScreen: React.FC<FamilyDetailsScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F6FA',
   },
   content: {
     flex: 1,

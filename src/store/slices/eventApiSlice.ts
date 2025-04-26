@@ -49,7 +49,7 @@ export const eventApi = createApi({
         method: 'POST',
         body: newEvent,
       }),
-      invalidatesTags: ['Event'],
+      // invalidatesTags: ['Event'],
     }),
 
     updateEvent: builder.mutation<

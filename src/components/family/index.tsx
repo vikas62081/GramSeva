@@ -1,16 +1,15 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, FlatList, Alert} from 'react-native';
+import {View, StyleSheet, FlatList} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Family} from './types';
 import Member from './Member';
 import AddFamilyForm from './AddFamilyForm'; // Importing AddFamilyForm component
-import Container from '../common/Container';
 import {
   useCreateFamilyMutation,
   useGetFamiliesQuery,
 } from '../../store/slices/familyApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
-import {Appbar} from 'react-native-paper';
+import {Appbar, Surface} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
 import {useSnackbar} from '../../context/SnackbarContext';
 
@@ -65,7 +64,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   };
 
   return (
-    <Container>
+    <Surface style={{flex: 1}}>
       <Appbar.Header>
         <Appbar.Content title="Family" />
         <Appbar.Action icon="search" onPress={() => handleSearch} />
@@ -93,7 +92,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
           />
         </LazyLoader>
       </View>
-    </Container>
+    </Surface>
   );
 };
 

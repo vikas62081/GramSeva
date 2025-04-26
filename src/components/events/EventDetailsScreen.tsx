@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {
   EventDetailsScreenNavigationProp,
@@ -10,7 +10,7 @@ import Overview from './eventDetails/Overview';
 import Contributors from './eventDetails/contributors/Contributors';
 import Expenses from './eventDetails/expenses/Expenses';
 import PageHeader from '../common/PageHeader';
-import {Card, SegmentedButtons} from 'react-native-paper';
+import {Card, SegmentedButtons, Surface} from 'react-native-paper';
 import EventDetailsHeader from './eventDetails/EventDetailsHeader';
 import {useGetEventByIdQuery} from '../../store/slices/eventApiSlice';
 import {useHideTabBar} from '../../hooks/ useHideTabBar';
@@ -47,7 +47,7 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <Surface style={styles.container}>
       <PageHeader onBack={() => navigation.goBack()} title={event.title} />
       <Card>
         <Card.Content>
@@ -64,14 +64,13 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
         </Card.Content>
       </Card>
       {renderTabContent()}
-    </View>
+    </Surface>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   content: {
     flex: 1,

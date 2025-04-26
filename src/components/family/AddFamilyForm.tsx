@@ -44,7 +44,7 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
         title={selectedMember ? 'Edit Family' : 'Add Family'}
         onSubmit={handleSave}
         submitText={selectedMember ? 'Update Family' : 'Add Family'}>
-        <ScrollView style={styles.formContent}>
+        <ScrollView>
           <FormGroup label="Full Name">
             <TextInput
               style={styles.input}
@@ -83,7 +83,6 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
 };
 
 const styles = StyleSheet.create({
-  formContent: {},
   input: {
     backgroundColor: '#F8F9FA',
     borderRadius: 12,

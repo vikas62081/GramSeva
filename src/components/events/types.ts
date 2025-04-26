@@ -107,6 +107,6 @@ export interface EventDetailsScreenProps {
 }
 
 export interface EventFormScreenProps {
-  route: EventFormScreenRouteProp;
-  navigation: EventFormScreenNavigationProp;
+  onClose: () => void;
+  onSuccess: () => void;
 }

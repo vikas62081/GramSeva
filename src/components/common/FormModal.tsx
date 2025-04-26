@@ -4,7 +4,7 @@ import {FormModalProps} from '../events/types';
 import PageHeader from './PageHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import LoadingSpinner from './LoadingSpinner';
-import {Button} from 'react-native-paper';
+import {Button, Surface} from 'react-native-paper';
 
 const FormModal: React.FC<FormModalProps> = ({
   visible,
@@ -18,28 +18,30 @@ const FormModal: React.FC<FormModalProps> = ({
   return (
     <Modal
       animationType="slide"
-      // transparent={true}
+      transparent={true}
       visible={visible}
       onRequestClose={onClose}>
       <LoadingSpinner loading={isLoading}>
-        <SafeAreaView style={styles.container}>
-          <View style={styles.content}>
-            <PageHeader onBack={onClose} title={title} />
-            <ScrollView
-              style={styles.formContent}
-              showsVerticalScrollIndicator={false}>
-              {children}
-            </ScrollView>
-            <View style={styles.footer}>
-              <Button
-                mode="contained"
-                style={styles.submitButton}
-                onPress={onSubmit}>
-                {submitText}
-              </Button>
+        <Surface style={{flex: 1}}>
+          <SafeAreaView style={styles.container}>
+            <View style={styles.content}>
+              <PageHeader onBack={onClose} title={title} />
+              <ScrollView
+                style={styles.formContent}
+                showsVerticalScrollIndicator={false}>
+                {children}
+              </ScrollView>
+              <View style={styles.footer}>
+                <Button
+                  mode="contained"
+                  style={styles.submitButton}
+                  onPress={onSubmit}>
+                  {submitText}
+                </Button>
+              </View>
             </View>
-          </View>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Surface>
       </LoadingSpinner>
     </Modal>
   );
