@@ -9,45 +9,52 @@ import {useGetEventsQuery} from '../../store/slices/eventApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
 import {Appbar, Card, IconButton, Surface, Text} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
-import usePagination from '../../hooks/usePagination';
 import EventForm from './eventDetails/EventForm';
 const initialValues = {data: [], total_count: 0, total_pages: 0, page: 1};
 
+interface AllEventsProps {
+  data: Event_[];
+  total_count: number;
+  total_pages: number;
+  page: number;
+}
+
 const EventContainer = (): React.JSX.Element => {
   const navigation = useNavigation<EventsScreenNavigationProp>();
-  const {
-    setData,
-    paginationState,
-    updatePage,
-    updateSearch,
-    data: allEvents,
-    updateData,
-  } = usePagination<Event_>();
+  const [allEvents, setAllEvents] = useState<AllEventsProps>(initialValues);
+  const [page, setPage] = useState(1);
+
   const [isAddingEvent, setIsAddingEvent] = useState(false);
-  const {page, search} = paginationState;
+
   const {
     data: events = initialValues,
     isLoading,
     isFetching,
     refetch,
-  } = useGetEventsQuery({page, limit: 8});
+  } = useGetEventsQuery({page, limit: 10});
 
   useEffect(() => {
     if (events) {
-      updateData(events.data);
+      if (page == 1) {
+        setAllEvents(events);
+      } else {
+        setAllEvents(prev => ({
+          ...events,
+          data: [...prev.data, ...events.data],
+        }));
+      }
     }
   }, [events]);
 
   const handleLoadMore = () => {
     const {total_pages = -1, page: currentPage} = events;
     if (!isFetching && page < total_pages) {
-      updatePage(page);
+      setPage(currentPage + 1);
     }
   };
 
   const onEventAdded = () => {
-    setData([]);
-    updatePage(0);
+    setPage(1);
     if (page == 1) {
       refetch();
     }
@@ -103,9 +110,10 @@ const EventContainer = (): React.JSX.Element => {
         />
       </Appbar.Header>
       <View style={styles.content}>
-        <LazyLoader loading={isLoading || isFetching || allEvents.length == 0}>
+        <LazyLoader
+          loading={isLoading || isFetching || allEvents.data.length == 0}>
           <FlatList
-            data={allEvents}
+            data={allEvents.data}
             renderItem={renderEventItem}
             keyExtractor={item => item.id}
             contentContainerStyle={styles.listContainer}
