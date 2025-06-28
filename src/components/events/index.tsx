@@ -13,15 +13,9 @@ import {Event_, EventsScreenNavigationProp} from './types';
 import {formatDate, getTime} from '../../utils';
 import {useGetEventsQuery} from '../../store/slices/eventApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
-import {
-  Appbar,
-  Card,
-  IconButton,
-  Surface,
-  Text,
-  Button,
-} from 'react-native-paper';
+import {Card, IconButton, Surface, Text, Button} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
+import SearchHeader from '../common/SearchHeader';
 import EventForm from './eventDetails/EventForm';
 
 interface AllEventsProps {
@@ -40,10 +34,13 @@ const initialValues: AllEventsProps = {
 
 const EventContainer = (): React.JSX.Element => {
   const navigation = useNavigation<EventsScreenNavigationProp>();
+
+  // State management
   const [allEvents, setAllEvents] = useState<AllEventsProps>(initialValues);
   const [currentPage, setCurrentPage] = useState(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isAddingEvent, setIsAddingEvent] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // API query
   const {
@@ -51,7 +48,11 @@ const EventContainer = (): React.JSX.Element => {
     isLoading,
     isFetching,
     refetch,
-  } = useGetEventsQuery({page: currentPage, limit: 10});
+  } = useGetEventsQuery({
+    page: currentPage,
+    limit: 10,
+    search: searchQuery || undefined,
+  });
 
   // Update local state when API response changes
   useEffect(() => {
@@ -67,6 +68,11 @@ const EventContainer = (): React.JSX.Element => {
     }
   }, [eventsResponse]);
 
+  // Reset pagination when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   // Handle pull-to-refresh
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -78,6 +84,7 @@ const EventContainer = (): React.JSX.Element => {
     }
   }, [refetch]);
 
+  // Handle load more button
   const handleLoadMore = useCallback(() => {
     const {total_pages, page: responsePage} = allEvents;
     if (responsePage < total_pages) {
@@ -85,13 +92,21 @@ const EventContainer = (): React.JSX.Element => {
     }
   }, [allEvents]);
 
+  // Handle event added
   const handleEventAdded = useCallback(async () => {
     setCurrentPage(1);
     await refetch();
   }, [refetch]);
 
+  // Handle search
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
+
+  // Check if there are more pages to load
   const hasMorePages = allEvents.page < allEvents.total_pages;
 
+  // Render load more button
   const renderLoadMoreButton = useCallback(() => {
     if (!hasMorePages || !allEvents.data) {
       return null;
@@ -109,8 +124,9 @@ const EventContainer = (): React.JSX.Element => {
         </Button>
       </View>
     );
-  }, [hasMorePages, allEvents.data?.length, isFetching]);
+  }, [hasMorePages, allEvents.data, handleLoadMore, isFetching]);
 
+  // Render individual event item
   const renderEventItem = useCallback(
     ({item}: {item: Event_}) => (
       <TouchableOpacity
@@ -149,15 +165,13 @@ const EventContainer = (): React.JSX.Element => {
   if (isLoading && allEvents.data?.length === 0) {
     return (
       <Surface style={styles.container}>
-        <Appbar.Header>
-          <Appbar.Content title="Events" />
-          <Appbar.Action icon="search" onPress={() => {}} />
-          <Appbar.Action
-            icon="add"
-            mode="contained"
-            onPress={() => setIsAddingEvent(true)}
-          />
-        </Appbar.Header>
+        <SearchHeader
+          title="Events"
+          onSearch={handleSearch}
+          onAdd={() => setIsAddingEvent(true)}
+          placeholder="Search events..."
+          isFetching={isFetching}
+        />
         <View style={styles.content}>
           <LazyLoader loading={true}>
             <View />
@@ -169,19 +183,17 @@ const EventContainer = (): React.JSX.Element => {
 
   return (
     <Surface style={styles.container}>
-      <Appbar.Header>
-        <Appbar.Content title="Events" />
-        <Appbar.Action icon="search" onPress={() => {}} />
-        <Appbar.Action
-          icon="add"
-          mode="contained"
-          onPress={() => setIsAddingEvent(true)}
-        />
-      </Appbar.Header>
+      <SearchHeader
+        title="Events"
+        onSearch={handleSearch}
+        onAdd={() => setIsAddingEvent(true)}
+        placeholder="Search events..."
+        isFetching={isFetching}
+      />
 
       <View style={styles.content}>
         <FlatList
-          data={allEvents.data}
+          data={allEvents.data || []}
           renderItem={renderEventItem}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContainer}
@@ -194,7 +206,13 @@ const EventContainer = (): React.JSX.Element => {
                 </LazyLoader>
               </View>
             ) : (
-              <EmptyComponent msg="No events found." />
+              <EmptyComponent
+                msg={
+                  searchQuery
+                    ? `No events found for "${searchQuery}"`
+                    : 'No events found.'
+                }
+              />
             )
           }
           ListFooterComponent={renderLoadMoreButton}
@@ -241,6 +259,11 @@ const styles = StyleSheet.create({
   loadMoreButton: {
     minWidth: 120,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   footerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -255,11 +278,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

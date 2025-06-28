@@ -24,12 +24,12 @@ export const eventApi = createApi({
     // Events
     getEvents: builder.query<
       SuccessResponse<Event_[]>,
-      {page?: number; limit?: number}
+      {page?: number; limit?: number; search?: string}
     >({
-      query: ({page = 1, limit = 10}) => ({
+      query: ({page = 1, limit = 10, search}) => ({
         url: '/events',
         method: 'GET',
-        params: {page, limit},
+        params: {page, limit, ...(search && {search})},
       }),
       providesTags: ['Event'],
     }),

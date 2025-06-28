@@ -6,11 +6,10 @@ import {Family, FamilyMember} from '../../components/family/types';
 
 export interface FamilyResponse {
   data: Family[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-  };
+  total_pages: number;
+  total_count: number;
+  page: number;
+  limit: number;
 }
 
 export const familyApi = createApi({

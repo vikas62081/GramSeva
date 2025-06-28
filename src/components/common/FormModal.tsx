@@ -34,7 +34,7 @@ const FormModal: React.FC<FormModalProps> = ({
               <View style={styles.footer}>
                 <Button
                   mode="contained"
-                  style={styles.submitButton}
+                  contentStyle={styles.submitButton}
                   onPress={onSubmit}>
                   {submitText}
                 </Button>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#E1E1E1',
   },
   submitButton: {
-    padding: 8,
+    padding: 6,
   },
 });
 
