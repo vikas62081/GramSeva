@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TextInput} from 'react-native';
+import {View, Text, StyleSheet, TextInput, Alert} from 'react-native';
 import FormModal from '../../../common/FormModal';
 import {Expense} from '../../types';
 import {placeholderTextColor} from '../../../../theme';
@@ -13,6 +13,8 @@ interface ExpenseFormProps {
   isLoading: boolean;
 }
 
+const initialFormValue = {item: '', cost: '', receipt_url: ''};
+
 const ExpenseForm: React.FC<ExpenseFormProps> = ({
   visible,
   onClose,
@@ -20,11 +22,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
   initialData,
   isLoading,
 }) => {
-  const [form, setForm] = useState({
-    item: '',
-    cost: '',
-    receipt_url: '',
-  });
+  const [form, setForm] = useState(initialFormValue);
 
   useEffect(() => {
     if (initialData) {
@@ -38,10 +36,11 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
 
   const handleSubmit = () => {
     if (!form.item || !form.cost) {
-      // You might want to show an error message here
+      Alert.alert('Missing Fields', 'Please enter item name and amount.');
       return;
     }
     onSubmit(form as unknown as Expense);
+    setForm(initialFormValue);
   };
 
   return (

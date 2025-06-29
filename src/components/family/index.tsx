@@ -260,10 +260,11 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     gap: 12,
-    paddingBottom: 60,
+    // paddingBottom: 3,
   },
   loadMoreContainer: {
     alignItems: 'center',
+    marginBottom: 8,
   },
   loadMoreButton: {
     minWidth: 120,

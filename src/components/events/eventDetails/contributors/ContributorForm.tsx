@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import {View, Text, StyleSheet, TextInput} from 'react-native';
+import {View, Text, StyleSheet, TextInput, Alert} from 'react-native';
 import FormModal from '../../../common/FormModal';
 import {ContributorForm as IContributorForm, Contributor} from '../../types';
 import {placeholderTextColor} from '../../../../theme';
@@ -15,6 +15,8 @@ interface ContributorFormProps {
   isLoading: boolean;
 }
 
+const initialFormValue = {name: '', amount: ''};
+
 const ContributorForm: React.FC<ContributorFormProps> = ({
   visible,
   onClose,
@@ -22,10 +24,7 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
   initialData,
   isLoading,
 }) => {
-  const [form, setForm] = useState<IContributorForm>({
-    name: '',
-    amount: '',
-  });
+  const [form, setForm] = useState<IContributorForm>(initialFormValue);
 
   const {data: people} = useGetFamiliesQuery({
     limit: 100,
@@ -37,13 +36,13 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
         amount: initialData.amount.toString(),
       });
     } else {
-      setForm({name: '', amount: ''});
+      setForm(initialFormValue);
     }
   }, [initialData]);
 
   const handleSubmit = () => {
     if (!form.name || !form.amount) {
-      // You might want to show an error message here
+      Alert.alert('Missing Fields', 'Please select contributor and amount.');
       return;
     }
     const [user_id, name] = form.name.split('-');
@@ -52,6 +51,7 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
       amount: parseFloat(form.amount),
       user_id,
     });
+    setForm(initialFormValue);
   };
 
   const users = useMemo(

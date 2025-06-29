@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     gap: 12,
-    paddingBottom: 60,
+    // paddingBottom: 60,
   },
   eventCard: {
     // marginBottom: 8,
@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
   },
   loadMoreButton: {
     minWidth: 120,
+    marginBottom: 8,
   },
   loadingContainer: {
     flex: 1,

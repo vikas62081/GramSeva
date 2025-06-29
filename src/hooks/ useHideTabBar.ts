@@ -18,7 +18,7 @@ export const useHideTabBar = () => {
       parent.setOptions({
         tabBarStyle: {
           transform: [{translateY: translateY}],
-          position: 'absolute',
+          // position: 'absolute',
           backgroundColor: '#fff',
           height: 60,
           paddingBottom: 6,
@@ -37,7 +37,7 @@ export const useHideTabBar = () => {
         parent.setOptions({
           tabBarStyle: {
             transform: [{translateY: translateY}],
-            position: 'absolute',
+            // position: 'absolute',
             backgroundColor: '#fff',
             height: 60,
             paddingBottom: 6,

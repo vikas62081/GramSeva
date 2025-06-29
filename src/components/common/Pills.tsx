@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   pill: {
     flex: 1,
-    padding: 2,
+    // padding: 2,
   },
 });
 
