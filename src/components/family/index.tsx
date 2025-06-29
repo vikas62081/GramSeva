@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  Fragment,
-  useMemo,
-} from 'react';
+import React, {useState, useCallback} from 'react';
 import {View, StyleSheet, FlatList, RefreshControl} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Family} from './types';
@@ -15,11 +9,12 @@ import {
   useGetFamiliesQuery,
 } from '../../store/slices/familyApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
-import {Surface, Button} from 'react-native-paper';
+import {Surface} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
 import SearchHeader from '../common/SearchHeader';
 import {useSnackbar} from '../../context/SnackbarContext';
 import LoadMoreButton from '../common/LoadMoreButton';
+import {usePaginatedList} from '../../hooks/usePaginatedList';
 
 type RootStackParamList = {
   FamilyList: undefined;
@@ -35,96 +30,35 @@ interface FamilyScreenProps {
   navigation: FamilyScreenNavigationProp;
 }
 
-interface AllFamiliesProps {
-  data: Family[];
-  total_count: number;
-  total_pages: number;
-  page: number;
-}
-
-const initialValues: AllFamiliesProps = {
-  data: [],
-  total_count: 0,
-  total_pages: 0,
-  page: 1,
-};
-
 const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   const {showSnackbar} = useSnackbar();
 
   // State management
-  const [allFamilies, setAllFamilies] =
-    useState<AllFamiliesProps>(initialValues);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isAddingFamily, setIsAddingFamily] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
-  // API query
+  // Use the paginated list hook
   const {
-    data: familiesResponse,
+    data: families,
     isLoading,
     isFetching,
+    isRefreshing,
+    searchQuery,
+    handleLoadMore,
+    handleRefresh,
+    handleSearch,
+    hasMorePages,
     refetch,
-  } = useGetFamiliesQuery({
-    page: currentPage,
+  } = usePaginatedList<Family>({
+    queryHook: useGetFamiliesQuery,
     limit: 8,
-    search: searchQuery || undefined,
   });
 
   const [createFamily, {isLoading: creatingFamily}] = useCreateFamilyMutation();
 
-  // Update local state when API response changes
-  useEffect(() => {
-    if (familiesResponse) {
-      if (currentPage === 1) {
-        setAllFamilies(familiesResponse);
-      } else {
-        setAllFamilies(prev => ({
-          ...familiesResponse,
-          data: [...(prev.data || []), ...(familiesResponse.data || [])],
-        }));
-      }
-    }
-  }, [familiesResponse]);
-
-  // Reset pagination when search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
-
-  // Handle pull-to-refresh
-  const handleRefresh = useCallback(async () => {
-    setIsRefreshing(true);
-    setCurrentPage(1);
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
-
-  // Handle load more button
-  const handleLoadMore = useCallback(() => {
-    const {total_pages, page: responsePage} = allFamilies;
-    if (responsePage < total_pages) {
-      setCurrentPage(responsePage + 1);
-    }
-  }, [allFamilies]);
-
   // Handle family added
   const handleFamilyAdded = useCallback(async () => {
-    setCurrentPage(1);
     await refetch();
   }, [refetch]);
-
-  // Handle search
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-  }, []);
-
-  // Check if there are more pages to load
-  const hasMorePages = allFamilies.page < allFamilies.total_pages;
 
   const handleFamilyPress = (familyId: string) => {
     navigation.navigate('FamilyDetails', {familyId});
@@ -151,7 +85,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   };
 
   // Show loading screen for initial load
-  if (isLoading && allFamilies.data?.length === 0) {
+  if (isLoading && families.length === 0) {
     return (
       <Surface style={styles.container}>
         <SearchHeader
@@ -191,7 +125,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
 
       <View style={styles.content}>
         <FlatList
-          data={allFamilies.data || []}
+          data={families}
           keyExtractor={item => item.id!}
           renderItem={({item}) => (
             <Member key={item.id} family={item} onPress={handleFamilyPress} />

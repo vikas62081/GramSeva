@@ -1,18 +1,9 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState} from 'react';
 import {View, FlatList, StyleSheet, RefreshControl} from 'react-native';
-import {
-  Surface,
-  Text,
-  Button,
-  Avatar,
-  Card,
-  IconButton,
-  Divider,
-} from 'react-native-paper';
+import {Surface, Divider} from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {Expense, ExpensesListScreenRouteProp} from '../../types';
-import {formatDate} from '../../../../utils';
 import {
   useGetExpensesQuery,
   useAddExpenseMutation,
@@ -25,15 +16,7 @@ import ExpenseForm from './ExpenseForm';
 import {useSnackbar} from '../../../../context/SnackbarContext';
 import ExpenseItem from './ExpenseItem';
 import LoadMoreButton from '../../../common/LoadMoreButton';
-import {Pagination} from '../../../../store/types';
-
-const initialValues: Pagination<Expense[]> = {
-  data: [],
-  total_count: 0,
-  total_pages: 0,
-  page: 1,
-  limit: 0,
-};
+import {usePaginatedList} from '../../../../hooks/usePaginatedList';
 
 const ExpensesListScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -41,70 +24,29 @@ const ExpensesListScreen: React.FC = () => {
   const {eventId, eventTitle} = route.params;
   const {showSnackbar} = useSnackbar();
 
-  // State management
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [allExpenses, setAllExpenses] =
-    useState<Pagination<Expense[]>>(initialValues);
+  // Form state
   const [showForm, setShowForm] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | undefined>();
 
-  // API queries
+  // Use the paginated list hook
   const {
-    data: expensesResponse,
+    data: expenses,
     isLoading,
     isFetching,
-    refetch,
-  } = useGetExpensesQuery({
-    eventId,
-    page: currentPage,
+    isRefreshing,
+    searchQuery,
+    handleLoadMore,
+    handleRefresh,
+    handleSearch,
+    hasMorePages,
+  } = usePaginatedList<Expense>({
+    queryHook: useGetExpensesQuery,
+    queryParams: {eventId},
     limit: 10,
-    search: searchQuery,
   });
 
   const [addExpense, {isLoading: isAdding}] = useAddExpenseMutation();
   const [updateExpense, {isLoading: isUpdating}] = useUpdateExpenseMutation();
-
-  // Update local state when API response changes
-  useEffect(() => {
-    if (expensesResponse) {
-      if (currentPage === 1) {
-        setAllExpenses(expensesResponse);
-      } else {
-        setAllExpenses(prev => ({
-          ...expensesResponse,
-          data: [...prev.data, ...expensesResponse.data],
-        }));
-      }
-    }
-  }, [expensesResponse]);
-
-  // Reset pagination when search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
-
-  // Handle pull-to-refresh
-  const handleRefresh = useCallback(async () => {
-    setIsRefreshing(true);
-    setCurrentPage(1);
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
-
-  // Handle load more
-  const handleLoadMore = useCallback(() => {
-    setCurrentPage(prev => prev + 1);
-  }, []);
-
-  // Handle search
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-  }, []);
 
   // Handle expense form submission
   const handleSubmit = async (data: Expense) => {
@@ -120,7 +62,6 @@ const ExpensesListScreen: React.FC = () => {
       await addExpense({eventId, expense: data});
     }
     showSnackbar(msg);
-    await refetch();
     setShowForm(false);
     setSelectedExpense(undefined);
   };
@@ -131,11 +72,8 @@ const ExpensesListScreen: React.FC = () => {
     setShowForm(true);
   };
 
-  // Check if there are more pages to load
-  const hasMorePages = allExpenses.page < allExpenses.total_pages;
-
   // Show loading screen for initial load
-  if (isLoading && allExpenses.data.length === 0) {
+  if (isLoading && expenses.length === 0) {
     return (
       <Surface style={styles.container}>
         <SearchHeader
@@ -174,7 +112,7 @@ const ExpensesListScreen: React.FC = () => {
 
       <View style={styles.content}>
         <FlatList
-          data={allExpenses.data}
+          data={expenses}
           renderItem={({item}) => (
             <ExpenseItem item={item} onPress={handleEdit} />
           )}

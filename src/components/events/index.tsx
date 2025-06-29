@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   FlatList,
@@ -13,99 +13,40 @@ import {Event_, EventsScreenNavigationProp} from './types';
 import {formatDate, getTime} from '../../utils';
 import {useGetEventsQuery} from '../../store/slices/eventApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
-import {Card, IconButton, Surface, Text, Button} from 'react-native-paper';
+import {Card, IconButton, Surface, Text} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
 import SearchHeader from '../common/SearchHeader';
 import EventForm from './eventDetails/EventForm';
 import LoadMoreButton from '../common/LoadMoreButton';
-
-interface AllEventsProps {
-  data: Event_[] | undefined;
-  total_count: number;
-  total_pages: number;
-  page: number;
-}
-
-const initialValues: AllEventsProps = {
-  data: undefined,
-  total_count: 0,
-  total_pages: 0,
-  page: 1,
-};
+import {usePaginatedList} from '../../hooks/usePaginatedList';
 
 const EventContainer = (): React.JSX.Element => {
   const navigation = useNavigation<EventsScreenNavigationProp>();
 
   // State management
-  const [allEvents, setAllEvents] = useState<AllEventsProps>(initialValues);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isAddingEvent, setIsAddingEvent] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
-  // API query
+  // Use the paginated list hook
   const {
-    data: eventsResponse = initialValues,
+    data: events,
     isLoading,
     isFetching,
+    isRefreshing,
+    searchQuery,
+    handleLoadMore,
+    handleRefresh,
+    handleSearch,
+    hasMorePages,
     refetch,
-  } = useGetEventsQuery({
-    page: currentPage,
+  } = usePaginatedList<Event_>({
+    queryHook: useGetEventsQuery,
     limit: 10,
-    search: searchQuery || undefined,
   });
-
-  // Update local state when API response changes
-  useEffect(() => {
-    if (eventsResponse) {
-      if (currentPage === 1) {
-        setAllEvents(eventsResponse);
-      } else {
-        setAllEvents(prev => ({
-          ...eventsResponse,
-          data: [...(prev.data || []), ...(eventsResponse.data || [])],
-        }));
-      }
-    }
-  }, [eventsResponse]);
-
-  // Reset pagination when search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
-
-  // Handle pull-to-refresh
-  const handleRefresh = useCallback(async () => {
-    setIsRefreshing(true);
-    setCurrentPage(1);
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
-
-  // Handle load more button
-  const handleLoadMore = useCallback(() => {
-    const {total_pages, page: responsePage} = allEvents;
-    if (responsePage < total_pages) {
-      setCurrentPage(responsePage + 1);
-    }
-  }, [allEvents]);
 
   // Handle event added
   const handleEventAdded = useCallback(async () => {
-    setCurrentPage(1);
     await refetch();
   }, [refetch]);
-
-  // Handle search
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-  }, []);
-
-  // Check if there are more pages to load
-  const hasMorePages = allEvents.page < allEvents.total_pages;
 
   // Render individual event item
   const renderEventItem = useCallback(
@@ -143,7 +84,7 @@ const EventContainer = (): React.JSX.Element => {
   );
 
   // Show loading screen for initial load
-  if (isLoading && allEvents.data?.length === 0) {
+  if (isLoading && events.length === 0) {
     return (
       <Surface style={styles.container}>
         <SearchHeader
@@ -174,7 +115,7 @@ const EventContainer = (): React.JSX.Element => {
 
       <View style={styles.content}>
         <FlatList
-          data={allEvents.data || []}
+          data={events}
           renderItem={renderEventItem}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContainer}

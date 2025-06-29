@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState} from 'react';
 import {View, FlatList, StyleSheet, RefreshControl} from 'react-native';
 import {Surface, Divider} from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -16,15 +16,7 @@ import ContributorForm from './ContributorForm';
 import {useSnackbar} from '../../../../context/SnackbarContext';
 import ContributorItem from './ContributorItem';
 import LoadMoreButton from '../../../common/LoadMoreButton';
-import {Pagination} from '../../../../store/types';
-
-const initialValues: Pagination<Contributor[]> = {
-  data: [],
-  total_count: 0,
-  total_pages: 0,
-  page: 1,
-  limit: 0,
-};
+import {usePaginatedList} from '../../../../hooks/usePaginatedList';
 
 const ContributorsListScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -32,73 +24,32 @@ const ContributorsListScreen: React.FC = () => {
   const {eventId, eventTitle} = route.params;
   const {showSnackbar} = useSnackbar();
 
-  // State management
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [allContributors, setAllContributors] =
-    useState<Pagination<Contributor[]>>(initialValues);
+  // Form state
   const [showForm, setShowForm] = useState(false);
   const [selectedContributor, setSelectedContributor] = useState<
     Contributor | undefined
   >();
 
-  // API queries
+  // Use the paginated list hook
   const {
-    data: contributorsResponse,
+    data: contributors,
     isLoading,
     isFetching,
-    refetch,
-  } = useGetContributorsQuery({
-    eventId,
-    page: currentPage,
+    isRefreshing,
+    searchQuery,
+    handleLoadMore,
+    handleRefresh,
+    handleSearch,
+    hasMorePages,
+  } = usePaginatedList<Contributor>({
+    queryHook: useGetContributorsQuery,
+    queryParams: {eventId},
     limit: 10,
-    search: searchQuery,
   });
 
   const [addContributor, {isLoading: isAdding}] = useAddContributorMutation();
   const [updateContributor, {isLoading: isUpdating}] =
     useUpdateContributorMutation();
-
-  // Update local state when API response changes
-  useEffect(() => {
-    if (contributorsResponse) {
-      if (currentPage === 1) {
-        setAllContributors(contributorsResponse);
-      } else {
-        setAllContributors(prev => ({
-          ...contributorsResponse,
-          data: [...prev.data, ...contributorsResponse.data],
-        }));
-      }
-    }
-  }, [contributorsResponse]);
-
-  // Reset pagination when search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
-
-  // Handle pull-to-refresh
-  const handleRefresh = useCallback(async () => {
-    setIsRefreshing(true);
-    setCurrentPage(1);
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
-
-  // Handle load more
-  const handleLoadMore = useCallback(() => {
-    setCurrentPage(prev => prev + 1);
-  }, []);
-
-  // Handle search
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-  }, []);
 
   // Handle contributor form submission
   const handleSubmit = async (data: Contributor) => {
@@ -114,7 +65,6 @@ const ContributorsListScreen: React.FC = () => {
       await addContributor({eventId, contributor: data});
     }
     showSnackbar(msg);
-    await refetch();
     setShowForm(false);
     setSelectedContributor(undefined);
   };
@@ -125,11 +75,8 @@ const ContributorsListScreen: React.FC = () => {
     setShowForm(true);
   };
 
-  // Check if there are more pages to load
-  const hasMorePages = allContributors.page < allContributors.total_pages;
-
   // Show loading screen for initial load
-  if (isLoading && allContributors.data.length === 0) {
+  if (isLoading && contributors.length === 0) {
     return (
       <Surface style={styles.container}>
         <SearchHeader
@@ -168,7 +115,7 @@ const ContributorsListScreen: React.FC = () => {
 
       <View style={styles.content}>
         <FlatList
-          data={allContributors.data}
+          data={contributors}
           renderItem={({item}) => (
             <ContributorItem item={item} onPress={handleEdit} />
           )}

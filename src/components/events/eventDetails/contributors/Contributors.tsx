@@ -15,6 +15,7 @@ import EmptyComponent from '../../../common/EmptyComponent';
 import LazyLoader from '../../../common/LazyLoader';
 import {useSnackbar} from '../../../../context/SnackbarContext';
 import ContributorItem from './ContributorItem';
+import {usePreviewList} from '../../../../hooks/usePreviewList';
 
 export interface ContributorsProps {
   eventId: string;
@@ -29,11 +30,17 @@ const Contributors: React.FC<ContributorsProps> = ({
 }) => {
   const navigation = useNavigation<EventDetailsScreenNavigationProp>();
   const {showSnackbar} = useSnackbar();
+
+  // Use the preview list hook
   const {
     data: contributors,
     isLoading,
     isFetching,
-  } = useGetContributorsQuery({eventId, limit: 5});
+  } = usePreviewList<Contributor>({
+    queryHook: useGetContributorsQuery,
+    queryParams: {eventId},
+    limit: 5,
+  });
 
   const [addContributor, {isLoading: isAdding}] = useAddContributorMutation();
   const [updateContributor, {isLoading: isUpdating}] =
@@ -83,7 +90,7 @@ const Contributors: React.FC<ContributorsProps> = ({
 
       <LazyLoader loading={isLoading || isFetching} position="top">
         <FlatList
-          data={contributors?.data || []}
+          data={contributors}
           renderItem={item => (
             <ContributorItem {...item} onPress={handleEdit} />
           )}
@@ -92,7 +99,7 @@ const Contributors: React.FC<ContributorsProps> = ({
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={<EmptyComponent msg="No contribution found." />}
           contentContainerStyle={
-            (contributors?.data?.length ?? 0) === 0 ? {flex: 1} : undefined
+            contributors.length === 0 ? {flex: 1} : undefined
           }
         />
       </LazyLoader>

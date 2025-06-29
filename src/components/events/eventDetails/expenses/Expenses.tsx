@@ -13,6 +13,7 @@ import LazyLoader from '../../../common/LazyLoader';
 import {useSnackbar} from '../../../../context/SnackbarContext';
 import {useNavigation} from '@react-navigation/native';
 import ExpenseItem from './ExpenseItem';
+import {usePreviewList} from '../../../../hooks/usePreviewList';
 
 export interface ExpensesProps {
   eventId: string;
@@ -22,13 +23,18 @@ export interface ExpensesProps {
 
 const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
   const navigation = useNavigation<EventDetailsScreenNavigationProp>();
+  const {showSnackbar} = useSnackbar();
+
+  // Use the preview list hook
   const {
     data: expenses,
     isLoading,
-    error,
     isFetching,
-  } = useGetExpensesQuery({eventId, limit: 5});
-  const {showSnackbar} = useSnackbar();
+  } = usePreviewList<Expense>({
+    queryHook: useGetExpensesQuery,
+    queryParams: {eventId},
+    limit: 5,
+  });
 
   const [showForm, setShowForm] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | undefined>();
@@ -75,16 +81,14 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
 
       <LazyLoader loading={isLoading || isFetching} position="top">
         <FlatList
-          data={expenses?.data || []}
+          data={expenses}
           renderItem={({item}) => (
             <ExpenseItem item={item} onPress={handleEdit} />
           )}
           keyExtractor={item => item.id}
           ItemSeparatorComponent={Divider}
           ListEmptyComponent={<EmptyComponent msg="No expense found." />}
-          contentContainerStyle={
-            (expenses?.data?.length ?? 0) === 0 ? {flex: 1} : undefined
-          }
+          contentContainerStyle={expenses.length === 0 ? {flex: 1} : undefined}
         />
       </LazyLoader>
       <FAB
