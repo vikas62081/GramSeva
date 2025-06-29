@@ -57,7 +57,8 @@ export interface OverviewProps {
 export type RootStackParamList = {
   EventContainer: undefined;
   EventDetails: {event: Event_};
-  EventForm: {event?: Event_};
+  ContributorsList: {eventId: string; eventTitle: string};
+  ExpensesList: {eventId: string; eventTitle: string};
 };
 
 export type EventsScreenNavigationProp = NativeStackNavigationProp<
@@ -70,19 +71,29 @@ export type EventDetailsScreenNavigationProp = NativeStackNavigationProp<
   'EventDetails'
 >;
 
-export type EventFormScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'EventForm'
->;
-
 export type EventDetailsScreenRouteProp = RouteProp<
   RootStackParamList,
   'EventDetails'
 >;
 
-export type EventFormScreenRouteProp = RouteProp<
+export type ContributorsListScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'EventForm'
+  'ContributorsList'
+>;
+
+export type ContributorsListScreenRouteProp = RouteProp<
+  RootStackParamList,
+  'ContributorsList'
+>;
+
+export type ExpensesListScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'ExpensesList'
+>;
+
+export type ExpensesListScreenRouteProp = RouteProp<
+  RootStackParamList,
+  'ExpensesList'
 >;
 
 export interface FormModalProps {

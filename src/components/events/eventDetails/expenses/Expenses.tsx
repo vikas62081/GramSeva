@@ -1,30 +1,33 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
-import {Expense} from '../../types';
+import {View, StyleSheet, FlatList} from 'react-native';
+import {Expense, EventDetailsScreenNavigationProp} from '../../types';
 import ExpenseForm from './ExpenseForm';
-import {formatDate} from '../../../../utils';
 import {
   useAddExpenseMutation,
   useGetExpensesQuery,
   useUpdateExpenseMutation,
 } from '../../../../store/slices/eventApiSlice';
 import EmptyComponent from '../../../common/EmptyComponent';
-import {Avatar, Button, Divider, FAB, List, Text} from 'react-native-paper';
+import {Button, Divider, FAB, Text} from 'react-native-paper';
 import LazyLoader from '../../../common/LazyLoader';
 import {useSnackbar} from '../../../../context/SnackbarContext';
+import {useNavigation} from '@react-navigation/native';
+import ExpenseItem from './ExpenseItem';
 
 export interface ExpensesProps {
   eventId: string;
+  eventTitle?: string;
   refetch: () => void;
 }
 
-const Expenses: React.FC<ExpensesProps> = ({eventId, refetch}) => {
+const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
+  const navigation = useNavigation<EventDetailsScreenNavigationProp>();
   const {
     data: expenses,
     isLoading,
     error,
     isFetching,
-  } = useGetExpensesQuery(eventId);
+  } = useGetExpensesQuery({eventId, limit: 5});
   const {showSnackbar} = useSnackbar();
 
   const [showForm, setShowForm] = useState(false);
@@ -56,33 +59,31 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, refetch}) => {
     setShowForm(true);
   };
 
-  const renderItem = ({item}: {item: Expense}) => (
-    <TouchableOpacity onPress={() => handleEdit(item)}>
-      <List.Item
-        title={item.item}
-        description={formatDate(item.created_at!)}
-        left={props => <Avatar.Icon size={40} icon="credit-card" />}
-        right={() => <Text style={styles.amountText}>₹{item.cost}</Text>}
-      />
-    </TouchableOpacity>
-  );
+  const handleViewAll = () => {
+    navigation.navigate('ExpensesList', {
+      eventId,
+      eventTitle: eventTitle || 'Event',
+    });
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text variant="titleMedium">Expenses</Text>
-        <Button>View All</Button>
+        <Button onPress={handleViewAll}>View All</Button>
       </View>
 
       <LazyLoader loading={isLoading || isFetching} position="top">
         <FlatList
-          data={expenses || []}
-          renderItem={renderItem}
+          data={expenses?.data || []}
+          renderItem={({item}) => (
+            <ExpenseItem item={item} onPress={handleEdit} />
+          )}
           keyExtractor={item => item.id}
           ItemSeparatorComponent={Divider}
           ListEmptyComponent={<EmptyComponent msg="No expense found." />}
           contentContainerStyle={
-            (expenses?.length ?? 0) === 0 ? {flex: 1} : undefined
+            (expenses?.data?.length ?? 0) === 0 ? {flex: 1} : undefined
           }
         />
       </LazyLoader>
@@ -123,11 +124,6 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 24,
-  },
-  amountText: {
-    alignSelf: 'center',
-    fontWeight: 'bold',
-    color: '#DC3545',
   },
 });
 

@@ -38,9 +38,21 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
           <Overview event={eventDetails!} loading={isFetching || isLoading} />
         );
       case 'contributions':
-        return <Contributors eventId={event.id} refetch={refetch} />;
+        return (
+          <Contributors
+            eventId={event.id}
+            eventTitle={event.title}
+            refetch={refetch}
+          />
+        );
       case 'expenses':
-        return <Expenses eventId={event.id} refetch={refetch} />;
+        return (
+          <Expenses
+            eventId={event.id}
+            eventTitle={event.title}
+            refetch={refetch}
+          />
+        );
       default:
         return null;
     }

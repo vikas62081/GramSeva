@@ -1,6 +1,7 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
 import {baseQuery} from '../baseQuery';
 import {Contributor, Event_, Expense} from '../../components/events/types';
+import {Pagination, PaginationRequest, SuccessResponse} from '../types';
 
 // Types
 export interface EventHead {
@@ -8,14 +9,13 @@ export interface EventHead {
   name: string;
 }
 
-export interface SuccessResponse<T> {
-  data: Event_[];
-  page: number;
-  limit: number;
-  total_pages: number;
-  total_count: number;
+interface GetContributionsRequest extends PaginationRequest {
+  eventId: string;
 }
 
+interface getExpensesRequest extends PaginationRequest {
+  eventId: string;
+}
 export const eventApi = createApi({
   reducerPath: 'eventApi',
   baseQuery,
@@ -23,7 +23,7 @@ export const eventApi = createApi({
   endpoints: builder => ({
     // Events
     getEvents: builder.query<
-      SuccessResponse<Event_[]>,
+      Pagination<Event_[]>,
       {page?: number; limit?: number; search?: string}
     >({
       query: ({page = 1, limit = 10, search}) => ({
@@ -76,10 +76,14 @@ export const eventApi = createApi({
     }),
 
     // Contributors
-    getContributors: builder.query<Contributor[], string>({
-      query: eventId => ({
+    getContributors: builder.query<
+      Pagination<Contributor[]>,
+      GetContributionsRequest
+    >({
+      query: ({eventId, page, limit, search}) => ({
         url: `/events/${eventId}/contributors`,
         method: 'GET',
+        params: {page, limit, ...(search && {search})},
       }),
       transformResponse: (response: any) => response.data,
       providesTags: ['Contributor'],
@@ -125,10 +129,11 @@ export const eventApi = createApi({
     }),
 
     // Expenses
-    getExpenses: builder.query<Expense[], string>({
-      query: eventId => ({
+    getExpenses: builder.query<Pagination<Expense[]>, getExpensesRequest>({
+      query: ({eventId, page, limit, search}) => ({
         url: `/events/${eventId}/expenses`,
         method: 'GET',
+        params: {page, limit, ...(search && {search})},
       }),
       providesTags: ['Expense'],
       transformResponse: (response: any) => response.data,

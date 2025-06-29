@@ -1,16 +1,9 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
 import {baseQuery} from '../baseQuery';
 import {Family, FamilyMember} from '../../components/family/types';
+import {Pagination} from '../types';
 
 // Define types for the family data
-
-export interface FamilyResponse {
-  data: Family[];
-  total_pages: number;
-  total_count: number;
-  page: number;
-  limit: number;
-}
 
 export const familyApi = createApi({
   reducerPath: 'familyApi',
@@ -18,7 +11,7 @@ export const familyApi = createApi({
   tagTypes: ['Family'],
   endpoints: builder => ({
     getFamilies: builder.query<
-      FamilyResponse,
+      Pagination<Family[]>,
       {page?: number; limit?: number; search?: string}
     >({
       query: ({page = 1, limit = 10, search}) => ({

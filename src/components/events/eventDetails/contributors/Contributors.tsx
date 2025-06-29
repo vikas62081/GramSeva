@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {FlatList, View, StyleSheet} from 'react-native';
 import {Avatar, Button, Divider, List, Text, FAB} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 
-import {Contributor} from '../../types';
+import {Contributor, EventDetailsScreenNavigationProp} from '../../types';
 import ContributorForm from './ContributorForm';
 import {formatDate} from '../../../../utils';
 import {
@@ -13,19 +14,26 @@ import {
 import EmptyComponent from '../../../common/EmptyComponent';
 import LazyLoader from '../../../common/LazyLoader';
 import {useSnackbar} from '../../../../context/SnackbarContext';
+import ContributorItem from './ContributorItem';
 
 export interface ContributorsProps {
   eventId: string;
+  eventTitle?: string;
   refetch: () => void;
 }
 
-const Contributors: React.FC<ContributorsProps> = ({eventId, refetch}) => {
+const Contributors: React.FC<ContributorsProps> = ({
+  eventId,
+  eventTitle,
+  refetch,
+}) => {
+  const navigation = useNavigation<EventDetailsScreenNavigationProp>();
   const {showSnackbar} = useSnackbar();
   const {
     data: contributors,
     isLoading,
     isFetching,
-  } = useGetContributorsQuery(eventId);
+  } = useGetContributorsQuery({eventId, limit: 5});
 
   const [addContributor, {isLoading: isAdding}] = useAddContributorMutation();
   const [updateContributor, {isLoading: isUpdating}] =
@@ -59,33 +67,32 @@ const Contributors: React.FC<ContributorsProps> = ({eventId, refetch}) => {
     setShowForm(true);
   };
 
-  const renderItem = ({item}: {item: Contributor}) => (
-    <List.Item
-      title={item.name}
-      description={formatDate(item.created_at!)}
-      onPress={() => handleEdit(item)}
-      left={props => <Avatar.Icon icon="person" size={40} />}
-      right={() => <Text style={styles.amountText}>₹{item.amount}</Text>}
-    />
-  );
+  const handleViewAll = () => {
+    navigation.navigate('ContributorsList', {
+      eventId,
+      eventTitle: eventTitle || 'Event',
+    });
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text variant="titleMedium">Contributors</Text>
-        <Button>View All</Button>
+        <Button onPress={handleViewAll}>View All</Button>
       </View>
 
       <LazyLoader loading={isLoading || isFetching} position="top">
         <FlatList
-          data={contributors || []}
-          renderItem={renderItem}
+          data={contributors?.data || []}
+          renderItem={item => (
+            <ContributorItem {...item} onPress={handleEdit} />
+          )}
           keyExtractor={item => item.id!}
           ItemSeparatorComponent={Divider}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={<EmptyComponent msg="No contribution found." />}
           contentContainerStyle={
-            (contributors?.length ?? 0) === 0 ? {flex: 1} : undefined
+            (contributors?.data?.length ?? 0) === 0 ? {flex: 1} : undefined
           }
         />
       </LazyLoader>
@@ -129,11 +136,6 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 24,
-  },
-  amountText: {
-    alignSelf: 'center',
-    fontWeight: 'bold',
-    color: '#28A745',
   },
 });
 

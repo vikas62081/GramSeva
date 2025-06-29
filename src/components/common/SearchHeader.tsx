@@ -28,6 +28,7 @@ interface SearchHeaderProps {
   debounceDelay?: number;
   isFetching?: boolean;
   showAddButton?: boolean;
+  goBack?: () => void;
 }
 
 const SearchHeader: React.FC<SearchHeaderProps> = ({
@@ -39,6 +40,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   debounceDelay = 300,
   isFetching = false,
   showAddButton = true,
+  goBack = null,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -91,6 +93,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         </Appbar.Header>
       ) : (
         <Appbar.Header>
+          {goBack && <Appbar.Action icon="arrow-back" onPress={goBack} />}
           <Appbar.Content title={title} />
           <Appbar.Action icon="search" onPress={toggleSearch} />
           {showAddButton && onAdd && (

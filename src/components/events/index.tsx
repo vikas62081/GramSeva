@@ -17,6 +17,7 @@ import {Card, IconButton, Surface, Text, Button} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
 import SearchHeader from '../common/SearchHeader';
 import EventForm from './eventDetails/EventForm';
+import LoadMoreButton from '../common/LoadMoreButton';
 
 interface AllEventsProps {
   data: Event_[] | undefined;
@@ -105,26 +106,6 @@ const EventContainer = (): React.JSX.Element => {
 
   // Check if there are more pages to load
   const hasMorePages = allEvents.page < allEvents.total_pages;
-
-  // Render load more button
-  const renderLoadMoreButton = useCallback(() => {
-    if (!hasMorePages || !allEvents.data) {
-      return null;
-    }
-
-    return (
-      <View style={styles.loadMoreContainer}>
-        <Button
-          mode="elevated"
-          onPress={handleLoadMore}
-          loading={isFetching}
-          disabled={isFetching}
-          style={styles.loadMoreButton}>
-          {isFetching ? 'Loading...' : 'Load More'}
-        </Button>
-      </View>
-    );
-  }, [hasMorePages, allEvents.data, handleLoadMore, isFetching]);
 
   // Render individual event item
   const renderEventItem = useCallback(
@@ -215,7 +196,14 @@ const EventContainer = (): React.JSX.Element => {
               />
             )
           }
-          ListFooterComponent={renderLoadMoreButton}
+          ListFooterComponent={
+            <LoadMoreButton
+              onPress={handleLoadMore}
+              isLoading={isFetching}
+              disabled={isFetching}
+              hasMoreData={hasMorePages}
+            />
+          }
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
@@ -252,13 +240,6 @@ const styles = StyleSheet.create({
   },
   eventCard: {
     // marginBottom: 8,
-  },
-  loadMoreContainer: {
-    alignItems: 'center',
-  },
-  loadMoreButton: {
-    minWidth: 120,
-    marginBottom: 8,
   },
   loadingContainer: {
     flex: 1,

@@ -19,6 +19,7 @@ import {Surface, Button} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
 import SearchHeader from '../common/SearchHeader';
 import {useSnackbar} from '../../context/SnackbarContext';
+import LoadMoreButton from '../common/LoadMoreButton';
 
 type RootStackParamList = {
   FamilyList: undefined;
@@ -125,26 +126,6 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   // Check if there are more pages to load
   const hasMorePages = allFamilies.page < allFamilies.total_pages;
 
-  // Render load more button
-  const renderLoadMoreButton = useCallback(() => {
-    if (!hasMorePages || !allFamilies.data) {
-      return null;
-    }
-
-    return (
-      <View style={styles.loadMoreContainer}>
-        <Button
-          mode="elevated"
-          onPress={handleLoadMore}
-          loading={isFetching}
-          disabled={isFetching}
-          style={styles.loadMoreButton}>
-          {isFetching ? 'Loading...' : 'Load More'}
-        </Button>
-      </View>
-    );
-  }, [hasMorePages, allFamilies.data, handleLoadMore, isFetching]);
-
   const handleFamilyPress = (familyId: string) => {
     navigation.navigate('FamilyDetails', {familyId});
   };
@@ -234,7 +215,14 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
               />
             )
           }
-          ListFooterComponent={renderLoadMoreButton}
+          ListFooterComponent={
+            <LoadMoreButton
+              onPress={handleLoadMore}
+              isLoading={isFetching}
+              disabled={isFetching}
+              hasMoreData={hasMorePages}
+            />
+          }
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
@@ -261,13 +249,6 @@ const styles = StyleSheet.create({
   listContainer: {
     gap: 12,
     // paddingBottom: 3,
-  },
-  loadMoreContainer: {
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  loadMoreButton: {
-    minWidth: 120,
   },
   loadingContainer: {
     flex: 1,
