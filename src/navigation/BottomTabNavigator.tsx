@@ -11,7 +11,12 @@ import {useTheme} from 'react-native-paper';
 const Tab = createBottomTabNavigator();
 
 const tabScreens = [
-  {name: 'Home', component: GramSeva, icon: 'home', hidden: true},
+  {
+    name: 'Home',
+    component: require('../components/Home').default,
+    icon: 'home',
+    hidden: false,
+  },
   {name: 'Polls', component: PollingStack, icon: 'list', hidden: true},
   {
     name: 'Notifications',

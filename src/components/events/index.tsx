@@ -120,6 +120,8 @@ const EventContainer = (): React.JSX.Element => {
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.9}
           ListEmptyComponent={
             isLoading || isFetching ? (
               <View style={styles.loadingContainer}>

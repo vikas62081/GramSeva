@@ -2,7 +2,12 @@ import {useState, useEffect, useCallback, useRef} from 'react';
 import {Pagination} from '../store/types';
 
 interface UsePaginatedListProps<T> {
-  queryHook: any;
+  queryHook: (params: Record<string, any>) => {
+    data?: Pagination<T[]>;
+    isLoading: boolean;
+    isFetching: boolean;
+    refetch: () => void;
+  };
   queryParams?: Record<string, any>;
   limit?: number;
   searchDebounceMs?: number;
@@ -12,7 +17,6 @@ interface UsePaginatedListProps<T> {
 interface UsePaginatedListReturn<T> {
   data: T[];
   pagination: Pagination<T[]> | null;
-  allData: T[];
   isLoading: boolean;
   isFetching: boolean;
   isRefreshing: boolean;
@@ -33,119 +37,108 @@ export function usePaginatedList<T>({
   searchDebounceMs = 300,
   accumulateData = true,
 }: UsePaginatedListProps<T>): UsePaginatedListReturn<T> {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [params, setParams] = useState({
+    page: 1,
+    limit,
+    search: '',
+  });
+
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [combinedData, setCombinedData] = useState<T[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
-  const [allData, setAllData] = useState<T[]>([]);
-  const [paginationInfo, setPaginationInfo] = useState<Pagination<T[]> | null>(
-    null,
-  );
-  const lastFetchedPageRef = useRef<number>(0);
+  const [refreshToken, setRefreshToken] = useState(0);
+
+  const searchChangedRef = useRef(false);
+
+  // Debounce search input
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const trimmed = params.search.trim();
+      if (trimmed !== debouncedSearch) {
+        searchChangedRef.current = true;
+        setDebouncedSearch(trimmed);
+      }
+    }, searchDebounceMs);
+
+    return () => clearTimeout(timeout);
+  }, [params.search, searchDebounceMs, debouncedSearch]);
+
+  // Reset to page 1 when search is debounced
+  useEffect(() => {
+    if (!searchChangedRef.current) return;
+
+    searchChangedRef.current = false;
+    setCombinedData([]);
+    setParams(prev => ({...prev, page: 1}));
+  }, [debouncedSearch]);
+
+  // Whether to actually run the query
+  const shouldQuery = !(searchChangedRef.current && params.page > 1);
 
   const {
     data: response,
     isLoading,
     isFetching,
     refetch,
-  } = queryHook({
-    page: currentPage,
-    limit,
-    search: debouncedSearchQuery || undefined,
-    ...queryParams,
-  });
+  } = shouldQuery
+    ? queryHook({
+        ...queryParams,
+        page: params.page,
+        limit: params.limit,
+        search: debouncedSearch || undefined,
+        refreshToken,
+      })
+    : {data: undefined, isLoading: false, isFetching: false, refetch: () => {}};
 
-  // Debounce search input
+  // Accumulate or replace data
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, searchDebounceMs);
+    if (!response) return;
 
-    return () => clearTimeout(timeout);
-  }, [searchQuery, searchDebounceMs]);
+    const newData = response.data ?? [];
 
-  // Reset data on new search
-  useEffect(() => {
-    setCurrentPage(1);
-    setAllData([]);
-    setPaginationInfo(null);
-    lastFetchedPageRef.current = 0;
-  }, [debouncedSearchQuery]);
-
-  // Process response
-  useEffect(() => {
-    const responseData = Array.isArray(response)
-      ? response
-      : response?.data ?? [];
-
-    if (!responseData) return;
-
-    const newData =
-      currentPage === 1 ? responseData : [...allData, ...responseData];
-
-    // Avoid setting same data repeatedly
-    if (JSON.stringify(newData) !== JSON.stringify(allData)) {
-      setAllData(newData);
-    }
-
-    lastFetchedPageRef.current = currentPage;
-
-    setPaginationInfo({
-      data: responseData,
-      page: currentPage,
-      limit,
-      total_pages:
-        response?.total_pages ??
-        (responseData.length === limit ? currentPage + 1 : currentPage),
-      total_count: response?.total_count ?? newData.length,
-    });
+    setCombinedData(prev =>
+      accumulateData && params.page > 1 ? [...prev, ...newData] : newData,
+    );
   }, [response]);
 
-  const handleRefresh = useCallback(async () => {
+  const handleRefresh = useCallback(() => {
     setIsRefreshing(true);
-    setCurrentPage(1);
-    setAllData([]);
-    setPaginationInfo(null);
-    lastFetchedPageRef.current = 0;
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
-
-  const handleLoadMore = useCallback(() => {
-    const hasMore = paginationInfo
-      ? currentPage < paginationInfo.total_pages
-      : true;
-
-    if (hasMore && lastFetchedPageRef.current !== currentPage + 1) {
-      setCurrentPage(prev => prev + 1);
-    }
-  }, [currentPage, paginationInfo]);
-
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
+    setCombinedData([]);
+    setParams(prev => ({...prev, page: 1}));
+    setRefreshToken(prev => prev + 1);
+    setTimeout(() => setIsRefreshing(false), 500);
   }, []);
 
-  const hasMorePages = paginationInfo
-    ? currentPage < paginationInfo.total_pages
-    : false;
+  const handleLoadMore = useCallback(() => {
+    if (
+      response &&
+      !isFetching &&
+      !searchChangedRef.current &&
+      params.page < response.total_pages
+    ) {
+      setParams(prev => ({...prev, page: prev.page + 1}));
+    }
+  }, [response, isFetching, params.page]);
+
+  const handleSearch = useCallback((query: string) => {
+    searchChangedRef.current = true;
+    setParams(prev => ({...prev, search: query, page: 1}));
+  }, []);
 
   return {
-    data: allData,
-    pagination: paginationInfo,
-    allData,
+    data: accumulateData ? combinedData : response?.data ?? [],
+    pagination: response ?? null,
     isLoading,
     isFetching,
     isRefreshing,
-    searchQuery,
-    setSearchQuery,
+    searchQuery: params.search,
+    setSearchQuery: query =>
+      setParams(prev => ({...prev, search: query, page: 1})),
     handleLoadMore,
     handleRefresh,
     handleSearch,
-    hasMorePages,
-    currentPage,
+    hasMorePages: response ? params.page < response.total_pages : false,
+    currentPage: params.page,
     refetch,
   };
 }

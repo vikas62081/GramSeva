@@ -6,22 +6,30 @@ import {IconButton, Text} from 'react-native-paper';
 interface MemberCardProps {
   member: FamilyMember;
   onEdit: (member: FamilyMember) => void;
+  nameById: Record<string, string>;
 }
 
-const MemberCard: React.FC<MemberCardProps> = ({member, onEdit}) => {
+const MemberCard: React.FC<MemberCardProps> = ({member, nameById, onEdit}) => {
   return (
-    <View key={member.id} style={[styles.memberItem]}>
+    <View style={styles.memberItem}>
       <View style={styles.memberInfo}>
-        <Text variant="labelLarge">{member.name}</Text>
-        <Text variant="bodySmall">
-          {member.relationship} • {member.gender}
+        <Text variant="labelLarge" style={styles.memberName}>
+          {member.name}
+        </Text>
+        <Text variant="bodySmall" style={styles.metaText}>
+          {member.relationship} • {nameById[member.parentId!] || 'Unknown'} •{' '}
+          {member.gender}
         </Text>
       </View>
       <IconButton
-        size={20}
-        style={{opacity: 0.7}}
-        onPress={() => onEdit(member)}
         icon="mode-edit-outline"
+        size={20}
+        mode="contained-tonal"
+        containerColor="#f0f0f0"
+        onPress={() => onEdit(member)}
+        style={styles.icon}
+        accessibilityLabel={`Edit ${member.name}`}
+        testID={`edit-${member.id}`}
       />
     </View>
   );
@@ -33,18 +41,30 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginBottom: 8,
+    paddingVertical: 12,
+    marginBottom: 10,
     backgroundColor: '#fff',
-    borderRadius: 8,
-    shadowColor: '#ccc',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.06,
+    shadowRadius: 2,
     elevation: 2,
   },
   memberInfo: {
     flex: 1,
+    marginRight: 8,
+  },
+  memberName: {
+    fontWeight: '600',
+  },
+  metaText: {
+    marginTop: 4,
+    color: '#666',
+  },
+  icon: {
+    marginLeft: 8,
+    borderRadius: 20,
   },
 });
 

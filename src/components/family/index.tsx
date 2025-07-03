@@ -132,6 +132,8 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
           )}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.9}
           ListEmptyComponent={
             isLoading || isFetching ? (
               <View style={styles.loadingContainer}>

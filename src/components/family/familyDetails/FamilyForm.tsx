@@ -90,17 +90,6 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
             />
           </FormGroup>
 
-          <FormGroup label="Relationship to You">
-            <Dropdown
-              onChange={value =>
-                setFormData(prev => ({...prev, relationship: value}))
-              }
-              items={relationshipOptions}
-              placeholder={{label: 'Choose relationship...', value: null}}
-              value={formData.relationship}
-            />
-          </FormGroup>
-
           <FormGroup label="Related To">
             <Dropdown
               onChange={value =>
@@ -109,6 +98,17 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
               items={relatedTo}
               placeholder={{label: 'Choose person...', value: null}}
               value={formData.parentId}
+            />
+          </FormGroup>
+
+          <FormGroup label="Relationship">
+            <Dropdown
+              onChange={value =>
+                setFormData(prev => ({...prev, relationship: value}))
+              }
+              items={relationshipOptions}
+              placeholder={{label: 'Choose relationship...', value: null}}
+              value={formData.relationship}
             />
           </FormGroup>
         </ScrollView>

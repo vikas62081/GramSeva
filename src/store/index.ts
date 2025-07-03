@@ -2,14 +2,20 @@ import {configureStore} from '@reduxjs/toolkit';
 import {setupListeners} from '@reduxjs/toolkit/query';
 import {familyApi} from './slices/familyApiSlice';
 import {eventApi} from './slices/eventApiSlice';
+import {dashboardApi} from './slices/dashboardApiSlice';
 
 export const store = configureStore({
   reducer: {
     [familyApi.reducerPath]: familyApi.reducer,
     [eventApi.reducerPath]: eventApi.reducer,
+    [dashboardApi.reducerPath]: dashboardApi.reducer,
   },
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(familyApi.middleware, eventApi.middleware),
+    getDefaultMiddleware().concat(
+      familyApi.middleware,
+      eventApi.middleware,
+      dashboardApi.middleware,
+    ),
 });
 
 // setupListeners(store.dispatch);

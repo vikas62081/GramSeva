@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Modal, StyleSheet, FlatList, Alert, ToastAndroid} from 'react-native';
 import MemberCard from './MemberCard';
 import {FamilyMember} from '../types';
@@ -14,7 +14,6 @@ import {
   useGetFamilyByIdQuery,
   useUpdateFamilyMemberMutation,
 } from '../../../store/slices/familyApiSlice';
-import LoadingSpinner from '../../common/LoadingSpinner';
 import EmptyComponent from '../../common/EmptyComponent';
 import {useHideTabBar} from '../../../hooks/ useHideTabBar';
 import {ActivityIndicator} from 'react-native-paper';
@@ -45,6 +44,18 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
   const [selectedMember, setSelectedMember] = useState<FamilyMember | null>(
     null,
   );
+
+  const nameById = useMemo(() => {
+    if (!family) return {};
+    return {
+      [family.id!]: family.name.split(' ')[0],
+      ...family.members!.reduce((acc, member) => {
+        acc[member.id!] = member.name.split(' ')[0];
+        return acc;
+      }, {} as Record<string, string>),
+    };
+  }, [family]);
+
   const [formData, setFormData] = useState<FamilyMember>({
     name: '',
     dob: new Date(),
@@ -150,7 +161,12 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
       <FlatList
         data={family!.members || []}
         renderItem={({item}) => (
-          <MemberCard key={item.id} member={item} onEdit={handleEditMember} />
+          <MemberCard
+            key={item.id}
+            member={item}
+            nameById={nameById}
+            onEdit={handleEditMember}
+          />
         )}
         ListEmptyComponent={<EmptyComponent msg="No member found." />}
         showsVerticalScrollIndicator={false}
