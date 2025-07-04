@@ -48,7 +48,12 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
     handleSearch,
     hasMorePages,
     refetch,
-  } = usePaginatedList<Family>({
+    showInitialLoader,
+    ready,
+  } = usePaginatedList<
+    Family,
+    {page?: number; limit?: number; search?: string}
+  >({
     queryHook: useGetFamiliesQuery,
     limit: 8,
   });
@@ -85,7 +90,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   };
 
   // Show loading screen for initial load
-  if (isLoading && families.length === 0) {
+  if (showInitialLoader) {
     return (
       <Surface style={styles.container}>
         <SearchHeader
@@ -115,12 +120,14 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
       />
 
       {isAddingFamily && (
-        <AddFamilyForm
-          selectedMember={null}
-          onClose={handleCancelAddFamily}
-          onSave={handleSaveFamily}
-          isLoading={creatingFamily}
-        />
+        <View style={styles.modalOverlay}>
+          <AddFamilyForm
+            selectedMember={null}
+            onClose={handleCancelAddFamily}
+            onSave={handleSaveFamily}
+            isLoading={creatingFamily}
+          />
+        </View>
       )}
 
       <View style={styles.content}>
@@ -135,13 +142,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.9}
           ListEmptyComponent={
-            isLoading || isFetching ? (
-              <View style={styles.loadingContainer}>
-                <LazyLoader loading={true}>
-                  <View />
-                </LazyLoader>
-              </View>
-            ) : (
+            ready && families.length === 0 && !isLoading && !isFetching ? (
               <EmptyComponent
                 msg={
                   searchQuery
@@ -149,15 +150,17 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
                     : 'No family found.'
                 }
               />
-            )
+            ) : null
           }
           ListFooterComponent={
-            <LoadMoreButton
-              onPress={handleLoadMore}
-              isLoading={isFetching}
-              disabled={isFetching}
-              hasMoreData={hasMorePages}
-            />
+            ready && families.length > 0 && hasMorePages ? (
+              <LoadMoreButton
+                onPress={handleLoadMore}
+                isLoading={isFetching}
+                disabled={isFetching}
+                hasMoreData={hasMorePages}
+              />
+            ) : null
           }
           refreshControl={
             <RefreshControl
@@ -179,15 +182,22 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingHorizontal: 12,
   },
   listContainer: {
-    gap: 12,
-    // paddingBottom: 3,
+    gap: 14,
+    paddingBottom: 32,
+    paddingTop: 4,
   },
   loadingContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.08)',
+    zIndex: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Family} from './types';
-import {Card, IconButton, Text} from 'react-native-paper';
+import {Card, IconButton, Text, Avatar} from 'react-native-paper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 interface MemberProps {
   family: Family;
@@ -9,45 +10,148 @@ interface MemberProps {
 }
 
 const Member: React.FC<MemberProps> = ({family, onPress}) => {
+  // Get initials for avatar
+  const initials = family.name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+
   return (
-    <TouchableOpacity onPress={() => onPress(family.id!)}>
-      <Card mode="contained">
-        <Card.Title
-          titleVariant="titleMedium"
-          title={family.name}
-          subtitle={
-            <View style={styles.subTitle}>
-              <Text variant="bodySmall">{family.gender}</Text>
-              <View style={styles.memberCount}></View>
-              <Text variant="bodySmall">{family.members} Members</Text>
-            </View>
-          }
-          subtitleNumberOfLines={1}
-          subtitleVariant="bodySmall"
-          titleNumberOfLines={1}
-          right={props => (
-            <IconButton
-              {...props}
-              icon="chevron-right"
-              onPress={() => onPress(family.id!)}
+    <TouchableOpacity
+      onPress={() => onPress(family.id!)}
+      activeOpacity={0.85}
+      style={styles.touchable}>
+      <Card mode="elevated" elevation={2} style={styles.card}>
+        <View style={styles.cardContent}>
+          <View style={styles.avatarContainer}>
+            <Avatar.Text
+              label={initials}
+              size={48}
+              style={styles.avatar}
+              labelStyle={{fontSize: 16, fontWeight: 'bold'}}
+              color="#1976d2"
             />
-          )}
-        />
+            <View style={styles.memberCountBadge}>
+              <MaterialIcons name="people" size={14} color="#fff" />
+              <Text style={styles.memberCountText}>{family.members}</Text>
+            </View>
+          </View>
+          <View style={styles.info}>
+            <View style={styles.nameRow}>
+              <Text
+                variant="titleMedium"
+                style={styles.familyName}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {family.name}
+              </Text>
+              <MaterialIcons
+                name={family.gender === 'Female' ? 'female' : 'male'}
+                size={18}
+                color={family.gender === 'Female' ? '#d81b60' : '#1976d2'}
+                style={styles.genderIcon}
+              />
+            </View>
+            <Text variant="labelMedium" style={styles.metaText}>
+              {family.gender} Family
+            </Text>
+          </View>
+          <MaterialIcons
+            name="chevron-right"
+            size={28}
+            color="#888"
+            style={styles.chevron}
+          />
+        </View>
       </Card>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  subTitle: {flexDirection: 'row', gap: 8, opacity: 0.8},
-  memberCount: {
-    display: 'flex',
-    width: 5,
-    height: 5,
-    backgroundColor: '#aaa',
-    borderRadius: 50,
+  touchable: {
+    borderRadius: 16,
+    marginBottom: 2,
+  },
+  card: {
+    borderRadius: 16,
+    elevation: 2,
+    backgroundColor: '#f8f9fa',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
+    paddingHorizontal: 2,
+    marginBottom: 4,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+  },
+  avatarContainer: {
+    position: 'relative',
+    marginRight: 16,
+  },
+  avatar: {
+    backgroundColor: '#e3f2fd',
+  },
+  memberCountBadge: {
+    position: 'absolute',
+    bottom: -6,
+    right: -2,
+    backgroundColor: '#63C7A6',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    minWidth: 28,
+    borderWidth: 2,
+    borderColor: '#fff',
+    elevation: 2,
+  },
+  memberCountText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 12,
+    marginLeft: 3,
+  },
+  info: {
+    flex: 1,
     justifyContent: 'center',
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 2,
+  },
+  familyName: {
+    fontWeight: '600',
+    fontSize: 15,
+    color: '#222',
+    marginRight: 4,
+    letterSpacing: 0.1,
+  },
+  genderIcon: {
+    marginLeft: 2,
+    marginTop: 1,
+  },
+  metaText: {
+    color: '#888',
+    fontSize: 12,
+    marginTop: 1,
+    fontWeight: '400',
+    letterSpacing: 0.1,
+  },
+  chevron: {
+    marginLeft: 8,
     alignSelf: 'center',
+    backgroundColor: 'transparent',
   },
 });
 

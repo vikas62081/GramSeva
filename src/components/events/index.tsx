@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
+import {FAB} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {Event_, EventsScreenNavigationProp} from './types';
 
 import {formatDate, getTime} from '../../utils';
@@ -38,6 +39,8 @@ const EventContainer = (): React.JSX.Element => {
     handleSearch,
     hasMorePages,
     refetch,
+    showInitialLoader,
+    ready,
   } = usePaginatedList<Event_>({
     queryHook: useGetEventsQuery,
     limit: 10,
@@ -46,14 +49,17 @@ const EventContainer = (): React.JSX.Element => {
   // Handle event added
   const handleEventAdded = useCallback(async () => {
     await refetch();
+
+    setIsAddingEvent(false);
   }, [refetch]);
 
   // Render individual event item
   const renderEventItem = useCallback(
     ({item}: {item: Event_}) => (
       <TouchableOpacity
-        onPress={() => navigation.navigate('EventDetails', {event: item})}>
-        <Card mode="contained" style={styles.eventCard}>
+        onPress={() => navigation.navigate('EventDetails', {event: item})}
+        activeOpacity={0.85}>
+        <Card mode="elevated" style={styles.eventCard}>
           <Card.Title
             titleVariant="titleMedium"
             title={item.title}
@@ -62,7 +68,12 @@ const EventContainer = (): React.JSX.Element => {
             subtitleVariant="bodySmall"
             titleNumberOfLines={1}
             right={props => (
-              <IconButton {...props} icon="chevron-right" onPress={() => {}} />
+              <MaterialIcons
+                name="chevron-right"
+                size={28}
+                color="#888"
+                style={{marginRight: 8}}
+              />
             )}
           />
           <Card.Content>
@@ -84,7 +95,7 @@ const EventContainer = (): React.JSX.Element => {
   );
 
   // Show loading screen for initial load
-  if (isLoading && events.length === 0) {
+  if (showInitialLoader) {
     return (
       <Surface style={styles.container}>
         <SearchHeader
@@ -117,19 +128,15 @@ const EventContainer = (): React.JSX.Element => {
         <FlatList
           data={events}
           renderItem={renderEventItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item =>
+            item.id ? String(item.id) : Math.random().toString()
+          }
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.9}
           ListEmptyComponent={
-            isLoading || isFetching ? (
-              <View style={styles.loadingContainer}>
-                <LazyLoader loading={true}>
-                  <View />
-                </LazyLoader>
-              </View>
-            ) : (
+            ready && events.length === 0 && !isLoading && !isFetching ? (
               <EmptyComponent
                 msg={
                   searchQuery
@@ -137,15 +144,17 @@ const EventContainer = (): React.JSX.Element => {
                     : 'No events found.'
                 }
               />
-            )
+            ) : null
           }
           ListFooterComponent={
-            <LoadMoreButton
-              onPress={handleLoadMore}
-              isLoading={isFetching}
-              disabled={isFetching}
-              hasMoreData={hasMorePages}
-            />
+            ready && events.length > 0 && hasMorePages ? (
+              <LoadMoreButton
+                onPress={handleLoadMore}
+                isLoading={isFetching}
+                disabled={isFetching}
+                hasMoreData={hasMorePages}
+              />
+            ) : null
           }
           refreshControl={
             <RefreshControl
@@ -161,9 +170,22 @@ const EventContainer = (): React.JSX.Element => {
       {isAddingEvent && (
         <EventForm
           onSuccess={handleEventAdded}
-          onClose={() => setIsAddingEvent(false)}
+          onClose={() => {
+            setIsAddingEvent(false);
+          }}
         />
       )}
+
+      <FAB
+        style={styles.fab}
+        icon="add"
+        onPress={() => {
+          setIsAddingEvent(true);
+        }}
+        color="white"
+        visible={!isAddingEvent}
+        accessibilityLabel="Add Event"
+      />
     </Surface>
   );
 };
@@ -182,7 +204,14 @@ const styles = StyleSheet.create({
     // paddingBottom: 60,
   },
   eventCard: {
-    // marginBottom: 8,
+    marginBottom: 4,
+    borderRadius: 12,
+    backgroundColor: '#f8f9fa',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
   },
   loadingContainer: {
     flex: 1,
@@ -203,6 +232,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+  },
+  fab: {
+    position: 'absolute',
+    right: 24,
+    bottom: 75,
+    backgroundColor: '#6200ee',
+    zIndex: 10,
   },
 });
 

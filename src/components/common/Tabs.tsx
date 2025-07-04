@@ -14,7 +14,11 @@ const Tabs: React.FC<TabsProps> = ({tabs, activeTab, onChangeTab}) => {
       {tabs.map(tab => (
         <TouchableOpacity
           key={tab}
-          style={[styles.tab, activeTab === tab && styles.activeTab]}
+          style={[
+            styles.tab,
+            activeTab === tab && styles.activeTab,
+            activeTab === tab && styles.activeTabPill,
+          ]}
           onPress={() => onChangeTab(tab)}>
           <Text
             style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
@@ -34,6 +38,13 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderBottomWidth: 1,
     borderColor: '#E0E0E0',
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
   },
   tab: {
     flex: 1,
@@ -41,9 +52,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 2,
     borderBottomColor: 'transparent',
+    borderRadius: 20,
+    marginHorizontal: 4,
   },
   activeTab: {
     borderBottomColor: '#63C7A6',
+  },
+  activeTabPill: {
+    backgroundColor: '#e6f7f1',
+    borderRadius: 20,
+    elevation: 1,
+    shadowColor: '#63C7A6',
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+    shadowOffset: {width: 0, height: 1},
   },
   tabText: {
     fontSize: 16,

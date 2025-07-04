@@ -51,7 +51,6 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
 
   // Check if search is loading
   const isSearchLoading = isFetching;
-  console.log('isSearchLoading', isSearchLoading);
   // Handle search
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);

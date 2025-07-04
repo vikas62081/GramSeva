@@ -21,10 +21,7 @@ export const dashboardApi = createApi({
         url: `/dashboard/families`,
         method: 'GET',
       }),
-      transformResponse: (response: any) => {
-        console.log(response);
-        return response.data;
-      },
+      transformResponse: (response: any) => response.data,
     }),
     getEventsOverview: builder.query<Event_, void>({
       query: () => ({

@@ -39,7 +39,12 @@ const ExpensesListScreen: React.FC = () => {
     handleRefresh,
     handleSearch,
     hasMorePages,
-  } = usePaginatedList<Expense>({
+    showInitialLoader,
+    ready,
+  } = usePaginatedList<
+    Expense,
+    {eventId: string; page?: number; limit?: number; search?: string}
+  >({
     queryHook: useGetExpensesQuery,
     queryParams: {eventId},
     limit: 10,
@@ -73,7 +78,7 @@ const ExpensesListScreen: React.FC = () => {
   };
 
   // Show loading screen for initial load
-  if (isLoading && expenses.length === 0) {
+  if (showInitialLoader) {
     return (
       <Surface style={styles.container}>
         <SearchHeader
@@ -120,13 +125,7 @@ const ExpensesListScreen: React.FC = () => {
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
-            isLoading || isFetching ? (
-              <View style={styles.loadingContainer}>
-                <LazyLoader loading={true}>
-                  <View />
-                </LazyLoader>
-              </View>
-            ) : (
+            ready && expenses.length === 0 && !isLoading && !isFetching ? (
               <EmptyComponent
                 msg={
                   searchQuery
@@ -134,16 +133,18 @@ const ExpensesListScreen: React.FC = () => {
                     : 'No expenses found.'
                 }
               />
-            )
+            ) : null
           }
           ItemSeparatorComponent={Divider}
           ListFooterComponent={
-            <LoadMoreButton
-              onPress={handleLoadMore}
-              isLoading={isFetching}
-              disabled={isFetching}
-              hasMoreData={hasMorePages}
-            />
+            ready && expenses.length > 0 && hasMorePages ? (
+              <LoadMoreButton
+                onPress={handleLoadMore}
+                isLoading={isFetching}
+                disabled={isFetching}
+                hasMoreData={hasMorePages}
+              />
+            ) : null
           }
           refreshControl={
             <RefreshControl

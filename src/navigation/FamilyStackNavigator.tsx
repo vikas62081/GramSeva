@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from './types';
 import FamilyScreen from '../screens/FamilyScreen';
 import FamilyDetailsScreen from '../screens/FamilyDetails';
+import FamilyMemberSelector from '../components/common/FamilyMemberSelector';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -15,6 +16,10 @@ const FamilyStack = () => {
       }}>
       <Stack.Screen name="FamilyList" component={FamilyScreen} />
       <Stack.Screen name="FamilyDetails" component={FamilyDetailsScreen} />
+      <Stack.Screen
+        name="FamilyMemberSelector"
+        component={FamilyMemberSelector}
+      />
     </Stack.Navigator>
   );
 };

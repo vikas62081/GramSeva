@@ -8,7 +8,7 @@ import {
 } from '../../../navigation/types';
 import {getFamilyDropdownOptions} from '../../../utils';
 import FamilyDetailHeader from './FamilyDetailHeader';
-import FamilyForm from './FamilyForm';
+import FamilyMemberForm from './FamilyMemberForm';
 import {
   useAddFamilyMemberMutation,
   useGetFamilyByIdQuery,
@@ -151,13 +151,6 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
   }
   return (
     <>
-      <FamilyDetailHeader
-        name={family!.name}
-        relationship={family!.relationship}
-        onAdd={handleAddBtnClick}
-        familyCount={family!.members?.length || 0}
-      />
-
       <FlatList
         data={family!.members || []}
         renderItem={({item}) => (
@@ -168,12 +161,22 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
             onEdit={handleEditMember}
           />
         )}
+        ListHeaderComponent={
+          <FamilyDetailHeader
+            name={family!.name}
+            relationship={family!.relationship}
+            onAdd={handleAddBtnClick}
+            familyCount={family!.members?.length || 0}
+          />
+        }
         ListEmptyComponent={<EmptyComponent msg="No member found." />}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 32, paddingTop: 4}}
+        keyboardShouldPersistTaps="handled"
       />
 
       {showAddMemberModal && (
-        <FamilyForm
+        <FamilyMemberForm
           isLoading={isAdding || isUpdating}
           selectedMember={selectedMember}
           formData={formData}

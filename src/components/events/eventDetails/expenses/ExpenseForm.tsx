@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TextInput, Alert} from 'react-native';
+import {StyleSheet, TextInput, Alert} from 'react-native';
 import FormModal from '../../../common/FormModal';
 import {Expense} from '../../types';
 import {placeholderTextColor} from '../../../../theme';
@@ -82,9 +82,13 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#F8F9FA',
     borderRadius: 12,
-    padding: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     fontSize: 16,
     color: '#2D3436',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
 });
 

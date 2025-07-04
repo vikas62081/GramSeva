@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Card, Text} from 'react-native-paper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Event_} from '../types';
 import LazyLoader from '../../common/LazyLoader';
 
@@ -27,139 +28,251 @@ const Overview: React.FC<OverviewProps> = ({event, loading}) => {
   }, [total_expenditure, total_contribution]);
 
   return (
-    <Card style={styles.container}>
+    <View style={styles.cardContainer}>
+      <View style={styles.headerAccent}>
+        <Text style={styles.headerText}>Financial Summary</Text>
+      </View>
       <Card.Content>
-        <Text variant="titleMedium" style={styles.heading}>
-          Financial Summary
-        </Text>
         <LazyLoader loading={loading}>
           <View>
-            <View style={styles.row}>
-              <View>
-                <Text style={styles.label}>Total Contributions</Text>
-                <Text style={styles.green}>₹{total_contribution}</Text>
+            <View style={styles.gridRow}>
+              <View style={styles.gridItem}>
+                <MaterialIcons
+                  name="account-balance-wallet"
+                  size={28}
+                  color="#388e3c"
+                  style={styles.icon}
+                />
+                <Text style={styles.gridLabel}>Contributions</Text>
+                <Text style={styles.gridValueGreen}>₹{total_contribution}</Text>
               </View>
-              <View>
-                <Text style={styles.label}>Total Expenses</Text>
-                <Text style={styles.red}>₹{total_expenditure}</Text>
+              <View style={styles.gridItem}>
+                <MaterialIcons
+                  name="money-off"
+                  size={28}
+                  color="#d32f2f"
+                  style={styles.icon}
+                />
+                <Text style={styles.gridLabel}>Expenses</Text>
+                <Text style={styles.gridValueRed}>₹{total_expenditure}</Text>
               </View>
-            </View>
-            <View style={styles.row}>
-              <Text style={[styles.label]}>Contributions vs Expenses</Text>
-              {/* <Text style={styles.percentText}>{contributionPercent}%</Text> */}
-            </View>
-            {/* <ProgressBar
-          animatedValue={Number(contributionPercent)}
-          progress={Number(contributionPercent)}
-          color={balance > 0 ? MD3Colors.primary60 : MD3Colors.error60}
-        /> */}
-            <View style={[styles.progressContainer]}>
-              <View
-                style={[
-                  styles.progress,
-                  {
-                    width: `${Math.min(
-                      Number(contributionPercent) * 100,
-                      100,
-                    )}%`,
-                  },
-                ]}
-              />
-            </View>
-            <Text style={[styles.label, {marginTop: 10}]}>Balance</Text>
-            <Text style={balance > 0 ? styles.green : styles.red}>
-              ₹{balance}
-            </Text>
-            {top_contributor?.amount ? (
-              <View>
+              <View style={styles.gridItem}>
+                <MaterialIcons
+                  name={balance >= 0 ? 'trending-up' : 'trending-down'}
+                  size={28}
+                  color={balance >= 0 ? '#388e3c' : '#d32f2f'}
+                  style={styles.icon}
+                />
+                <Text style={styles.gridLabel}>Balance</Text>
                 <Text
-                  variant="titleMedium"
-                  style={[styles.heading, {marginTop: 16}]}>
-                  Top Contributor
+                  style={
+                    balance >= 0 ? styles.gridValueGreen : styles.gridValueRed
+                  }>
+                  ₹{balance}
                 </Text>
-                <View style={[{marginTop: 10}]}>
-                  <Text style={styles.label}>
-                    <Text variant="labelLarge">
-                      {top_contributor?.name || 'N/A'}
-                    </Text>{' '}
-                    is the top contributor to this event with a{' '}
-                    <Text variant="labelLarge">
-                      {(
-                        (top_contributor?.amount / total_contribution) *
-                        100
-                      ).toFixed(0)}
-                      %{` `}
-                    </Text>
-                    share of the total contributions.{' '}
-                  </Text>
-
-                  {/* <Text style={styles.green}>₹{top_contributor?.amount}</Text> */}
-                </View>
               </View>
-            ) : (
-              <></>
-            )}
+            </View>
+            <View style={styles.progressSection}>
+              <View style={styles.progressLabelRow}>
+                <MaterialIcons
+                  name="pie-chart"
+                  size={20}
+                  color="#1976d2"
+                  style={styles.icon}
+                />
+                <Text style={styles.progressLabel}>
+                  Contributions vs Expenses
+                </Text>
+                <Text style={styles.percentText}>
+                  {(contributionPercent * 100).toFixed(0)}%
+                </Text>
+              </View>
+              <View style={styles.progressBarBg}>
+                <View
+                  style={[
+                    styles.progressBarFill,
+                    {
+                      width: `${Math.min(
+                        Number(contributionPercent) * 100,
+                        100,
+                      )}%`,
+                      backgroundColor: balance >= 0 ? '#388e3c' : '#d32f2f',
+                    },
+                  ]}
+                />
+              </View>
+            </View>
+            {top_contributor?.amount ? (
+              <>
+                <View style={styles.divider} />
+                <View style={styles.topContributorSection}>
+                  <MaterialIcons
+                    name="star"
+                    size={24}
+                    color="#fbc02d"
+                    style={styles.icon}
+                  />
+                  <View>
+                    <Text
+                      variant="titleMedium"
+                      style={[styles.heading, {marginLeft: 4}]}>
+                      Top Contributor
+                    </Text>
+                    <Text style={styles.topContributorText}>
+                      <Text style={styles.topContributorName}>
+                        {top_contributor?.name || 'N/A'}
+                      </Text>{' '}
+                      contributed{' '}
+                      <Text style={styles.topContributorAmount}>
+                        ₹{top_contributor?.amount}
+                      </Text>{' '}
+                      (
+                      <Text style={styles.topContributorPercent}>
+                        {(
+                          (top_contributor?.amount / total_contribution) *
+                          100
+                        ).toFixed(0)}
+                        %
+                      </Text>
+                      ) of total contributions.
+                    </Text>
+                  </View>
+                </View>
+              </>
+            ) : null}
           </View>
         </LazyLoader>
       </Card.Content>
-    </Card>
+    </View>
   );
 };
 
 export default Overview;
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    marginTop: 12,
-    marginHorizontal: 16,
+  cardContainer: {
+    // margin: 8,
+    // borderRadius: 16,
+    // backgroundColor: '#fff',
+    // elevation: 3,
+    // overflow: 'hidden',
   },
-  progressContainer: {
-    marginTop: 4,
-    width: '100%',
-    borderRadius: 4,
-    overflow: 'hidden',
-    height: 4,
-    backgroundColor: 'red',
+  headerAccent: {
+    // backgroundColor: '#1976d2',
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
-  progress: {
-    height: '100%',
-    backgroundColor: 'green',
-  },
-  card: {
-    marginBottom: 16,
-    borderRadius: 12,
-  },
-  heading: {
+  headerText: {
+    // color: '#fff',
     fontWeight: 'bold',
+    fontSize: 18,
+    letterSpacing: 0.2,
   },
-  label: {
-    color: '#6b6b6b',
-    fontSize: 14,
-  },
-  green: {
-    color: 'green',
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 2,
-  },
-  red: {
-    color: 'red',
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 2,
-  },
-  row: {
+  gridRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 6,
+    marginTop: 18,
+    marginBottom: 10,
+  },
+  gridItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  gridLabel: {
+    color: '#6b6b6b',
+    fontSize: 13,
+    marginTop: 2,
+  },
+  gridValueGreen: {
+    color: '#388e3c',
+    fontWeight: 'bold',
+    fontSize: 22,
+    marginTop: 2,
+  },
+  gridValueRed: {
+    color: '#d32f2f',
+    fontWeight: 'bold',
+    fontSize: 22,
+    marginTop: 2,
+  },
+  progressSection: {
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  progressLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  progressLabel: {
+    color: '#1976d2',
+    fontWeight: '600',
+    fontSize: 14,
+    marginLeft: 2,
   },
   percentText: {
     marginLeft: 8,
     fontWeight: 'bold',
+    color: '#1976d2',
+    fontSize: 14,
   },
-  bold: {
+  progressBarBg: {
+    width: '100%',
+    height: 8,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 6,
+    overflow: 'hidden',
+    marginTop: 2,
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 6,
+    backgroundColor: '#388e3c',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e0e0e0',
+    marginVertical: 14,
+    marginHorizontal: -16,
+  },
+  topContributorSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fffbe6',
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 2,
+    marginBottom: 2,
+    gap: 10,
+  },
+  topContributorText: {
+    color: '#6b6b6b',
+    fontSize: 14,
+    marginTop: 2,
+    marginRight: 2,
+  },
+  topContributorName: {
+    color: '#1976d2',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 15,
+  },
+  topContributorAmount: {
+    color: '#388e3c',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  topContributorPercent: {
+    color: '#fbc02d',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  icon: {
+    marginRight: 4,
+  },
+  heading: {
+    fontWeight: 'bold',
   },
 });

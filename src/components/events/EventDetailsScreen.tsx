@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import type {
   EventDetailsScreenNavigationProp,
@@ -14,6 +14,7 @@ import {Card, SegmentedButtons, Surface} from 'react-native-paper';
 import EventDetailsHeader from './eventDetails/EventDetailsHeader';
 import {useGetEventByIdQuery} from '../../store/slices/eventApiSlice';
 import {useHideTabBar} from '../../hooks/ useHideTabBar';
+import EventForm from './eventDetails/EventForm';
 
 interface EventDetailsScreenProps {
   route: EventDetailsScreenRouteProp;
@@ -30,14 +31,15 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
     refetch,
   } = useGetEventByIdQuery(event.id);
   const [activeTab, setActiveTab] = useState<string>('details');
+  const [showEditForm, setShowEditForm] = useState(false);
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'details':
         return (
-          <Overview event={eventDetails!} loading={isFetching || isLoading} />
+          <Overview event={eventDetails} loading={isFetching || isLoading} />
         );
-      case 'contributions':
+      case 'contributors':
         return (
           <Contributors
             eventId={event.id}
@@ -61,21 +63,37 @@ const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
   return (
     <Surface style={styles.container}>
       <PageHeader onBack={() => navigation.goBack()} title={event.title} />
-      <Card>
+      <Card style={styles.card}>
         <Card.Content>
-          <EventDetailsHeader event={event} />
+          <EventDetailsHeader
+            event={eventDetails}
+            onEdit={() => {
+              if (eventDetails && eventDetails.id) setShowEditForm(true);
+            }}
+          />
           <SegmentedButtons
             value={activeTab}
             onValueChange={setActiveTab}
             buttons={[
               {value: 'details', label: 'Overview'},
-              {value: 'contributions', label: 'Contributor'},
-              {value: 'expenses', label: 'Expense'},
+              {value: 'contributors', label: 'Contributors'},
+              {value: 'expenses', label: 'Expenses'},
             ]}
+            style={styles.segmentedButtons}
           />
         </Card.Content>
       </Card>
-      {renderTabContent()}
+      <View style={styles.tabContent}>{renderTabContent()}</View>
+      {showEditForm && eventDetails && eventDetails.id && (
+        <EventForm
+          initialData={eventDetails}
+          onClose={() => setShowEditForm(false)}
+          onSuccess={() => {
+            setShowEditForm(false);
+            refetch();
+          }}
+        />
+      )}
     </Surface>
   );
 };
@@ -84,10 +102,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
+  card: {
+    margin: 12,
+    borderRadius: 12,
+    elevation: 2,
+    backgroundColor: '#fff',
+  },
+  segmentedButtons: {
+    marginTop: 8,
+    marginBottom: 0,
+  },
+  tabContent: {
     flex: 1,
-    marginBottom: 100,
-    paddingHorizontal: 16,
+    marginHorizontal: 12,
+    marginTop: 8,
+    marginBottom: 0,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    padding: 8,
+    minHeight: 200,
   },
 });
 

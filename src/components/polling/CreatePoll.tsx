@@ -76,7 +76,6 @@ const CreatePoll = (): React.JSX.Element => {
       return;
     }
 
-    console.log('Poll Submitted:', formData);
     // Replace with API call or state dispatch
     navigation.goBack();
   };
@@ -164,13 +163,17 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   questionInput: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#F8F9FA',
     borderRadius: 12,
-    padding: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     fontSize: 16,
     minHeight: 100,
     textAlignVertical: 'top',
-    color: '#2d3436',
+    color: '#2D3436',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
   optionContainer: {
     flexDirection: 'row',
@@ -179,11 +182,15 @@ const styles = StyleSheet.create({
   },
   optionInput: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#F8F9FA',
     borderRadius: 12,
-    padding: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     fontSize: 16,
-    color: '#2d3436',
+    color: '#2D3436',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
   removeButton: {
     marginLeft: 10,
@@ -209,9 +216,13 @@ const styles = StyleSheet.create({
   durationButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
-    padding: 16,
+    backgroundColor: '#F8F9FA',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
   durationText: {
     marginLeft: 12,

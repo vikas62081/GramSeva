@@ -1,11 +1,15 @@
 import React, {useState} from 'react';
 import {FlatList, View, StyleSheet} from 'react-native';
-import {Avatar, Button, Divider, List, Text, FAB} from 'react-native-paper';
+import {Button, Divider, Text, FAB} from 'react-native-paper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 
-import {Contributor, EventDetailsScreenNavigationProp} from '../../types';
+import {
+  Contributor,
+  EventDetailsScreenNavigationProp,
+  IContributorForm,
+} from '../../types';
 import ContributorForm from './ContributorForm';
-import {formatDate} from '../../../../utils';
 import {
   useAddContributorMutation,
   useGetContributorsQuery,
@@ -52,21 +56,25 @@ const Contributors: React.FC<ContributorsProps> = ({
   >();
 
   const handleSubmit = async (data: Contributor) => {
-    let msg = 'Contribution added successfully';
-    if (selectedContributor) {
-      await updateContributor({
-        eventId,
-        contributorId: selectedContributor.id!,
-        contributor: data,
-      });
-      msg = 'Contribution updated successfully';
-    } else {
-      await addContributor({eventId, contributor: data});
+    try {
+      let msg = 'Contribution added successfully';
+      if (selectedContributor) {
+        await updateContributor({
+          eventId,
+          contributorId: selectedContributor.id!,
+          contributor: data,
+        });
+        msg = 'Contribution updated successfully';
+      } else {
+        await addContributor({eventId, contributor: data});
+      }
+      showSnackbar(msg);
+      await refetch();
+      setShowForm(false);
+      setSelectedContributor(undefined);
+    } catch (error) {
+      showSnackbar('Error saving contribution. Please try again.');
     }
-    showSnackbar(msg);
-    await refetch();
-    setShowForm(false);
-    setSelectedContributor(undefined);
   };
 
   const handleEdit = (contributor: Contributor) => {
@@ -84,8 +92,22 @@ const Contributors: React.FC<ContributorsProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text variant="titleMedium">Contributors</Text>
-        <Button onPress={handleViewAll}>View All</Button>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <MaterialIcons
+            name="group"
+            size={20}
+            color="#1976d2"
+            style={{marginRight: 6}}
+          />
+          <Text variant="titleMedium">Contributors</Text>
+        </View>
+        <Button
+          onPress={handleViewAll}
+          mode="text"
+          compact
+          accessibilityLabel="View all contributors">
+          View All
+        </Button>
       </View>
 
       <LazyLoader loading={isLoading || isFetching} position="top">
@@ -94,7 +116,9 @@ const Contributors: React.FC<ContributorsProps> = ({
           renderItem={item => (
             <ContributorItem {...item} onPress={handleEdit} />
           )}
-          keyExtractor={item => item.id!}
+          keyExtractor={item =>
+            item.id ? String(item.id) : Math.random().toString()
+          }
           ItemSeparatorComponent={Divider}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={<EmptyComponent msg="No contribution found." />}
@@ -107,22 +131,27 @@ const Contributors: React.FC<ContributorsProps> = ({
       <FAB
         icon="add"
         style={styles.fab}
-        label="Add"
+        label=""
         onPress={() => {
           setSelectedContributor(undefined);
           setShowForm(true);
         }}
+        size="small"
+        color="white"
+        accessibilityLabel="Add Contributor"
       />
-      <ContributorForm
-        visible={showForm}
-        isLoading={isAdding || isUpdating}
-        onClose={() => {
-          setShowForm(false);
-          setSelectedContributor(undefined);
-        }}
-        onSubmit={handleSubmit}
-        initialData={selectedContributor}
-      />
+      {showForm && (
+        <ContributorForm
+          visible={showForm}
+          isLoading={isAdding || isUpdating}
+          onClose={() => {
+            setShowForm(false);
+            setSelectedContributor(undefined);
+          }}
+          onSubmit={handleSubmit}
+          initialData={selectedContributor as unknown as IContributorForm}
+        />
+      )}
     </View>
   );
 };
@@ -131,6 +160,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   header: {
     flexDirection: 'row',
@@ -140,9 +170,10 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 24,
+    right: 16,
+    bottom: 32,
+    backgroundColor: '#6200ee',
+    zIndex: 10,
   },
 });
 

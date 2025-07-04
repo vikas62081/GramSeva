@@ -41,7 +41,12 @@ const ContributorsListScreen: React.FC = () => {
     handleRefresh,
     handleSearch,
     hasMorePages,
-  } = usePaginatedList<Contributor>({
+    showInitialLoader,
+    ready,
+  } = usePaginatedList<
+    Contributor,
+    {eventId: string; page?: number; limit?: number; search?: string}
+  >({
     queryHook: useGetContributorsQuery,
     queryParams: {eventId},
     limit: 10,
@@ -76,7 +81,7 @@ const ContributorsListScreen: React.FC = () => {
   };
 
   // Show loading screen for initial load
-  if (isLoading && contributors.length === 0) {
+  if (showInitialLoader) {
     return (
       <Surface style={styles.container}>
         <SearchHeader
@@ -123,13 +128,7 @@ const ContributorsListScreen: React.FC = () => {
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
-            isLoading || isFetching ? (
-              <View style={styles.loadingContainer}>
-                <LazyLoader loading={true}>
-                  <View />
-                </LazyLoader>
-              </View>
-            ) : (
+            ready && contributors.length === 0 && !isLoading && !isFetching ? (
               <EmptyComponent
                 msg={
                   searchQuery
@@ -137,16 +136,18 @@ const ContributorsListScreen: React.FC = () => {
                     : 'No contributors found.'
                 }
               />
-            )
+            ) : null
           }
           ItemSeparatorComponent={Divider}
           ListFooterComponent={
-            <LoadMoreButton
-              onPress={handleLoadMore}
-              isLoading={isFetching}
-              disabled={isFetching}
-              hasMoreData={hasMorePages}
-            />
+            ready && contributors.length > 0 && hasMorePages ? (
+              <LoadMoreButton
+                onPress={handleLoadMore}
+                isLoading={isFetching}
+                disabled={isFetching}
+                hasMoreData={hasMorePages}
+              />
+            ) : null
           }
           refreshControl={
             <RefreshControl

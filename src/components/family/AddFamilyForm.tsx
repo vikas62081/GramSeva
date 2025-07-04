@@ -86,9 +86,13 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#F8F9FA',
     borderRadius: 12,
-    padding: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     fontSize: 16,
     color: '#2D3436',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
 });
 

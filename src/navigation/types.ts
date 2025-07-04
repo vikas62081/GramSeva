@@ -5,7 +5,7 @@ import {RouteProp} from '@react-navigation/native';
 export type RootStackParamList = {
   FamilyList: undefined; // No params needed for the FamilyList screen
   FamilyDetails: {familyId: string}; // Pass params to FamilyDetails screen (familyId)
-
+  FamilyMemberSelector: undefined;
   Events: undefined;
   EventDetails: {event: Event};
   EventForm: {event?: Event};

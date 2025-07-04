@@ -21,7 +21,6 @@ const VotingScreen = (): React.JSX.Element => {
 
   const handleVote = () => {
     if (selectedOption !== null) {
-      console.log('Voted for option:', selectedOption);
       // Handle vote submission here
       navigation.goBack();
     }

@@ -59,7 +59,7 @@ const CreateNoticeModal: React.FC<CreateNoticeModalProps> = ({
       Alert.alert('Error', 'Please enter a description');
       return;
     }
-    console.log('Form submitted:', formData);
+
     onClose();
   };
 
@@ -188,22 +188,39 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   input: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#F8F9FA',
     borderRadius: 12,
-    padding: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     fontSize: 16,
-    color: '#2d3436',
+    color: '#2D3436',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
   textArea: {
     minHeight: 100,
     textAlignVertical: 'top',
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#2D3436',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
   dateButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
-    padding: 16,
+    backgroundColor: '#F8F9FA',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
   dateButtonText: {
     marginLeft: 12,

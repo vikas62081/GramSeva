@@ -14,14 +14,27 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import FormGroup from '../../common/FormGroup';
 import {formatDateTime} from '../../../utils';
 import {placeholderTextColor} from '../../../theme';
-import {useCreateEventMutation} from '../../../store/slices/eventApiSlice';
-import {useGetFamiliesQuery} from '../../../store/slices/familyApiSlice';
-import Dropdown from '../../common/Dropdown';
+import {
+  useCreateEventMutation,
+  useUpdateEventMutation,
+} from '../../../store/slices/eventApiSlice';
 import {useTheme} from 'react-native-paper';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../types';
+import SearchSelectorListener from '../../common/SearchSelectorListener';
 import {useHideTabBar} from '../../../hooks/ useHideTabBar';
 import {useSnackbar} from '../../../context/SnackbarContext';
 import FormModal from '../../common/FormModal';
 
+const eventInitialState = {
+  title: '',
+  description: '',
+  date: new Date(),
+  venue: '',
+  eventHead: {user_id: '', name: ''},
+  thumbnail_url: '',
+};
 interface EventForm {
   title: string;
   description: string;
@@ -34,40 +47,49 @@ interface EventForm {
   thumbnail_url: string;
 }
 
-const EventForm: React.FC<EventFormScreenProps> = ({onClose, onSuccess}) => {
+const EventForm: React.FC<EventFormScreenProps> = ({
+  onClose,
+  onSuccess,
+  initialData,
+}) => {
   useHideTabBar();
-  const initialData = null;
   const {colors} = useTheme();
   const {showSnackbar} = useSnackbar();
   const [createEvent, {isLoading}] = useCreateEventMutation();
-  const {data: people} = useGetFamiliesQuery({
-    limit: 100,
-  });
+  const [updateEvent, {isLoading: isUploading}] = useUpdateEventMutation();
 
-  const [form, setForm] = useState<EventForm>({
-    title: '',
-    description: '',
-    date: new Date(),
-    venue: '',
-    eventHead: {user_id: 'head_id', name: ''},
-    thumbnail_url: '',
-  });
+  const [form, setForm] = useState<EventForm>(
+    initialData
+      ? {
+          ...initialData,
+          date: new Date(initialData.date),
+        }
+      : eventInitialState,
+  );
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute();
 
   useEffect(() => {
     if (initialData) {
-      const {title, description, date, venue, eventHead, thumbnail_url} =
-        initialData;
       setForm({
-        title,
-        description,
-        date: new Date(date),
-        venue,
-        eventHead,
-        thumbnail_url,
+        ...initialData,
+        date: new Date(initialData.date),
       });
     }
   }, [initialData]);
+
+  // Subscribe to person selection events
+  useEffect(() => {
+    const unsubscribe = SearchSelectorListener.subscribe(person => {
+      setForm(prev => ({
+        ...prev,
+        eventHead: {user_id: person.id, name: person.name},
+      }));
+    });
+    return unsubscribe;
+  }, []);
 
   const handleDateChange = (selectedDate?: Date) => {
     setShowDatePicker(false);
@@ -81,18 +103,24 @@ const EventForm: React.FC<EventFormScreenProps> = ({onClose, onSuccess}) => {
       Alert.alert('Missing Fields', 'Please complete all the required fields.');
       return;
     }
-    const [user_id, name] = form.eventHead.user_id.split('-');
     const eventData = {
       title: form.title,
       description: form.description,
       date: new Date(form.date).toISOString(),
       venue: form.venue,
-      eventHead: {user_id, name},
+      eventHead: form.eventHead,
       thumbnail_url: form.thumbnail_url,
     };
+
     try {
-      await createEvent(eventData).unwrap();
-      showSnackbar('Event created successfully');
+      let msg = 'Event created successfully';
+      if (initialData) {
+        updateEvent({eventId: initialData.id, event: eventData}).unwrap();
+        msg = 'Event updated successfully';
+      } else {
+        await createEvent(eventData).unwrap();
+      }
+      showSnackbar(msg);
       onClose();
       onSuccess();
     } catch {
@@ -100,14 +128,9 @@ const EventForm: React.FC<EventFormScreenProps> = ({onClose, onSuccess}) => {
     }
   };
 
-  const users = useMemo(
-    () => people?.data.map(p => ({label: p.name, value: p.id + '-' + p.name})),
-    [people],
-  );
-
   return (
     <FormModal
-      isLoading={isLoading}
+      isLoading={isLoading || isUploading}
       visible={true}
       onClose={onClose}
       title={initialData ? 'Edit Event' : 'Add Event'}
@@ -159,17 +182,30 @@ const EventForm: React.FC<EventFormScreenProps> = ({onClose, onSuccess}) => {
               />
             </FormGroup>
             <FormGroup label="Event Head">
-              <Dropdown
-                onChange={value => {
-                  setForm(prev => ({
-                    ...prev,
-                    eventHead: {user_id: value, name: value},
-                  }));
-                }}
-                items={users || []}
-                placeholder={{label: 'Choose Event Head...', value: null}}
-                value={form.eventHead.user_id}
-              />
+              <TouchableOpacity
+                style={[
+                  styles.input,
+                  {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  },
+                ]}
+                onPress={() => {
+                  navigation.navigate('FamilyHeadSelector', {
+                    title: 'Select Event Head',
+                  });
+                }}>
+                <Text
+                  style={{
+                    color: form.eventHead.name
+                      ? '#2d3436'
+                      : placeholderTextColor,
+                  }}>
+                  {form.eventHead.name || 'Choose Event Head...'}
+                </Text>
+                <MaterialIcons name="search" size={20} color="#888" />
+              </TouchableOpacity>
             </FormGroup>
             <FormGroup label="Profile Picture URL">
               <TextInput
@@ -201,27 +237,44 @@ const styles = StyleSheet.create({
   },
   formSection: {},
   input: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#F8F9FA',
     borderRadius: 12,
-    padding: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     fontSize: 16,
-    color: '#2d3436',
+    color: '#2D3436',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#2D3436',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
   dateButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
-    padding: 16,
+    backgroundColor: '#F8F9FA',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
   dateText: {
     marginLeft: 12,
     fontSize: 16,
-    color: '#2d3436',
+    color: '#2D3436',
   },
 });
 

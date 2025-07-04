@@ -7,6 +7,7 @@ import NoticeListing from '../components/noticeboard';
 import EventStack from './EventsStackNavigator';
 import FamilyStack from './FamilyStackNavigator';
 import {useTheme} from 'react-native-paper';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,6 +32,13 @@ const tabScreens = [
 
 const MainTabs = () => {
   const {colors} = useTheme();
+
+  const getTabBarVisibility = (route: any) => {
+    const routeName = getFocusedRouteNameFromRoute(route) ?? '';
+    const hiddenScreens = ['FamilyDetails', 'SomeOtherScreen']; // list of screens that should hide tab bar
+    return !hiddenScreens.includes(routeName);
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -53,6 +61,11 @@ const MainTabs = () => {
             key={tab.name}
             name={tab.name}
             component={tab.component}
+            options={({route}) => ({
+              tabBarStyle: getTabBarVisibility(route)
+                ? {backgroundColor: '#fff', paddingBottom: 6, height: 60}
+                : {display: 'none'},
+            })}
           />
         ))}
     </Tab.Navigator>

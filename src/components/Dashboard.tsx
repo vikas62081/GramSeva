@@ -4,13 +4,15 @@ import {
   Card,
   Text,
   useTheme,
-  Avatar,
   ProgressBar,
   Badge,
   IconButton,
   ActivityIndicator,
   Button,
+  Avatar,
+  Appbar,
 } from 'react-native-paper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useDashboard} from './hooks/useDashboard';
@@ -84,24 +86,25 @@ const Dashboard = () => {
         <RefreshControl refreshing={ui.refreshing} onRefresh={ui.onRefresh} />
       }>
       {/* Header */}
-      <View style={styles.headerRow}>
-        <Avatar.Image source={{uri: AVATAR_URI}} size={48} />
-        <View style={{flex: 1, marginLeft: 12}}>
-          <Text variant="titleLarge" style={styles.greeting}>
-            Welcome back, Vikas!
-          </Text>
-          <Text variant="bodySmall" style={{color: '#888'}}>
-            Your village at a glance
-          </Text>
+      <Appbar.Header style={{height: 80, paddingHorizontal: 12}}>
+        <View style={styles.headerRow}>
+          <Avatar.Image source={{uri: AVATAR_URI}} size={48} />
+          <View style={{flex: 1, marginLeft: 12}}>
+            <Text variant="titleLarge" style={styles.greeting}>
+              Welcome back, Vikas!
+            </Text>
+            <Text variant="bodySmall" style={{color: '#888'}}>
+              Your village at a glance
+            </Text>
+          </View>
+          <IconButton
+            icon="notifications-none"
+            size={26}
+            onPress={() => {}}
+            accessibilityLabel="Notifications"
+          />
         </View>
-        <IconButton
-          icon="notifications-none"
-          size={26}
-          onPress={() => {}}
-          accessibilityLabel="Notifications"
-        />
-      </View>
-
+      </Appbar.Header>
       {/* Village Statistics Card */}
       <Card style={[styles.card, styles.cardVillage]}>
         <Card.Content style={styles.cardContent}>
@@ -111,11 +114,11 @@ const Dashboard = () => {
           <View style={styles.statsGrid}>
             <View style={styles.statsGridRow}>
               <View style={styles.statsBoxFour}>
-                <Avatar.Icon
-                  icon="groups"
-                  size={28}
-                  style={[styles.iconCircleFour, {backgroundColor: '#e3f2fd'}]}
+                <MaterialIcons
+                  name="groups"
+                  size={40}
                   color={colors.primary}
+                  style={styles.iconNoBg}
                 />
                 <Text style={styles.statsLabelFour}>Population</Text>
                 <Text style={styles.statsValueFour}>
@@ -123,11 +126,11 @@ const Dashboard = () => {
                 </Text>
               </View>
               <View style={styles.statsBoxFour}>
-                <Avatar.Icon
-                  icon="holiday-village"
-                  size={28}
-                  style={[styles.iconCircleFour, {backgroundColor: '#fffbe6'}]}
+                <MaterialIcons
+                  name="holiday-village"
+                  size={40}
                   color="#ff9800"
+                  style={styles.iconNoBg}
                 />
                 <Text style={styles.statsLabelFour}>Families</Text>
                 <Text style={styles.statsValueFour}>
@@ -137,11 +140,11 @@ const Dashboard = () => {
             </View>
             <View style={styles.statsGridRow}>
               <View style={styles.statsBoxFour}>
-                <Avatar.Icon
-                  icon="child-care"
-                  size={28}
-                  style={[styles.iconCircleFour, {backgroundColor: '#e3f2fd'}]}
+                <MaterialIcons
+                  name="child-care"
+                  size={40}
                   color="#4caf50"
+                  style={styles.iconNoBg}
                 />
                 <Text style={styles.statsLabelFour}>Children</Text>
                 <Text style={styles.statsValueFour}>
@@ -149,13 +152,13 @@ const Dashboard = () => {
                 </Text>
               </View>
               <View style={styles.statsBoxFour}>
-                <Avatar.Icon
-                  icon="wc"
-                  size={28}
-                  style={[styles.iconCircleFour, {backgroundColor: '#e8f5e9'}]}
+                <MaterialIcons
+                  name="wc"
+                  size={40}
                   color="#4caf50"
+                  style={styles.iconNoBg}
                 />
-                <Text style={styles.statsLabelFour}>Sex Ratio</Text>
+                <Text style={styles.statsLabelFour}>Gender</Text>
                 <View style={styles.sexRatioRow}>
                   <View style={styles.sexBadgeMale}>
                     <Text style={styles.sexBadgeText}>
@@ -204,20 +207,20 @@ const Dashboard = () => {
           <Text style={styles.eventName}>{latestEvent.title}</Text>
           <View style={styles.eventDetailsModern}>
             <View style={styles.eventDetailItem}>
-              <Avatar.Icon
-                icon="calendar-month"
-                size={20}
-                style={[styles.iconCircle, {backgroundColor: '#e3f2fd'}]}
+              <MaterialIcons
+                name="calendar-month"
+                size={28}
                 color="#1976d2"
+                style={styles.iconNoBg}
               />
               <Text style={styles.eventDetailModern}>{latestEvent.date}</Text>
             </View>
             <View style={styles.eventDetailItem}>
-              <Avatar.Icon
-                icon="supervisor-account"
-                size={20}
-                style={[styles.iconCircle, {backgroundColor: '#f3e6fa'}]}
+              <MaterialIcons
+                name="supervisor-account"
+                size={28}
                 color="#8e24aa"
+                style={styles.iconNoBg}
               />
               <Text style={styles.eventDetailModern}>{latestEvent.head}</Text>
             </View>
@@ -264,7 +267,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f7f9fc',
-    paddingHorizontal: 12,
   },
   headerRow: {
     flexDirection: 'row',
@@ -286,6 +288,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.04,
     shadowRadius: 4,
     shadowOffset: {width: 0, height: 2},
+    marginHorizontal: 12,
   },
   cardVillage: {
     backgroundColor: '#fafdff',
@@ -421,6 +424,10 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOffset: {width: 0, height: 1},
     minWidth: 70,
+  },
+  iconNoBg: {
+    marginBottom: 2,
+    marginTop: 2,
   },
   iconCircleFour: {
     borderRadius: 18,

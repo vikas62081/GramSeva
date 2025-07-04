@@ -31,7 +31,8 @@ export interface Contributor {
   created_at?: string;
 }
 
-export interface ContributorForm {
+export interface IContributorForm {
+  user_id?: string;
   name: string;
   amount: string;
 }
@@ -59,6 +60,11 @@ export type RootStackParamList = {
   EventDetails: {event: Event_};
   ContributorsList: {eventId: string; eventTitle: string};
   ExpensesList: {eventId: string; eventTitle: string};
+  FamilyHeadSelector: {title?: string; people?: {id: string; name: string}[]};
+  FamilyMemberSelector: {
+    title?: string;
+    members?: {id: string; name: string}[];
+  };
 };
 
 export type EventsScreenNavigationProp = NativeStackNavigationProp<
@@ -120,4 +126,5 @@ export interface EventDetailsScreenProps {
 export interface EventFormScreenProps {
   onClose: () => void;
   onSuccess: () => void;
+  initialData?: Event_;
 }

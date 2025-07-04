@@ -9,6 +9,7 @@ import {
 } from '../../../../store/slices/eventApiSlice';
 import EmptyComponent from '../../../common/EmptyComponent';
 import {Button, Divider, FAB, Text} from 'react-native-paper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LazyLoader from '../../../common/LazyLoader';
 import {useSnackbar} from '../../../../context/SnackbarContext';
 import {useNavigation} from '@react-navigation/native';
@@ -43,21 +44,25 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
   const [updateExpense, {isLoading: isUpdating}] = useUpdateExpenseMutation();
 
   const handleSubmit = async (data: Expense) => {
-    let msg = 'Expense added successfully';
-    if (selectedExpense) {
-      await updateExpense({
-        eventId,
-        expenseId: selectedExpense.id!,
-        expense: data,
-      });
-      msg = 'Expense updated successfully';
-    } else {
-      await addExpense({eventId, expense: data});
+    try {
+      let msg = 'Expense added successfully';
+      if (selectedExpense) {
+        await updateExpense({
+          eventId,
+          expenseId: selectedExpense.id!,
+          expense: data,
+        });
+        msg = 'Expense updated successfully';
+      } else {
+        await addExpense({eventId, expense: data});
+      }
+      showSnackbar(msg);
+      await refetch();
+      setShowForm(false);
+      setSelectedExpense(undefined);
+    } catch (error) {
+      showSnackbar('Error saving expense. Please try again.');
     }
-    showSnackbar(msg);
-    await refetch();
-    setShowForm(false);
-    setSelectedExpense(undefined);
   };
 
   const handleEdit = (expense: Expense) => {
@@ -75,8 +80,22 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text variant="titleMedium">Expenses</Text>
-        <Button onPress={handleViewAll}>View All</Button>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <MaterialIcons
+            name="receipt-long"
+            size={20}
+            color="#d32f2f"
+            style={{marginRight: 6}}
+          />
+          <Text variant="titleMedium">Expenses</Text>
+        </View>
+        <Button
+          onPress={handleViewAll}
+          mode="text"
+          compact
+          accessibilityLabel="View all expenses">
+          View All
+        </Button>
       </View>
 
       <LazyLoader loading={isLoading || isFetching} position="top">
@@ -85,7 +104,9 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
           renderItem={({item}) => (
             <ExpenseItem item={item} onPress={handleEdit} />
           )}
-          keyExtractor={item => item.id}
+          keyExtractor={item =>
+            item.id ? String(item.id) : Math.random().toString()
+          }
           ItemSeparatorComponent={Divider}
           ListEmptyComponent={<EmptyComponent msg="No expense found." />}
           contentContainerStyle={expenses.length === 0 ? {flex: 1} : undefined}
@@ -94,29 +115,37 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
       <FAB
         icon="add"
         style={styles.fab}
-        label="Add Expense"
+        label=""
         onPress={() => {
           setSelectedExpense(undefined);
           setShowForm(true);
         }}
         size="small"
+        color="white"
+        accessibilityLabel="Add Expense"
       />
-      <ExpenseForm
-        visible={showForm}
-        isLoading={isAdding || isUpdating}
-        onClose={() => {
-          setShowForm(false);
-          setSelectedExpense(undefined);
-        }}
-        onSubmit={handleSubmit}
-        initialData={selectedExpense}
-      />
+      {showForm && (
+        <ExpenseForm
+          visible={showForm}
+          isLoading={isAdding || isUpdating}
+          onClose={() => {
+            setShowForm(false);
+            setSelectedExpense(undefined);
+          }}
+          onSubmit={handleSubmit}
+          initialData={selectedExpense}
+        />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, paddingHorizontal: 16},
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -125,9 +154,10 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 24,
+    right: 16,
+    bottom: 32,
+    backgroundColor: '#6200ee',
+    zIndex: 10,
   },
 });
 

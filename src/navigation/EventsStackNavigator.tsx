@@ -5,6 +5,7 @@ import EventContainer from '../components/events';
 import ContributorsListScreen from '../components/events/eventDetails/contributors/ContributorsListScreen';
 import ExpensesListScreen from '../components/events/eventDetails/expenses/ExpensesListScreen';
 import {RootStackParamList} from '../components/events/types';
+import FamilyHeadSelector from '../components/common/FamilyHeadSelector';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -21,6 +22,7 @@ const EventStack = () => {
         component={ContributorsListScreen}
       />
       <Stack.Screen name="ExpensesList" component={ExpensesListScreen} />
+      <Stack.Screen name="FamilyHeadSelector" component={FamilyHeadSelector} />
     </Stack.Navigator>
   );
 };

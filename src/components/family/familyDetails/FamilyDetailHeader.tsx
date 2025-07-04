@@ -19,24 +19,39 @@ const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
 }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        {imageUrl ? (
-          <Image source={{uri: imageUrl}} style={styles.image} />
-        ) : (
-          <Avatar.Icon icon="person" size={64} style={styles.image} />
-        )}
+      <View style={styles.cardHeader}>
+        <View style={styles.avatarContainer}>
+          {imageUrl ? (
+            <Image source={{uri: imageUrl}} style={styles.avatarImage} />
+          ) : (
+            <Avatar.Icon icon="person" size={64} style={styles.avatarImage} />
+          )}
+          <View style={styles.memberCountBadge}>
+            <Text style={styles.memberCountText}>{familyCount}</Text>
+          </View>
+        </View>
         <View style={styles.titleContainer}>
-          <Text variant="titleMedium">{name}</Text>
+          <Text variant="titleLarge" style={styles.familyName}>
+            {name}
+          </Text>
           <Text variant="bodyMedium" style={styles.subtitle}>
-            {relationship} •{' '}
-            {familyCount !== 0 ? `Total members: ${familyCount}` : `None`}
+            {relationship}
           </Text>
         </View>
+        <IconButton
+          onPress={onAdd}
+          icon="add"
+          mode="contained"
+          style={styles.addButton}
+          containerColor="#63C7A6"
+          iconColor="#fff"
+          size={28}
+        />
       </View>
-
       <View style={styles.sectionHeader}>
-        <Text variant="titleMedium">Family Members</Text>
-        <IconButton onPress={onAdd} icon="add" mode="contained" />
+        <Text variant="titleMedium" style={styles.sectionTitle}>
+          Family Members
+        </Text>
       </View>
     </View>
   );
@@ -44,36 +59,81 @@ const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: 18,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 2,
   },
-  header: {
+  cardHeader: {
     flexDirection: 'row',
-    marginBottom: 12,
     alignItems: 'center',
+    marginBottom: 10,
   },
-  image: {
-    borderRadius: 8,
+  avatarContainer: {
+    position: 'relative',
+    marginRight: 16,
+  },
+  avatarImage: {
+    borderRadius: 32,
     width: 64,
     height: 64,
-    marginRight: 16,
     backgroundColor: '#eee',
+  },
+  memberCountBadge: {
+    position: 'absolute',
+    bottom: -4,
+    right: -4,
+    backgroundColor: '#63C7A6',
+    borderRadius: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    minWidth: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+    elevation: 2,
+  },
+  memberCountText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 13,
   },
   titleContainer: {
     flex: 1,
     justifyContent: 'center',
   },
-  title: {
-    fontWeight: '600',
+  familyName: {
+    fontWeight: '700',
+    fontSize: 20,
+    marginBottom: 2,
+    color: '#222',
   },
   subtitle: {
     color: '#6c6c6c',
     marginTop: 2,
+    fontWeight: '500',
+  },
+  addButton: {
+    marginLeft: 8,
+    borderRadius: 24,
+    elevation: 2,
   },
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 8,
+    marginBottom: 2,
+  },
+  sectionTitle: {
+    fontWeight: '600',
+    fontSize: 16,
+    color: '#333',
   },
 });
 
