@@ -6,13 +6,15 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {enableScreens} from 'react-native-screens';
 import {Provider} from 'react-redux';
 import {store} from './src/store';
-import MainTabs from './src/navigation/BottomTabNavigator';
+import AppNavigator from './src/navigation/AppNavigator';
 import {ThemeProvider} from './src/context/ThemeContext';
 import {PaperProvider} from 'react-native-paper';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import {SnackbarProvider} from './src/context/SnackbarContext';
+import {AuthProvider} from './src/context/AuthContext';
+
 enableScreens();
 
 const App = (): React.JSX.Element => {
@@ -35,15 +37,17 @@ const App = (): React.JSX.Element => {
         <Provider store={store}>
           <ThemeProvider>
             <SafeAreaProvider>
-              <NavigationContainer>
-                <StatusBar
-                  barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                  backgroundColor={backgroundStyle.backgroundColor}
-                />
-                <SafeAreaView style={backgroundStyle}>
-                  <MainTabs />
-                </SafeAreaView>
-              </NavigationContainer>
+              <AuthProvider>
+                <NavigationContainer>
+                  <StatusBar
+                    barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+                    backgroundColor={backgroundStyle.backgroundColor}
+                  />
+                  <SafeAreaView style={backgroundStyle}>
+                    <AppNavigator />
+                  </SafeAreaView>
+                </NavigationContainer>
+              </AuthProvider>
             </SafeAreaProvider>
           </ThemeProvider>
         </Provider>

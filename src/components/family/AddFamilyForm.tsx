@@ -5,6 +5,7 @@ import FormGroup from '../common/FormGroup';
 import FormModal from '../common/FormModal';
 import Pills from '../common/Pills';
 import {genderOptions} from './constants';
+import {useTheme} from '../../context/ThemeContext';
 
 interface AddFamilyFormProps {
   selectedMember?: FamilyMember | null;
@@ -19,6 +20,8 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
   onClose,
   isLoading,
 }) => {
+  const theme = require('styled-components').useTheme();
+  const colors = theme.colors;
   const [formData, setFormData] = useState<Family>({
     name: '',
     phone: '',
@@ -47,25 +50,39 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
         <ScrollView>
           <FormGroup label="Full Name">
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: colors.background,
+                  color: colors.text,
+                  borderColor: colors.border,
+                },
+              ]}
               value={formData.name}
               onChangeText={text =>
                 setFormData(prev => ({...prev, name: text}))
               }
               placeholder="Enter name"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={colors.placeholder}
             />
           </FormGroup>
 
           <FormGroup label="Phone Number">
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: colors.background,
+                  color: colors.text,
+                  borderColor: colors.border,
+                },
+              ]}
               value={formData.phone}
               onChangeText={text =>
                 setFormData(prev => ({...prev, phone: text}))
               }
               placeholder="Enter phone number"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={colors.placeholder}
               keyboardType="phone-pad"
             />
           </FormGroup>
@@ -84,14 +101,11 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#F8F9FA',
     borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 16,
     fontSize: 16,
-    color: '#2D3436',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
     marginBottom: 0,
   },
 });

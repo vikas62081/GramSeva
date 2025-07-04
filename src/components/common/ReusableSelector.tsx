@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   searchBar: {
     backgroundColor: 'transparent',
     height: 56,
-    borderColor: '#ccc',
+    borderColor: '#ddd',
     borderBottomWidth: 1,
   },
   searchInput: {

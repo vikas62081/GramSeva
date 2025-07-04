@@ -17,7 +17,6 @@ const Member: React.FC<MemberProps> = ({family, onPress}) => {
   return (
     <TouchableOpacity
       onPress={() => onPress(family.id!)}
-      activeOpacity={0.85}
       style={styles.touchable}>
       {/* <Card mode="elevated" style={styles.card}> */}
       <View style={styles.cardContent}>

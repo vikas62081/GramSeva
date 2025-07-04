@@ -7,7 +7,7 @@ import NoticeListing from '../components/noticeboard';
 import EventStack from './EventsStackNavigator';
 import FamilyStack from './FamilyStackNavigator';
 import {useTheme} from 'react-native-paper';
-import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,7 +27,7 @@ const tabScreens = [
   },
   {name: 'Events', component: EventStack, icon: 'event', hidden: false},
   {name: 'Family', component: FamilyStack, icon: 'group', hidden: false},
-  {name: 'Profile', component: GramSeva, icon: 'person', hidden: true},
+  {name: 'Profile', component: ProfileScreen, icon: 'person', hidden: false},
 ];
 
 const MainTabs = () => {

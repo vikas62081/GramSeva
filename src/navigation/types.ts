@@ -9,6 +9,9 @@ export type RootStackParamList = {
   Events: undefined;
   EventDetails: {event: Event};
   EventForm: {event?: Event};
+  Login: undefined;
+  Register: undefined;
+  ForgotPassword: undefined;
 };
 
 // Define the navigation prop for the FamilyList screen

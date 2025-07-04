@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Appbar, Searchbar, ActivityIndicator} from 'react-native-paper';
+import {StyleSheet} from 'react-native';
+import {Appbar, Searchbar, Divider} from 'react-native-paper';
 
 // Debounce hook
 const useDebounce = (value: string, delay: number) => {
@@ -75,8 +75,8 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   return (
     <>
       {isSearchVisible ? (
-        <Appbar.Header>
-          <Appbar.Action icon="arrow-back" onPress={toggleSearch} />
+        <Appbar.Header style={{paddingHorizontal: 0}}>
+          {/* <Appbar.Action icon="arrow-back" onPress={toggleSearch} /> */}
           <Searchbar
             loading={isSearchLoading}
             placeholder={placeholder}
@@ -86,9 +86,13 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
             style={styles.headerSearchBar}
             autoFocus
             clearIcon="close"
-            icon="search"
+            icon="arrow-back"
             inputStyle={styles.searchInput}
+            mode="view"
+            showDivider={false}
+            placeholderTextColor={'#999'}
           />
+          <Divider />
         </Appbar.Header>
       ) : (
         <Appbar.Header>
@@ -109,9 +113,12 @@ const styles = StyleSheet.create({
     elevation: 4,
     flex: 1,
     height: 48,
-    marginRight: 8,
+    backgroundColor: 'transparent',
+    borderColor: '#ddd',
+    borderBottomWidth: 1,
   },
   searchInput: {
+    color: '#222',
     alignSelf: 'auto',
   },
 });

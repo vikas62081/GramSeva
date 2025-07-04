@@ -116,7 +116,16 @@ const FamilyMemberForm: React.FC<FamilyMemberFormProps> = ({
             />
           </FormGroup>
 
-          <FormGroup label="Related To">
+          <Dropdown
+            onChange={value =>
+              setFormData(prev => ({...prev, relationship: value}))
+            }
+            items={relationshipOptions}
+            placeholder={{label: 'Choose relationship...', value: null}}
+            value={formData.relationship}
+            label="Relationship"
+          />
+          <FormGroup label="Of">
             <TouchableOpacity
               style={[
                 styles.input,
@@ -144,17 +153,6 @@ const FamilyMemberForm: React.FC<FamilyMemberFormProps> = ({
               </Text>
               {/* <MaterialIcons name="search" size={20} color="#888" /> */}
             </TouchableOpacity>
-          </FormGroup>
-
-          <FormGroup label="Relationship">
-            <Dropdown
-              onChange={value =>
-                setFormData(prev => ({...prev, relationship: value}))
-              }
-              items={relationshipOptions}
-              placeholder={{label: 'Choose relationship...', value: null}}
-              value={formData.relationship}
-            />
           </FormGroup>
         </ScrollView>
       </FormModal>
