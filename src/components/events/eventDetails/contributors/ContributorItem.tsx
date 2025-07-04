@@ -1,5 +1,5 @@
 import {Avatar, List, Text} from 'react-native-paper';
-import {formatDate} from '../../../../utils';
+import {formatCurrency, formatDate} from '../../../../utils';
 import {Contributor} from '../../types';
 import {StyleSheet} from 'react-native';
 import React from 'react';
@@ -15,7 +15,9 @@ const ContributorItem: React.FC<ContributorItemProps> = ({item, onPress}) => {
       description={formatDate(item.created_at!)}
       onPress={() => onPress(item)}
       left={props => <Avatar.Icon icon="person" size={40} />}
-      right={() => <Text style={styles.amountText}>₹{item.amount}</Text>}
+      right={() => (
+        <Text style={styles.amountText}>{formatCurrency(item.amount)}</Text>
+      )}
     />
   );
 };

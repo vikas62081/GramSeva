@@ -4,6 +4,7 @@ import {Card, Text} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Event_} from '../types';
 import LazyLoader from '../../common/LazyLoader';
+import {formatCurrency} from '../../../utils';
 
 interface OverviewProps {
   event: Event_;
@@ -44,7 +45,9 @@ const Overview: React.FC<OverviewProps> = ({event, loading}) => {
                   style={styles.icon}
                 />
                 <Text style={styles.gridLabel}>Contributions</Text>
-                <Text style={styles.gridValueGreen}>₹{total_contribution}</Text>
+                <Text style={styles.gridValueGreen}>
+                  {formatCurrency(total_contribution)}
+                </Text>
               </View>
               <View style={styles.gridItem}>
                 <MaterialIcons
@@ -54,7 +57,9 @@ const Overview: React.FC<OverviewProps> = ({event, loading}) => {
                   style={styles.icon}
                 />
                 <Text style={styles.gridLabel}>Expenses</Text>
-                <Text style={styles.gridValueRed}>₹{total_expenditure}</Text>
+                <Text style={styles.gridValueRed}>
+                  {formatCurrency(total_expenditure)}
+                </Text>
               </View>
               <View style={styles.gridItem}>
                 <MaterialIcons
@@ -68,7 +73,7 @@ const Overview: React.FC<OverviewProps> = ({event, loading}) => {
                   style={
                     balance >= 0 ? styles.gridValueGreen : styles.gridValueRed
                   }>
-                  ₹{balance}
+                  {formatCurrency(balance)}
                 </Text>
               </View>
             </View>
@@ -124,7 +129,7 @@ const Overview: React.FC<OverviewProps> = ({event, loading}) => {
                       </Text>{' '}
                       contributed{' '}
                       <Text style={styles.topContributorAmount}>
-                        ₹{top_contributor?.amount}
+                        {formatCurrency(top_contributor?.amount)}
                       </Text>{' '}
                       (
                       <Text style={styles.topContributorPercent}>

@@ -33,16 +33,10 @@ const tabScreens = [
 const MainTabs = () => {
   const {colors} = useTheme();
 
-  const getTabBarVisibility = (route: any) => {
-    const routeName = getFocusedRouteNameFromRoute(route) ?? '';
-    const hiddenScreens = ['FamilyDetails', 'SomeOtherScreen']; // list of screens that should hide tab bar
-    return !hiddenScreens.includes(routeName);
-  };
-
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarStyle: {backgroundColor: '#fff', paddingBottom: 6, height: 60},
+        // tabBarStyle: {backgroundColor: '#fff', paddingBottom: 6, height: 60},
         tabBarLabelStyle: {fontSize: 12, fontWeight: 'bold'},
         headerShown: false,
         tabBarIcon: ({color, size}) => {
@@ -61,11 +55,6 @@ const MainTabs = () => {
             key={tab.name}
             name={tab.name}
             component={tab.component}
-            options={({route}) => ({
-              tabBarStyle: getTabBarVisibility(route)
-                ? {backgroundColor: '#fff', paddingBottom: 6, height: 60}
-                : {display: 'none'},
-            })}
           />
         ))}
     </Tab.Navigator>

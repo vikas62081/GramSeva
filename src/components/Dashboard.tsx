@@ -5,7 +5,6 @@ import {
   Text,
   useTheme,
   ProgressBar,
-  Badge,
   IconButton,
   ActivityIndicator,
   Button,
@@ -16,6 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useDashboard} from './hooks/useDashboard';
+import {formatCurrency} from '../utils';
 
 // Define the tab param list for navigation
 // Only the tab names are needed for navigation
@@ -230,13 +230,13 @@ const Dashboard = () => {
             <View style={styles.expenseBoxModern}>
               <Text style={styles.expenseLabelModern}>Contribution</Text>
               <Text style={[styles.expenseValueModern, {color: '#388e3c'}]}>
-                {'$' + latestEvent.finances.contribution.toLocaleString()}
+                {formatCurrency(latestEvent.finances.contribution)}
               </Text>
             </View>
             <View style={styles.expenseBoxModern}>
               <Text style={styles.expenseLabelModern}>Expense</Text>
               <Text style={[styles.expenseValueModern, {color: '#e53935'}]}>
-                {'$' + latestEvent.finances.expense.toLocaleString()}
+                {formatCurrency(latestEvent.finances.expense)}
               </Text>
             </View>
           </View>

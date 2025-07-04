@@ -1,49 +1,29 @@
-import {useEffect, useRef} from 'react';
-import {Animated} from 'react-native';
+import {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 
-export const useHideTabBar = () => {
+export const useHideTabBar = (hide: boolean = true) => {
   const navigation = useNavigation();
-  const translateY = useRef(new Animated.Value(0)).current; // 0 means visible
 
   useEffect(() => {
     const parent = navigation.getParent?.();
-    if (parent) {
-      Animated.timing(translateY, {
-        toValue: 100,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+    if (!parent) return;
 
+    if (hide) {
       parent.setOptions({
         tabBarStyle: {
-          transform: [{translateY: translateY}],
-          position: 'absolute',
-          backgroundColor: '#fff',
-          height: 60,
-          paddingBottom: 6,
+          display: 'none',
         },
       });
     }
 
     return () => {
-      if (parent) {
-        Animated.timing(translateY, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }).start();
-
+      if (hide) {
         parent.setOptions({
           tabBarStyle: {
-            transform: [{translateY: translateY}],
-            position: 'absolute',
-            backgroundColor: '#fff',
-            height: 60,
-            paddingBottom: 6,
+            display: 'flex',
           },
         });
       }
     };
-  }, [navigation, translateY]);
+  }, [navigation, hide]);
 };

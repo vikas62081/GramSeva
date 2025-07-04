@@ -1,5 +1,5 @@
 import {Avatar, List, Text} from 'react-native-paper';
-import {formatDate} from '../../../../utils';
+import {formatCurrency, formatDate} from '../../../../utils';
 import {Expense} from '../../types';
 import {StyleSheet} from 'react-native';
 import React from 'react';
@@ -16,7 +16,9 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({item, onPress}) => {
       description={formatDate(item.created_at!)}
       onPress={() => onPress(item)}
       left={props => <Avatar.Icon icon="receipt" size={40} />}
-      right={() => <Text style={styles.costText}>₹{item.cost}</Text>}
+      right={() => (
+        <Text style={styles.costText}>{formatCurrency(item.cost)}</Text>
+      )}
     />
   );
 };
