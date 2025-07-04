@@ -58,19 +58,19 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
 
   console.log('ContributorForm rendered with form:', form);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.name || !form.amount) {
       Alert.alert('Missing Fields', 'Please select contributor and amount.');
       return;
     }
-    onSubmit({
+    await onSubmit({
       name: form.name,
       amount: parseFloat(form.amount),
       user_id: form.user_id || '',
     });
     setForm(initialFormValue);
   };
-
+  console.log('ContributorForm handleSubmit called with form:', form);
   return (
     <FormModal
       isLoading={isLoading}
@@ -97,8 +97,9 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
           <Text
             style={{
               color: form.name ? '#2D3436' : placeholderTextColor,
+              fontSize: 16,
             }}>
-            {form.name ?? 'Select contributor'}
+            {form.name ? form.name : 'Select contributor'}
           </Text>
         </TouchableOpacity>
       </FormGroup>

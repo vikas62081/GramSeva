@@ -116,11 +116,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 12,
     marginTop: 8,
-    marginBottom: 0,
+    marginBottom: 12,
     borderRadius: 12,
     backgroundColor: '#fff',
-    padding: 8,
-    minHeight: 200,
   },
 });
 

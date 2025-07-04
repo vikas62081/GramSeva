@@ -21,6 +21,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   return (
     <FormGroup label={label}>
       <RNPickerSelect
+        useNativeAndroidPickerStyle={false}
         onValueChange={onChange}
         items={items}
         placeholder={placeholder}
@@ -44,11 +45,20 @@ const dropdownStyles = StyleSheet.create({
   },
   inputAndroid: {
     fontSize: 16,
-    paddingVertical: 0,
+    // paddingVertical: 0,
+    // backgroundColor: '#F8F9FA',
+    // borderRadius: 12,
+    // padding: 16,
+    // paddingVertical: 14,
+    color: '#2D3436',
+
     backgroundColor: '#F8F9FA',
     borderRadius: 12,
-    padding: 16,
-    color: '#2D3436',
+    paddingHorizontal: 16,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 0,
   },
 });
 

@@ -34,12 +34,12 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
     }
   }, [initialData]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.item || !form.cost) {
       Alert.alert('Missing Fields', 'Please enter item name and amount.');
       return;
     }
-    onSubmit(form as unknown as Expense);
+    await onSubmit(form as unknown as Expense);
     setForm(initialFormValue);
   };
 

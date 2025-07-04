@@ -8,11 +8,7 @@ import SearchSelectorListener from './SearchSelectorListener';
 
 const FamilyHeadSelector = ({route}: any) => {
   const navigation = useNavigation();
-  const {
-    onSelect,
-    title = 'Select Family Head',
-    people: peopleParam,
-  } = route.params || {};
+  const {onSelect, people: peopleParam} = route.params || {};
 
   let people: {id: string; name: string}[] = [];
   let isLoading = false;
@@ -62,7 +58,6 @@ const FamilyHeadSelector = ({route}: any) => {
       onRefresh={handleRefresh}
       hasMorePages={hasMorePages}
       searchPlaceholder="Search by name"
-      headerTitle={title}
     />
   );
 };

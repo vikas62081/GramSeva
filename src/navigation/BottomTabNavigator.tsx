@@ -36,7 +36,7 @@ const MainTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        // tabBarStyle: {backgroundColor: '#fff', paddingBottom: 6, height: 60},
+        tabBarStyle: {height: 60},
         tabBarLabelStyle: {fontSize: 12, fontWeight: 'bold'},
         headerShown: false,
         tabBarIcon: ({color, size}) => {

@@ -135,13 +135,14 @@ const FamilyMemberForm: React.FC<FamilyMemberFormProps> = ({
               <Text
                 style={{
                   color: formData.parentId ? '#2D3436' : placeholderTextColor,
+                  fontSize: 16,
                 }}>
                 {formData.parentId
                   ? relatedTo.find(r => r.value === formData.parentId)?.label ||
                     'Selected'
                   : 'Choose Person'}
               </Text>
-              <MaterialIcons name="search" size={20} color="#888" />
+              {/* <MaterialIcons name="search" size={20} color="#888" /> */}
             </TouchableOpacity>
           </FormGroup>
 

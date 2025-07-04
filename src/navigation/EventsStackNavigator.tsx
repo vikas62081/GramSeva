@@ -22,7 +22,11 @@ const EventStack = () => {
         component={ContributorsListScreen}
       />
       <Stack.Screen name="ExpensesList" component={ExpensesListScreen} />
-      <Stack.Screen name="FamilyHeadSelector" component={FamilyHeadSelector} />
+      <Stack.Screen
+        name="FamilyHeadSelector"
+        options={{animation: 'fade'}}
+        component={FamilyHeadSelector}
+      />
     </Stack.Navigator>
   );
 };

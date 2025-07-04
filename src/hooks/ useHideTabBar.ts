@@ -21,6 +21,7 @@ export const useHideTabBar = (hide: boolean = true) => {
         parent.setOptions({
           tabBarStyle: {
             display: 'flex',
+            height: 60, // Reset to default height
           },
         });
       }

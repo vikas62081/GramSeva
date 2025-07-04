@@ -18,6 +18,7 @@ const FamilyStack = () => {
       <Stack.Screen name="FamilyDetails" component={FamilyDetailsScreen} />
       <Stack.Screen
         name="FamilyMemberSelector"
+        options={{animation: 'fade'}}
         component={FamilyMemberSelector}
       />
     </Stack.Navigator>

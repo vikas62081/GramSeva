@@ -115,7 +115,7 @@ const EventForm: React.FC<EventFormScreenProps> = ({
     try {
       let msg = 'Event created successfully';
       if (initialData) {
-        updateEvent({eventId: initialData.id, event: eventData}).unwrap();
+        await updateEvent({eventId: initialData.id, event: eventData}).unwrap();
         msg = 'Event updated successfully';
       } else {
         await createEvent(eventData).unwrap();
@@ -201,10 +201,11 @@ const EventForm: React.FC<EventFormScreenProps> = ({
                     color: form.eventHead.name
                       ? '#2d3436'
                       : placeholderTextColor,
+                    fontSize: 16,
                   }}>
                   {form.eventHead.name || 'Choose Event Head...'}
                 </Text>
-                <MaterialIcons name="search" size={20} color="#888" />
+                {/* <MaterialIcons name="search" size={20} color="#888" /> */}
               </TouchableOpacity>
             </FormGroup>
             <FormGroup label="Profile Picture URL">

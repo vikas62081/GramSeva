@@ -14,7 +14,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {useDashboard} from './hooks/useDashboard';
+import {useDashboard} from '../hooks/useDashboard';
 import {formatCurrency} from '../utils';
 
 // Define the tab param list for navigation
@@ -70,11 +70,11 @@ const Dashboard = () => {
         <Button mode="contained" onPress={ui.onRefresh}>
           Retry
         </Button>
-        {ui.errorMessage && (
+        {/* {ui.errorMessage && (
           <Text style={{marginTop: 8, color: '#888', fontSize: 12}}>
             {ui.errorMessage}
           </Text>
-        )}
+        )} */}
       </View>
     );
   }
@@ -114,24 +114,24 @@ const Dashboard = () => {
           <View style={styles.statsGrid}>
             <View style={styles.statsGridRow}>
               <View style={styles.statsBoxFour}>
-                <MaterialIcons
+                {/* <MaterialIcons
                   name="groups"
                   size={40}
                   color={colors.primary}
                   style={styles.iconNoBg}
-                />
+                /> */}
                 <Text style={styles.statsLabelFour}>Population</Text>
                 <Text style={styles.statsValueFour}>
                   {familiesOverview.population}
                 </Text>
               </View>
               <View style={styles.statsBoxFour}>
-                <MaterialIcons
+                {/* <MaterialIcons
                   name="holiday-village"
                   size={40}
                   color="#ff9800"
                   style={styles.iconNoBg}
-                />
+                /> */}
                 <Text style={styles.statsLabelFour}>Families</Text>
                 <Text style={styles.statsValueFour}>
                   {familiesOverview.families}
@@ -140,25 +140,25 @@ const Dashboard = () => {
             </View>
             <View style={styles.statsGridRow}>
               <View style={styles.statsBoxFour}>
-                <MaterialIcons
+                {/* <MaterialIcons
                   name="child-care"
                   size={40}
                   color="#4caf50"
                   style={styles.iconNoBg}
-                />
+                /> */}
                 <Text style={styles.statsLabelFour}>Children</Text>
                 <Text style={styles.statsValueFour}>
                   {familiesOverview.demographics.children}
                 </Text>
               </View>
               <View style={styles.statsBoxFour}>
-                <MaterialIcons
+                {/* <MaterialIcons
                   name="wc"
                   size={40}
                   color="#4caf50"
                   style={styles.iconNoBg}
-                />
-                <Text style={styles.statsLabelFour}>Gender</Text>
+                /> */}
+                <Text style={styles.statsLabelFour}>Gender Ratio</Text>
                 <View style={styles.sexRatioRow}>
                   <View style={styles.sexBadgeMale}>
                     <Text style={styles.sexBadgeText}>
@@ -291,7 +291,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
   },
   cardVillage: {
-    backgroundColor: '#fafdff',
+    marginTop: 24,
+    backgroundColor: '#f9f6ff',
   },
   cardEvent: {
     backgroundColor: '#f9f6ff',
@@ -437,9 +438,9 @@ const styles = StyleSheet.create({
   },
   statsLabelFour: {
     color: '#888',
-    fontSize: 12,
-    marginTop: 2,
-    marginBottom: 1,
+    fontSize: 14,
+    // marginTop: 2,
+    marginBottom: 2,
     fontWeight: '500',
     letterSpacing: 0.2,
   },

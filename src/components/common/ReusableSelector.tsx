@@ -1,11 +1,12 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useState, useMemo, useCallback} from 'react';
-import {View, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
+import {FlatList, TouchableOpacity, StyleSheet} from 'react-native';
 import {
   Text,
   Searchbar,
   ActivityIndicator,
   Surface,
-  Appbar,
+  Divider,
 } from 'react-native-paper';
 
 interface ReusableSelectorProps<T> {
@@ -20,7 +21,6 @@ interface ReusableSelectorProps<T> {
   onRefresh?: () => void;
   hasMorePages?: boolean;
   searchPlaceholder?: string;
-  headerTitle?: string;
 }
 
 function ReusableSelector<T extends Record<string, any>>({
@@ -35,8 +35,8 @@ function ReusableSelector<T extends Record<string, any>>({
   onRefresh,
   hasMorePages = false,
   searchPlaceholder = 'Search...',
-  headerTitle = 'Select Item',
 }: ReusableSelectorProps<T>) {
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Client-side filter if no searchFn
@@ -64,40 +64,42 @@ function ReusableSelector<T extends Record<string, any>>({
 
   return (
     <Surface style={styles.container}>
-      <Appbar.Header>
-        <Appbar.BackAction onPress={() => {}} />
-        <Appbar.Content title={headerTitle} />
-      </Appbar.Header>
-      <View style={{padding: 16}}>
-        <Searchbar
-          placeholder={searchPlaceholder}
-          value={searchQuery}
-          onChangeText={handleSearch}
-          style={styles.searchBar}
-          icon="search"
-          clearIcon="close"
+      <Searchbar
+        placeholder={searchPlaceholder}
+        value={searchQuery}
+        onChangeText={handleSearch}
+        style={styles.searchBar}
+        inputStyle={styles.searchInput}
+        icon="arrow-back"
+        clearIcon="close"
+        mode="view"
+        showDivider={false}
+        onIconPress={() => navigation.goBack()}
+        placeholderTextColor={'#999'}
+      />
+      <Divider />
+      {isLoading ? (
+        <ActivityIndicator style={{marginTop: 24}} />
+      ) : (
+        <FlatList
+          contentContainerStyle={{
+            paddingHorizontal: 12,
+          }}
+          data={filteredData}
+          keyExtractor={item => String(item[valueKey])}
+          renderItem={renderItem}
+          onEndReached={() => {
+            if (hasMorePages && !isFetching && onLoadMore) onLoadMore();
+          }}
+          onRefresh={onRefresh}
+          refreshing={isFetching}
+          ListEmptyComponent={
+            <Text style={{textAlign: 'center', marginTop: 32}}>
+              No results found.
+            </Text>
+          }
         />
-        {isLoading ? (
-          <ActivityIndicator style={{marginTop: 24}} />
-        ) : (
-          <FlatList
-            data={filteredData}
-            keyExtractor={item => String(item[valueKey])}
-            renderItem={renderItem}
-            onEndReached={() => {
-              if (hasMorePages && !isFetching && onLoadMore) onLoadMore();
-            }}
-            onRefresh={onRefresh}
-            refreshing={isFetching}
-            ListEmptyComponent={
-              <Text style={{textAlign: 'center', marginTop: 32}}>
-                No results found.
-              </Text>
-            }
-            style={{maxHeight: 400}}
-          />
-        )}
-      </View>
+      )}
     </Surface>
   );
 }
@@ -105,14 +107,20 @@ function ReusableSelector<T extends Record<string, any>>({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
   },
   searchBar: {
-    marginBottom: 12,
-    borderRadius: 8,
+    backgroundColor: 'transparent',
+    height: 56,
+    borderColor: '#ccc',
+    borderBottomWidth: 1,
+  },
+  searchInput: {
+    color: '#222',
+    alignSelf: 'auto',
   },
   row: {
-    paddingVertical: 12,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderColor: '#eee',
   },

@@ -180,11 +180,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 18,
     marginBottom: 10,
+    gap: 1,
   },
   gridItem: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 4,
   },
   gridLabel: {
     color: '#6b6b6b',
