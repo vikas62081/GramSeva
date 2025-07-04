@@ -1,8 +1,9 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {FamilyMember} from '../types';
-import {IconButton, Text, Avatar, Chip} from 'react-native-paper';
+import {IconButton, Text, Avatar} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {getInitials} from '../../../utils';
 
 interface MemberCardProps {
   member: FamilyMember;
@@ -11,13 +12,11 @@ interface MemberCardProps {
 }
 
 const MemberCard: React.FC<MemberCardProps> = ({member, nameById, onEdit}) => {
-  // Get initials for avatar
-  const initials = member.name
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
+  const initials = getInitials(member.name);
+
+  const relatedName = nameById[member.parentId!] || 'Unknown';
+  const genderIcon = member.gender === 'Female' ? 'female' : 'male';
+  const genderColor = member.gender === 'Female' ? '#d81b60' : '#1976d2';
 
   return (
     <View style={styles.memberItem}>
@@ -28,45 +27,26 @@ const MemberCard: React.FC<MemberCardProps> = ({member, nameById, onEdit}) => {
           styles.avatar,
           {backgroundColor: member.gender === 'Female' ? '#fce4ec' : '#e3f2fd'},
         ]}
-        color={member.gender === 'Female' ? '#d81b60' : '#1976d2'}
+        color={genderColor}
       />
       <View style={styles.memberInfo}>
         <Text variant="labelLarge" style={styles.memberName}>
           {member.name}
         </Text>
         <View style={styles.metaRow}>
-          <Chip
-            compact
-            style={[
-              styles.chip,
-              member.gender === 'Female' ? styles.chipFemale : styles.chipMale,
-            ]}
-            textStyle={styles.chipText}
-            icon={() => (
-              <MaterialIcons
-                name={member.gender === 'Female' ? 'female' : 'male'}
-                size={14}
-                color={member.gender === 'Female' ? '#d81b60' : '#1976d2'}
-              />
-            )}>
+          <MaterialIcons name={genderIcon} size={13} color={genderColor} />
+          <Text
+            numberOfLines={1}
+            style={[styles.metaText, {color: genderColor}]}>
+            {' '}
             {member.gender}
-          </Chip>
-          <Chip
-            compact
-            style={styles.chip}
-            textStyle={styles.chipText}
-            icon={'supervisor-account'}>
-            {member.relationship}
-          </Chip>
-          <Chip
-            compact
-            style={styles.chip}
-            textStyle={styles.chipText}
-            icon={() => (
-              <MaterialIcons name="account-child" size={14} color="#888" />
-            )}>
-            {nameById[member.parentId!] || 'Unknown'}
-          </Chip>
+          </Text>
+          <Text style={styles.dot}> • </Text>
+          <MaterialIcons name="supervisor-account" size={13} color="#777" />
+          <Text style={styles.metaText} numberOfLines={1} ellipsizeMode="tail">
+            {' '}
+            {member.relationship} of {relatedName}
+          </Text>
         </View>
       </View>
       <IconButton
@@ -86,63 +66,47 @@ const MemberCard: React.FC<MemberCardProps> = ({member, nameById, onEdit}) => {
 const styles = StyleSheet.create({
   memberItem: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    marginBottom: 12,
+    alignItems: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 10,
     backgroundColor: '#fff',
     borderRadius: 14,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.06,
-    shadowRadius: 2,
     elevation: 2,
   },
   avatar: {
-    marginRight: 14,
+    marginRight: 12,
     alignSelf: 'flex-start',
   },
   memberInfo: {
     flex: 1,
-    marginRight: 8,
+    marginRight: 4, // reduced right margin
   },
   memberName: {
-    fontWeight: '700',
-    fontSize: 16,
-    marginBottom: 2,
-    color: '#222',
+    // fontWeight: '700',
+    // fontSize: 15,
+    marginBottom: 4,
+    // color: '#222',
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginTop: 2,
-  },
-  chip: {
-    backgroundColor: '#f5f5f5',
-    marginRight: 4,
-    borderRadius: 12,
-    paddingHorizontal: 2,
-    paddingVertical: 0,
-  },
-  chipText: {
-    fontSize: 11,
-    color: '#555',
-  },
-  chipMale: {
-    backgroundColor: '#e3f2fd',
-  },
-  chipFemale: {
-    backgroundColor: '#fce4ec',
+    flexWrap: 'nowrap',
+    overflow: 'hidden',
   },
   metaText: {
-    color: '#888',
+    fontSize: 11.5,
+    color: '#555',
+    flexShrink: 1,
+  },
+  dot: {
     fontSize: 12,
-    marginLeft: 4,
+    color: '#aaa',
+    marginHorizontal: 4,
   },
   icon: {
-    marginLeft: 8,
+    marginLeft: 4,
+    marginTop: 2,
     borderRadius: 20,
     backgroundColor: '#f5f5f5',
   },

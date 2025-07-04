@@ -1,8 +1,9 @@
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Family} from './types';
-import {Card, IconButton, Text, Avatar} from 'react-native-paper';
+import {Text, Avatar} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {getInitials} from '../../utils';
 
 interface MemberProps {
   family: Family;
@@ -11,61 +12,56 @@ interface MemberProps {
 
 const Member: React.FC<MemberProps> = ({family, onPress}) => {
   // Get initials for avatar
-  const initials = family.name
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
+  const initials = getInitials(family.name);
 
   return (
     <TouchableOpacity
       onPress={() => onPress(family.id!)}
       activeOpacity={0.85}
       style={styles.touchable}>
-      <Card mode="elevated" elevation={2} style={styles.card}>
-        <View style={styles.cardContent}>
-          <View style={styles.avatarContainer}>
-            <Avatar.Text
-              label={initials}
-              size={48}
-              style={styles.avatar}
-              labelStyle={{fontSize: 16, fontWeight: 'bold'}}
-              color="#1976d2"
-            />
-            <View style={styles.memberCountBadge}>
-              <MaterialIcons name="people" size={14} color="#fff" />
-              <Text style={styles.memberCountText}>{family.members}</Text>
-            </View>
-          </View>
-          <View style={styles.info}>
-            <View style={styles.nameRow}>
-              <Text
-                variant="titleMedium"
-                style={styles.familyName}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {family.name}
-              </Text>
-              <MaterialIcons
-                name={family.gender === 'Female' ? 'female' : 'male'}
-                size={18}
-                color={family.gender === 'Female' ? '#d81b60' : '#1976d2'}
-                style={styles.genderIcon}
-              />
-            </View>
-            <Text variant="labelMedium" style={styles.metaText}>
-              {family.gender} Family
-            </Text>
-          </View>
-          <MaterialIcons
-            name="chevron-right"
-            size={28}
-            color="#888"
-            style={styles.chevron}
+      {/* <Card mode="elevated" style={styles.card}> */}
+      <View style={styles.cardContent}>
+        <View style={styles.avatarContainer}>
+          <Avatar.Text
+            label={initials}
+            size={48}
+            style={styles.avatar}
+            labelStyle={{fontSize: 16, fontWeight: 'bold'}}
+            color="#1976d2"
           />
+          <View style={styles.memberCountBadge}>
+            <MaterialIcons name="people" size={14} color="#fff" />
+            <Text style={styles.memberCountText}>{family.members}</Text>
+          </View>
         </View>
-      </Card>
+        <View style={styles.info}>
+          <View style={styles.nameRow}>
+            <Text
+              variant="titleMedium"
+              style={styles.familyName}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {family.name}
+            </Text>
+            <MaterialIcons
+              name={family.gender === 'Female' ? 'female' : 'male'}
+              size={18}
+              color={family.gender === 'Female' ? '#d81b60' : '#1976d2'}
+              style={styles.genderIcon}
+            />
+          </View>
+          <Text variant="labelMedium" style={styles.metaText}>
+            {family.gender}
+          </Text>
+        </View>
+        <MaterialIcons
+          name="chevron-right"
+          size={28}
+          color="#888"
+          style={styles.chevron}
+        />
+      </View>
+      {/* </Card> */}
     </TouchableOpacity>
   );
 };
@@ -73,7 +69,8 @@ const Member: React.FC<MemberProps> = ({family, onPress}) => {
 const styles = StyleSheet.create({
   touchable: {
     borderRadius: 16,
-    marginBottom: 2,
+    // marginBottom: 2,
+    backgroundColor: '#fff',
   },
   card: {
     borderRadius: 16,
@@ -143,9 +140,7 @@ const styles = StyleSheet.create({
   },
   metaText: {
     color: '#888',
-    fontSize: 12,
     marginTop: 1,
-    fontWeight: '400',
     letterSpacing: 0.1,
   },
   chevron: {

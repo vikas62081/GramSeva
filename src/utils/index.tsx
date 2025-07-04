@@ -11,6 +11,15 @@ const formatCurrency = (amount: number): string => {
   }).format(amount);
 };
 
+function getInitials(name: string): string {
+  if (!name) return '';
+  return name
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
 export {
   formatDate,
   getTime,
@@ -22,4 +31,5 @@ export {
   getTimeLeft,
   getFamilyDropdownOptions,
   formatCurrency,
+  getInitials,
 };
