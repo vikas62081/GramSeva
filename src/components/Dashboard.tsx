@@ -86,7 +86,12 @@ const Dashboard = () => {
         <RefreshControl refreshing={ui.refreshing} onRefresh={ui.onRefresh} />
       }>
       {/* Header */}
-      <Appbar.Header style={{height: 80, paddingHorizontal: 12}}>
+      <Appbar.Header
+        style={{
+          height: 100,
+          paddingHorizontal: 12,
+          backgroundColor: '#f7f9fc',
+        }}>
         <View style={styles.headerRow}>
           <Avatar.Image source={{uri: AVATAR_URI}} size={48} />
           <View style={{flex: 1, marginLeft: 12}}>
@@ -183,9 +188,8 @@ const Dashboard = () => {
           </View>
         </Card.Content>
       </Card>
-
       {/* Event & Expenses Card */}
-      <Card style={[styles.card, styles.cardEvent, styles.eventCardModern]}>
+      <Card style={[styles.card, styles.cardEvent]}>
         <Card.Content style={styles.cardContent}>
           <View style={styles.eventHeaderRow}>
             <Text variant="titleMedium" style={styles.cardTitle}>
@@ -271,8 +275,6 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 18,
-    marginBottom: 24,
   },
   greeting: {
     fontWeight: 'bold',
@@ -289,26 +291,22 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOffset: {width: 0, height: 2},
     marginHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#ede7f6',
   },
   cardVillage: {
     marginTop: 24,
     backgroundColor: '#f9f6ff',
   },
   cardEvent: {
-    backgroundColor: '#f9f6ff',
+    marginTop: 8,
+    backgroundColor: '#f6f3ff',
   },
   cardContent: {
     justifyContent: 'center',
     paddingVertical: 8,
   },
 
-  // Modern event card styles
-  eventCardModern: {
-    backgroundColor: '#f6f3ff',
-    borderWidth: 1,
-    borderColor: '#ede7f6',
-    marginTop: 8,
-  },
   eventHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
