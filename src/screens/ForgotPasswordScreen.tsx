@@ -12,7 +12,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import {useTheme} from '../context/ThemeContext';
 
 const ForgotPasswordScreen = ({navigation}: any) => {
-  const {forgotPassword, resetPassword, loading} = useAuth();
+  const {forgotPassword, verifyOtp, resetPassword, loading} = useAuth();
   // @ts-ignore
   const theme = require('styled-components').useTheme();
   const colors = theme.colors;
@@ -23,21 +23,28 @@ const ForgotPasswordScreen = ({navigation}: any) => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSendOtp = async () => {
-    if (phone !== '123456789') {
-      Alert.alert('Not Allowed', 'Only 123456789 is allowed for demo.');
+    if (!phone) {
+      Alert.alert('Missing Field', 'Please enter your phone number.');
       return;
     }
-    const exists = await forgotPassword(phone);
-    if (!exists) {
-      Alert.alert('Not Found', 'No user found with this phone number.');
-      return;
+
+    const success = await forgotPassword(phone);
+    if (success) {
+      Alert.alert('OTP Sent', 'Please check your phone for the OTP.');
+      setStep('otp');
+    } else {
+      Alert.alert('Failed', 'Failed to send OTP. Please try again.');
     }
-    Alert.alert('OTP Sent', 'OTP is 9999 (for demo).');
-    setStep('otp');
   };
 
-  const handleOtp = () => {
-    if (otp === '9999') {
+  const handleOtp = async () => {
+    if (!otp) {
+      Alert.alert('Missing Field', 'Please enter the OTP.');
+      return;
+    }
+
+    const success = await verifyOtp(phone, parseInt(otp));
+    if (success) {
       setStep('reset');
     } else {
       Alert.alert('Invalid OTP', 'Please enter the correct OTP.');
@@ -56,13 +63,14 @@ const ForgotPasswordScreen = ({navigation}: any) => {
       Alert.alert('Mismatch', 'Passwords do not match.');
       return;
     }
-    const success = await resetPassword(phone, otp, newPassword);
-    if (!success) {
-      Alert.alert('Failed', 'Invalid OTP or phone number.');
-      return;
+
+    const success = await resetPassword(phone, parseInt(otp), newPassword);
+    if (success) {
+      Alert.alert('Success', 'Password reset successfully. Please login.');
+      navigation?.navigate('Login');
+    } else {
+      Alert.alert('Failed', 'Failed to reset password. Please try again.');
     }
-    Alert.alert('Success', 'Password reset. Please login.');
-    navigation?.navigate('Login');
   };
 
   return (

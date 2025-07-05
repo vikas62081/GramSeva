@@ -21,18 +21,41 @@ const RegisterScreen = ({navigation}: any) => {
     name: '',
     phone: '',
     email: '',
-    gender: 'Male',
+    gender: 'Male' as 'Male' | 'Female',
     password: '',
   });
 
   const handleRegister = async () => {
     if (!form.name || !form.phone || !form.password) {
-      Alert.alert('Missing Fields', 'Name, phone, and password are required.');
+      Alert.alert(
+        'Missing Fields',
+        'Name, phone, email, and password are required.',
+      );
       return;
     }
+
+    // Basic email validation
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!emailRegex.test(form.email)) {
+    //   Alert.alert('Invalid Email', 'Please enter a valid email address.');
+    //   return;
+    // }
+
+    // Basic phone validation (10-13 digits)
+    if (form.phone.length < 10 || form.phone.length > 13) {
+      Alert.alert(
+        'Invalid Phone',
+        'Please enter a valid phone number (10-13 digits).',
+      );
+      return;
+    }
+
     const success = await register(form);
     if (!success) {
-      Alert.alert('Registration Failed', 'Phone number already registered.');
+      Alert.alert(
+        'Registration Failed',
+        'Registration failed. Please try again or check if the phone number is already registered.',
+      );
     }
   };
 
@@ -78,7 +101,7 @@ const RegisterScreen = ({navigation}: any) => {
               borderColor: colors.border,
             },
           ]}
-          placeholder="Email (optional)"
+          placeholder="Email"
           keyboardType="email-address"
           value={form.email}
           onChangeText={email => setForm(prev => ({...prev, email}))}
@@ -88,7 +111,9 @@ const RegisterScreen = ({navigation}: any) => {
           <Pills
             options={genderOptions}
             selectedOption={form.gender}
-            onSelect={gender => setForm(prev => ({...prev, gender}))}
+            onSelect={gender =>
+              setForm(prev => ({...prev, gender: gender as 'Male' | 'Female'}))
+            }
           />
         </View>
         <TextInput

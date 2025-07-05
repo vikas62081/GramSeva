@@ -6,12 +6,30 @@ import React, {
   ReactNode,
 } from 'react';
 import {saveToStorage, getFromStorage} from '../utils/AsyncStorage';
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useForgotPasswordMutation,
+  useVerifyOtpMutation,
+  useResetPasswordMutation,
+  LoginRequest,
+  RegisterRequest,
+  OtpVerificationRequest,
+  ResetPasswordRequest,
+} from '../store/slices/authApiSlice';
 
 interface User {
+  id?: string;
   name: string;
   phone: string;
   email?: string;
-  gender?: string;
+  gender: string;
+  role?: string;
+  status?: string;
+  family_id?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  token?: string;
 }
 
 interface AuthContextType {
@@ -22,9 +40,10 @@ interface AuthContextType {
   logout: () => void;
   register: (data: User & {password: string}) => Promise<boolean>;
   forgotPassword: (phone: string) => Promise<boolean>;
+  verifyOtp: (phone: string, otp: number) => Promise<boolean>;
   resetPassword: (
     phone: string,
-    otp: string,
+    otp: number,
     newPassword: string,
   ) => Promise<boolean>;
 }
@@ -35,6 +54,14 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // RTK Query hooks
+  const [loginMutation, {isLoading: loginLoading}] = useLoginMutation();
+  const [registerMutation, {isLoading: registerLoading}] =
+    useRegisterMutation();
+  const [forgotPasswordMutation] = useForgotPasswordMutation();
+  const [verifyOtpMutation] = useVerifyOtpMutation();
+  const [resetPasswordMutation] = useResetPasswordMutation();
+
   useEffect(() => {
     (async () => {
       const storedUser = await getFromStorage('user');
@@ -44,20 +71,28 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   }, []);
 
   const login = async (phone: string, password: string) => {
-    setLoading(true);
-    // Simulate login logic (replace with real API)
-    const registered = (await getFromStorage('registeredUsers')) || [];
-    const found = registered.find(
-      (u: any) => u.phone === phone && u.password === password,
-    );
-    if (found) {
-      setUser(found);
-      await saveToStorage('user', found);
-      setLoading(false);
-      return true;
+    try {
+      const loginData: LoginRequest = {
+        username: phone,
+        password: password,
+      };
+
+      const _user = await loginMutation(loginData).unwrap();
+
+      if (_user) {
+        setUser(_user);
+        await saveToStorage('user', _user);
+        if (_user.token) {
+          await saveToStorage('token', _user.token);
+        }
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    setLoading(false);
-    return false;
   };
 
   const googleLogin = async () => {
@@ -76,54 +111,87 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const logout = async () => {
     setUser(null);
     await saveToStorage('user', null);
+    await saveToStorage('token', null);
   };
 
   const register = async (data: User & {password: string}) => {
-    setLoading(true);
-    let registered = (await getFromStorage('registeredUsers')) || [];
-    if (registered.find((u: any) => u.phone === data.phone)) {
-      setLoading(false);
-      return false; // Already registered
+    try {
+      const registerData: RegisterRequest = {
+        name: data.name,
+        email: data.email || '',
+        phone: data.phone,
+        password: data.password,
+        gender: (data.gender as 'Male' | 'Female') || 'Male',
+      };
+
+      const response = await registerMutation(registerData).unwrap();
+
+      if (response) return true;
+      return false;
+    } catch (error) {
+      console.error('Registration error:', error);
+      return false;
     }
-    registered.push(data);
-    await saveToStorage('registeredUsers', registered);
-    setUser(data);
-    await saveToStorage('user', data);
-    setLoading(false);
-    return true;
   };
 
   const forgotPassword = async (phone: string) => {
-    // Simulate sending OTP (always 9999)
-    const registered = (await getFromStorage('registeredUsers')) || [];
-    return true;
-    return !!registered.find((u: any) => u.phone === phone);
+    try {
+      const response = await forgotPasswordMutation({phone}).unwrap();
+      return response.data ? true : false;
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      return false;
+    }
+  };
+
+  const verifyOtp = async (phone: string, otp: number) => {
+    try {
+      const otpData: OtpVerificationRequest = {
+        phone: phone,
+        otp: otp,
+      };
+
+      const response = await verifyOtpMutation(otpData).unwrap();
+      return response.data ? true : false;
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      return false;
+    }
   };
 
   const resetPassword = async (
     phone: string,
-    otp: string,
+    otp: number,
     newPassword: string,
   ) => {
-    if (otp !== '9999') return false;
-    let registered = (await getFromStorage('registeredUsers')) || [];
-    const idx = registered.findIndex((u: any) => u.phone === phone);
-    if (idx === -1) return false;
-    registered[idx].password = newPassword;
-    await saveToStorage('registeredUsers', registered);
-    return true;
+    try {
+      const resetData: ResetPasswordRequest = {
+        phone: phone,
+        otp: otp,
+        new_password: newPassword,
+      };
+
+      const response = await resetPasswordMutation(resetData).unwrap();
+      return response.data ? true : false;
+    } catch (error) {
+      console.error('Reset password error:', error);
+      return false;
+    }
   };
+
+  const isLoading = loginLoading || registerLoading || loading;
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        loading,
+        loading: isLoading,
         login,
         googleLogin,
         logout,
         register,
         forgotPassword,
+        verifyOtp,
         resetPassword,
       }}>
       {children}

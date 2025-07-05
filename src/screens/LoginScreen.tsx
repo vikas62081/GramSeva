@@ -19,8 +19,21 @@ const LoginScreen = ({navigation}: any) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
+    if (!phone || !password) {
+      Alert.alert(
+        'Missing Fields',
+        'Please enter both phone number and password.',
+      );
+      return;
+    }
+
     const success = await login(phone, password);
-    if (!success) Alert.alert('Login Failed', 'Invalid phone or password');
+    if (!success) {
+      Alert.alert(
+        'Login Failed',
+        'Invalid phone number or password. Please try again.',
+      );
+    }
   };
 
   const handleGoogleLogin = async () => {
