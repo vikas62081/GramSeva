@@ -15,6 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useDashboard} from '../hooks/useDashboard';
+import {useAuth} from '../context/AuthContext';
 import {formatCurrency} from '../utils';
 
 // Define the tab param list for navigation
@@ -25,15 +26,20 @@ export type TabParamList = {
   Events: undefined;
 };
 
-const AVATAR_URI =
-  'https://ui-avatars.com/api/?name=Vikas&background=4a90e2&color=fff&size=128';
-
 const Dashboard = () => {
   const {colors} = useTheme();
   const navigation = useNavigation<BottomTabNavigationProp<TabParamList>>();
+  const {user} = useAuth();
 
   // Get structured dashboard data
   const {familiesOverview, latestEvent, ui} = useDashboard();
+
+  // Generate avatar URI based on user's name
+  const avatarUri = user?.name
+    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        user.name,
+      )}&background=4a90e2&color=fff&size=128`
+    : 'https://ui-avatars.com/api/?name=User&background=4a90e2&color=fff&size=128';
 
   /**
    * familiesOverview: Contains village demographic information
@@ -93,10 +99,13 @@ const Dashboard = () => {
           backgroundColor: '#f7f9fc',
         }}>
         <View style={styles.headerRow}>
-          <Avatar.Image source={{uri: AVATAR_URI}} size={48} />
+          <Avatar.Image source={{uri: avatarUri}} size={48} />
           <View style={{flex: 1, marginLeft: 12}}>
-            <Text variant="titleLarge" style={styles.greeting}>
-              Welcome back, Vikas!
+            <Text
+              variant="titleLarge"
+              numberOfLines={1}
+              style={styles.greeting}>
+              Welcome back, {user?.name?.split(' ')?.[0] || 'User'}!
             </Text>
             <Text variant="bodySmall" style={{color: '#888'}}>
               Your village at a glance
@@ -295,7 +304,7 @@ const styles = StyleSheet.create({
     borderColor: '#ede7f6',
   },
   cardVillage: {
-    marginTop: 24,
+    marginTop: 8,
     backgroundColor: '#f9f6ff',
   },
   cardEvent: {
