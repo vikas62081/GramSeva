@@ -5,7 +5,7 @@ import FormGroup from '../common/FormGroup';
 import FormModal from '../common/FormModal';
 import Pills from '../common/Pills';
 import {genderOptions} from './constants';
-import {useTheme} from '../../context/ThemeContext';
+import {useTheme} from 'react-native-paper';
 
 interface AddFamilyFormProps {
   selectedMember?: FamilyMember | null;
@@ -20,8 +20,7 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
   onClose,
   isLoading,
 }) => {
-  const theme = require('styled-components').useTheme();
-  const colors = theme.colors;
+  const theme = useTheme();
   const [formData, setFormData] = useState<Family>({
     name: '',
     phone: '',
@@ -53,9 +52,9 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
               style={[
                 styles.input,
                 {
-                  backgroundColor: colors.background,
-                  color: colors.text,
-                  borderColor: colors.border,
+                  backgroundColor: theme.colors.surface,
+                  color: theme.colors.onSurface,
+                  borderColor: theme.colors.outline,
                 },
               ]}
               value={formData.name}
@@ -63,7 +62,7 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
                 setFormData(prev => ({...prev, name: text}))
               }
               placeholder="Enter name"
-              placeholderTextColor={colors.placeholder}
+              placeholderTextColor={theme.colors.onSurfaceVariant}
             />
           </FormGroup>
 
@@ -72,9 +71,9 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
               style={[
                 styles.input,
                 {
-                  backgroundColor: colors.background,
-                  color: colors.text,
-                  borderColor: colors.border,
+                  backgroundColor: theme.colors.surface,
+                  color: theme.colors.onSurface,
+                  borderColor: theme.colors.outline,
                 },
               ]}
               value={formData.phone}
@@ -82,7 +81,7 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
                 setFormData(prev => ({...prev, phone: text}))
               }
               placeholder="Enter phone number"
-              placeholderTextColor={colors.placeholder}
+              placeholderTextColor={theme.colors.onSurfaceVariant}
               keyboardType="phone-pad"
             />
           </FormGroup>

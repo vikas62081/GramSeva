@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
+import {useTheme} from 'react-native-paper';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import FamilyContainer from '../components/family';
 
@@ -25,8 +26,11 @@ interface FamilyScreenProps {
 }
 
 const FamilyScreen: React.FC<FamilyScreenProps> = ({navigation}) => {
+  const theme = useTheme();
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <FamilyContainer navigation={navigation} />
     </View>
   );
@@ -35,7 +39,6 @@ const FamilyScreen: React.FC<FamilyScreenProps> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F6FA',
   },
 });
 

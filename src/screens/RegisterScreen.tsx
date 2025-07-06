@@ -7,16 +7,13 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import Pills from '../components/common/Pills';
-import {genderOptions} from '../components/family/constants';
+import {SegmentedButtons, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const RegisterScreen = ({navigation}: any) => {
   const {register, loading} = useAuth();
-  // @ts-ignore
-  const theme = require('styled-components').useTheme();
-  const colors = theme.colors;
+  const theme = useTheme();
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -61,84 +58,106 @@ const RegisterScreen = ({navigation}: any) => {
 
   return (
     <LoadingSpinner loading={loading} content="Registering...">
-      <View style={[styles.container, {backgroundColor: colors.background}]}>
-        <Text style={[styles.title, {color: colors.text}]}>Register</Text>
+      <View
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        <Text style={[styles.title, {color: theme.colors.onBackground}]}>
+          Register
+        </Text>
         <TextInput
           style={[
             styles.input,
             {
-              backgroundColor: colors.surface,
-              color: colors.text,
-              borderColor: colors.border,
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
             },
           ]}
           placeholder="Full Name"
           value={form.name}
           onChangeText={name => setForm(prev => ({...prev, name}))}
-          placeholderTextColor={colors.placeholder}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
         />
         <TextInput
           style={[
             styles.input,
             {
-              backgroundColor: colors.surface,
-              color: colors.text,
-              borderColor: colors.border,
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
             },
           ]}
           placeholder="Phone Number"
           keyboardType="phone-pad"
           value={form.phone}
           onChangeText={phone => setForm(prev => ({...prev, phone}))}
-          placeholderTextColor={colors.placeholder}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
         />
         <TextInput
           style={[
             styles.input,
             {
-              backgroundColor: colors.surface,
-              color: colors.text,
-              borderColor: colors.border,
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
             },
           ]}
           placeholder="Email"
           keyboardType="email-address"
           value={form.email}
           onChangeText={email => setForm(prev => ({...prev, email}))}
-          placeholderTextColor={colors.placeholder}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
         />
-        <View style={{marginBottom: 16}}>
-          <Pills
-            options={genderOptions}
-            selectedOption={form.gender}
-            onSelect={gender =>
+        <View style={styles.genderContainer}>
+          <SegmentedButtons
+            value={form.gender}
+            onValueChange={gender =>
               setForm(prev => ({...prev, gender: gender as 'Male' | 'Female'}))
             }
+            buttons={[
+              {
+                icon: 'male',
+                value: 'Male',
+                label: 'Male',
+                style: styles.segmentedButton,
+                labelStyle: styles.segmentedLabel,
+              },
+              {
+                icon: 'female',
+                value: 'Female',
+                label: 'Female',
+                style: styles.segmentedButton,
+                labelStyle: styles.segmentedLabel,
+              },
+            ]}
+            style={styles.segmentedButtons}
+            density="small"
           />
         </View>
         <TextInput
           style={[
             styles.input,
             {
-              backgroundColor: colors.surface,
-              color: colors.text,
-              borderColor: colors.border,
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
             },
           ]}
           placeholder="Password"
           secureTextEntry
           value={form.password}
           onChangeText={password => setForm(prev => ({...prev, password}))}
-          placeholderTextColor={colors.placeholder}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
         />
         <TouchableOpacity
-          style={[styles.button, {backgroundColor: colors.success}]}
+          style={[styles.button, {backgroundColor: theme.colors.primary}]}
           onPress={handleRegister}
           disabled={loading}>
-          <Text style={[styles.buttonText, {color: '#fff'}]}>Register</Text>
+          <Text style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
+            Register
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
-          <Text style={[styles.link, {color: colors.subtext}]}>
+          <Text style={[styles.link, {color: theme.colors.primary}]}>
             Already have an account? Login
           </Text>
         </TouchableOpacity>
@@ -167,6 +186,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 16,
   },
+  genderContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 8,
+  },
+  segmentedButtons: {
+    borderRadius: 12,
+  },
+  segmentedButton: {
+    borderRadius: 12,
+  },
+  segmentedLabel: {
+    paddingVertical: 8,
+  },
+
   button: {
     borderRadius: 12,
     paddingVertical: 14,

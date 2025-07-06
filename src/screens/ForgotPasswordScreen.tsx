@@ -7,15 +7,13 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import {useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import {useTheme} from '../context/ThemeContext';
 
 const ForgotPasswordScreen = ({navigation}: any) => {
   const {forgotPassword, verifyOtp, resetPassword, loading} = useAuth();
-  // @ts-ignore
-  const theme = require('styled-components').useTheme();
-  const colors = theme.colors;
+  const theme = useTheme();
   const [step, setStep] = useState<'phone' | 'otp' | 'reset'>('phone');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
@@ -75,8 +73,9 @@ const ForgotPasswordScreen = ({navigation}: any) => {
 
   return (
     <LoadingSpinner loading={loading} content="Processing...">
-      <View style={[styles.container, {backgroundColor: colors.background}]}>
-        <Text style={[styles.title, {color: colors.text}]}>
+      <View
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        <Text style={[styles.title, {color: theme.colors.onBackground}]}>
           Forgot Password
         </Text>
         {step === 'phone' && (
@@ -85,22 +84,25 @@ const ForgotPasswordScreen = ({navigation}: any) => {
               style={[
                 styles.input,
                 {
-                  backgroundColor: colors.surface,
-                  color: colors.text,
-                  borderColor: colors.border,
+                  backgroundColor: theme.colors.surface,
+                  color: theme.colors.onSurface,
+                  borderColor: theme.colors.outline,
                 },
               ]}
               placeholder="Phone Number"
               keyboardType="phone-pad"
               value={phone}
               onChangeText={setPhone}
-              placeholderTextColor={colors.placeholder}
+              placeholderTextColor={theme.colors.onSurfaceVariant}
             />
             <TouchableOpacity
-              style={[styles.button, {backgroundColor: colors.primary}]}
+              style={[styles.button, {backgroundColor: theme.colors.primary}]}
               onPress={handleSendOtp}
               disabled={loading}>
-              <Text style={[styles.buttonText, {color: '#fff'}]}>Send OTP</Text>
+              <Text
+                style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
+                Send OTP
+              </Text>
             </TouchableOpacity>
           </>
         )}
@@ -110,22 +112,23 @@ const ForgotPasswordScreen = ({navigation}: any) => {
               style={[
                 styles.input,
                 {
-                  backgroundColor: colors.surface,
-                  color: colors.text,
-                  borderColor: colors.border,
+                  backgroundColor: theme.colors.surface,
+                  color: theme.colors.onSurface,
+                  borderColor: theme.colors.outline,
                 },
               ]}
               placeholder="OTP"
               keyboardType="number-pad"
               value={otp}
               onChangeText={setOtp}
-              placeholderTextColor={colors.placeholder}
+              placeholderTextColor={theme.colors.onSurfaceVariant}
             />
             <TouchableOpacity
-              style={[styles.button, {backgroundColor: colors.primary}]}
+              style={[styles.button, {backgroundColor: theme.colors.primary}]}
               onPress={handleOtp}
               disabled={loading}>
-              <Text style={[styles.buttonText, {color: '#fff'}]}>
+              <Text
+                style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
                 Verify OTP
               </Text>
             </TouchableOpacity>
@@ -137,44 +140,45 @@ const ForgotPasswordScreen = ({navigation}: any) => {
               style={[
                 styles.input,
                 {
-                  backgroundColor: colors.surface,
-                  color: colors.text,
-                  borderColor: colors.border,
+                  backgroundColor: theme.colors.surface,
+                  color: theme.colors.onSurface,
+                  borderColor: theme.colors.outline,
                 },
               ]}
               placeholder="New Password"
               secureTextEntry
               value={newPassword}
               onChangeText={setNewPassword}
-              placeholderTextColor={colors.placeholder}
+              placeholderTextColor={theme.colors.onSurfaceVariant}
             />
             <TextInput
               style={[
                 styles.input,
                 {
-                  backgroundColor: colors.surface,
-                  color: colors.text,
-                  borderColor: colors.border,
+                  backgroundColor: theme.colors.surface,
+                  color: theme.colors.onSurface,
+                  borderColor: theme.colors.outline,
                 },
               ]}
               placeholder="Confirm Password"
               secureTextEntry
               value={confirmPassword}
               onChangeText={setConfirmPassword}
-              placeholderTextColor={colors.placeholder}
+              placeholderTextColor={theme.colors.onSurfaceVariant}
             />
             <TouchableOpacity
-              style={[styles.button, {backgroundColor: colors.success}]}
+              style={[styles.button, {backgroundColor: theme.colors.primary}]}
               onPress={handleReset}
               disabled={loading}>
-              <Text style={[styles.buttonText, {color: '#fff'}]}>
+              <Text
+                style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
                 Reset Password
               </Text>
             </TouchableOpacity>
           </>
         )}
         <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
-          <Text style={[styles.link, {color: colors.subtext}]}>
+          <Text style={[styles.link, {color: theme.colors.primary}]}>
             Back to Login
           </Text>
         </TouchableOpacity>

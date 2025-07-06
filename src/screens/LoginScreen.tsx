@@ -7,14 +7,13 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import {useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const LoginScreen = ({navigation}: any) => {
   const {login, googleLogin, loading} = useAuth();
-  // @ts-ignore
-  const theme = require('styled-components').useTheme();
-  const colors = theme.colors;
+  const theme = useTheme();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
 
@@ -42,63 +41,72 @@ const LoginScreen = ({navigation}: any) => {
 
   return (
     <LoadingSpinner loading={loading} content="Logging in...">
-      <View style={[styles.container, {backgroundColor: colors.background}]}>
-        <Text style={[styles.title, {color: colors.text}]}>Login</Text>
+      <View
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        <Text style={[styles.title, {color: theme.colors.onBackground}]}>
+          Login
+        </Text>
         <TextInput
           style={[
             styles.input,
             {
-              backgroundColor: colors.surface,
-              color: colors.text,
-              borderColor: colors.border,
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
             },
           ]}
           placeholder="Phone Number"
           keyboardType="phone-pad"
           value={phone}
           onChangeText={setPhone}
-          placeholderTextColor={colors.placeholder}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
         />
         <TextInput
           style={[
             styles.input,
             {
-              backgroundColor: colors.surface,
-              color: colors.text,
-              borderColor: colors.border,
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
             },
           ]}
           placeholder="Password"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
-          placeholderTextColor={colors.placeholder}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
         />
         <TouchableOpacity
-          style={[styles.button, {backgroundColor: colors.primary}]}
+          style={[styles.button, {backgroundColor: theme.colors.primary}]}
           onPress={handleLogin}
           disabled={loading}>
-          <Text style={[styles.buttonText, {color: '#fff'}]}>Login</Text>
+          <Text style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
+            Login
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.googleButton,
-            {backgroundColor: colors.background, borderColor: colors.primary},
+            {
+              backgroundColor: theme.colors.surface,
+              borderColor: theme.colors.outline,
+            },
           ]}
           onPress={handleGoogleLogin}
           disabled={loading}>
-          <Text style={[styles.googleButtonText, {color: colors.primary}]}>
+          <Text
+            style={[styles.googleButtonText, {color: theme.colors.primary}]}>
             Login with Google
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation?.navigate('Register')}>
-          <Text style={[styles.link, {color: colors.subtext}]}>
+          <Text style={[styles.link, {color: theme.colors.primary}]}>
             Don't have an account? Register
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation?.navigate('ForgotPassword')}>
-          <Text style={[styles.link, {color: colors.subtext}]}>
+          <Text style={[styles.link, {color: theme.colors.primary}]}>
             Forgot Password?
           </Text>
         </TouchableOpacity>

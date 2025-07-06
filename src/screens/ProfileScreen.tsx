@@ -1,12 +1,10 @@
 import React from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
-import {Button, Avatar, Chip} from 'react-native-paper';
+import {Button, Avatar, Chip, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 
 const ProfileScreen = () => {
-  // @ts-ignore
-  const theme = require('styled-components').useTheme();
-  const colors = theme.colors;
+  const theme = useTheme();
   const {user, logout} = useAuth();
 
   // Generate avatar URI based on user's name
@@ -26,8 +24,9 @@ const ProfileScreen = () => {
 
   if (!user) {
     return (
-      <View style={[styles.container, {backgroundColor: colors.background}]}>
-        <Text style={[styles.errorText, {color: colors.text}]}>
+      <View
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        <Text style={[styles.errorText, {color: theme.colors.onBackground}]}>
           No user data available
         </Text>
       </View>
@@ -36,86 +35,111 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView
-      style={[styles.container, {backgroundColor: colors.background}]}>
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={styles.avatarContainer}>
         <Avatar.Image source={{uri: avatarUri}} size={80} />
-        <Text style={[styles.name, {color: colors.text}]}>{user.name}</Text>
+        <Text style={[styles.name, {color: theme.colors.onBackground}]}>
+          {user.name}
+        </Text>
       </View>
 
       <View style={styles.infoContainer}>
         <View style={styles.infoSection}>
-          <Text style={[styles.sectionTitle, {color: colors.text}]}>
+          <Text
+            style={[styles.sectionTitle, {color: theme.colors.onBackground}]}>
             Personal Information
           </Text>
 
           <View style={styles.infoRow}>
-            <Text style={[styles.label, {color: colors.subtext}]}>Phone</Text>
-            <Text style={[styles.value, {color: colors.text}]}>
+            <Text
+              style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
+              Phone
+            </Text>
+            <Text style={[styles.value, {color: theme.colors.onBackground}]}>
               {user.phone}
             </Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={[styles.label, {color: colors.subtext}]}>Email</Text>
-            <Text style={[styles.value, {color: colors.text}]}>
+            <Text
+              style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
+              Email
+            </Text>
+            <Text style={[styles.value, {color: theme.colors.onBackground}]}>
               {user.email || 'Not provided'}
             </Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={[styles.label, {color: colors.subtext}]}>Gender</Text>
-            <Text style={[styles.value, {color: colors.text}]}>
+            <Text
+              style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
+              Gender
+            </Text>
+            <Text style={[styles.value, {color: theme.colors.onBackground}]}>
               {user.gender || 'Not specified'}
             </Text>
           </View>
         </View>
 
         <View style={styles.infoSection}>
-          <Text style={[styles.sectionTitle, {color: colors.text}]}>
+          <Text
+            style={[styles.sectionTitle, {color: theme.colors.onBackground}]}>
             Account Information
           </Text>
 
           <View style={styles.infoRow}>
-            <Text style={[styles.label, {color: colors.subtext}]}>Role</Text>
+            <Text
+              style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
+              Role
+            </Text>
             <Chip mode="outlined" compact>
               {user.role || 'User'}
             </Chip>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={[styles.label, {color: colors.subtext}]}>Status</Text>
+            <Text
+              style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
+              Status
+            </Text>
             <Chip mode="outlined" compact style={[]}>
               {user.status?.toUpperCase() || 'UNKNOWN'}
             </Chip>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={[styles.label, {color: colors.subtext}]}>
+            <Text
+              style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
               Family ID
             </Text>
-            <Text style={[styles.value, {color: colors.text}]}>
+            <Text style={[styles.value, {color: theme.colors.onBackground}]}>
               {user.family_id || 'Not assigned'}
             </Text>
           </View>
         </View>
 
         <View style={styles.infoSection}>
-          <Text style={[styles.sectionTitle, {color: colors.text}]}>
+          <Text
+            style={[styles.sectionTitle, {color: theme.colors.onBackground}]}>
             Account Details
           </Text>
 
           <View style={styles.infoRow}>
-            <Text style={[styles.label, {color: colors.subtext}]}>Created</Text>
-            <Text style={[styles.value, {color: colors.text}]}>
+            <Text
+              style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
+              Created
+            </Text>
+            <Text style={[styles.value, {color: theme.colors.onBackground}]}>
               {user.created_at ? formatDate(user.created_at) : 'Unknown'}
             </Text>
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={[styles.label, {color: colors.subtext}]}>
+            <Text
+              style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
               Last Updated
             </Text>
-            <Text style={[styles.value, {color: colors.text}]}>
+            <Text style={[styles.value, {color: theme.colors.onBackground}]}>
               {user.updated_at ? formatDate(user.updated_at) : 'Unknown'}
             </Text>
           </View>
@@ -123,9 +147,10 @@ const ProfileScreen = () => {
       </View>
 
       <Button
-        mode="contained"
-        style={[styles.logoutBtn, {backgroundColor: colors.error}]}
-        labelStyle={{color: '#fff', fontWeight: 'bold'}}
+        mode="outlined"
+        labelStyle={{fontWeight: 'bold', paddingVertical: 8}}
+        style={[styles.logoutBtn]}
+        // labelStyle={{color: theme.colors.onError, fontWeight: 'bold'}}
         onPress={logout}>
         Logout
       </Button>
@@ -196,7 +221,6 @@ const styles = StyleSheet.create({
   logoutBtn: {
     width: '100%',
     borderRadius: 12,
-    paddingVertical: 8,
   },
   errorText: {
     textAlign: 'center',

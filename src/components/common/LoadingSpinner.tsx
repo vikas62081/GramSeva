@@ -1,5 +1,6 @@
 import React, {ReactNode} from 'react';
 import {View, ActivityIndicator, StyleSheet, Text} from 'react-native';
+import {useTheme} from 'react-native-paper';
 
 interface LoadingSpinnerProps {
   loading: boolean;
@@ -12,13 +13,19 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   children,
   content = 'Please wait...',
 }) => {
+  const theme = useTheme();
+
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
       {children}
       {loading && (
         <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#007bff" />
-          {content && <Text style={styles.text}>{content}</Text>}
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          {content ? (
+            <Text style={[styles.text, {color: theme.colors.onPrimary}]}>
+              {content}
+            </Text>
+          ) : null}
         </View>
       )}
     </View>
@@ -26,20 +33,21 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 'auto',
-    flex: 1,
-    verticalAlign: 'middle',
     zIndex: 999,
   },
   text: {
-    marginTop: 12,
-    color: '#333',
+    marginTop: 10,
     fontSize: 16,
+    fontWeight: '500',
   },
 });
 

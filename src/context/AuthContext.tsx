@@ -90,7 +90,6 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         return false;
       }
     } catch (error) {
-      console.error('Login error:', error);
       return false;
     }
   };
@@ -129,7 +128,6 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       if (response) return true;
       return false;
     } catch (error) {
-      console.error('Registration error:', error);
       return false;
     }
   };
@@ -139,7 +137,6 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       const response = await forgotPasswordMutation({phone}).unwrap();
       return response.data ? true : false;
     } catch (error) {
-      console.error('Forgot password error:', error);
       return false;
     }
   };
@@ -154,7 +151,6 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       const response = await verifyOtpMutation(otpData).unwrap();
       return response.data ? true : false;
     } catch (error) {
-      console.error('OTP verification error:', error);
       return false;
     }
   };
