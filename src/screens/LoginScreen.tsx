@@ -10,6 +10,7 @@ import {
 import {useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import Logo from '../components/common/Logo';
 
 const LoginScreen = ({navigation}: any) => {
   const {login, googleLogin, loading} = useAuth();
@@ -43,6 +44,10 @@ const LoginScreen = ({navigation}: any) => {
     <LoadingSpinner loading={loading} content="Logging in...">
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        <View style={styles.logoSection}>
+          <Logo size="large" />
+        </View>
+
         <Text style={[styles.title, {color: theme.colors.onBackground}]}>
           Login
         </Text>
@@ -120,6 +125,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 24,
+  },
+  logoSection: {
+    alignItems: 'center',
+    marginBottom: 32,
   },
   title: {
     fontSize: 28,

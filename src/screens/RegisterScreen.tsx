@@ -10,6 +10,7 @@ import {
 import {SegmentedButtons, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import Logo from '../components/common/Logo';
 
 const RegisterScreen = ({navigation}: any) => {
   const {register, loading} = useAuth();
@@ -60,6 +61,10 @@ const RegisterScreen = ({navigation}: any) => {
     <LoadingSpinner loading={loading} content="Registering...">
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        <View style={styles.logoSection}>
+          <Logo size="large" />
+        </View>
+
         <Text style={[styles.title, {color: theme.colors.onBackground}]}>
           Register
         </Text>
@@ -172,6 +177,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
   },
+  logoSection: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -189,11 +198,6 @@ const styles = StyleSheet.create({
   genderContainer: {
     marginBottom: 16,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 8,
-  },
   segmentedButtons: {
     borderRadius: 12,
   },
@@ -203,7 +207,6 @@ const styles = StyleSheet.create({
   segmentedLabel: {
     paddingVertical: 8,
   },
-
   button: {
     borderRadius: 12,
     paddingVertical: 14,

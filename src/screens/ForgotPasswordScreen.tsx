@@ -10,6 +10,7 @@ import {
 import {useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import Logo from '../components/common/Logo';
 
 const ForgotPasswordScreen = ({navigation}: any) => {
   const {forgotPassword, verifyOtp, resetPassword, loading} = useAuth();
@@ -75,6 +76,10 @@ const ForgotPasswordScreen = ({navigation}: any) => {
     <LoadingSpinner loading={loading} content="Processing...">
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        <View style={styles.logoSection}>
+          <Logo size="medium" />
+        </View>
+
         <Text style={[styles.title, {color: theme.colors.onBackground}]}>
           Forgot Password
         </Text>
@@ -192,6 +197,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 24,
+  },
+  logoSection: {
+    alignItems: 'center',
+    marginBottom: 24,
   },
   title: {
     fontSize: 28,

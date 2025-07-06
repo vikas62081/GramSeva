@@ -22,6 +22,40 @@ const ProfileScreen = () => {
     });
   };
 
+  const getStatusColor = (status?: string) => {
+    switch (status?.toLowerCase()) {
+      case 'active':
+        return theme.colors.primary;
+      case 'inactive':
+        return theme.colors.error;
+      default:
+        return theme.colors.outline;
+    }
+  };
+
+  const getRoleInfo = (role?: string) => {
+    switch (role?.toLowerCase()) {
+      case 'admin':
+        return {
+          label: 'High Privilege',
+          color: theme.colors.error,
+          backgroundColor: theme.colors.errorContainer,
+        };
+      case 'viewer':
+        return {
+          label: 'User',
+          color: theme.colors.primary,
+          backgroundColor: theme.colors.primaryContainer,
+        };
+      default:
+        return {
+          label: role || 'User',
+          color: theme.colors.outline,
+          backgroundColor: theme.colors.surfaceVariant,
+        };
+    }
+  };
+
   if (!user) {
     return (
       <View
@@ -33,14 +67,30 @@ const ProfileScreen = () => {
     );
   }
 
+  const roleInfo = getRoleInfo(user.role);
+
   return (
     <ScrollView
-      style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      style={[styles.container, {backgroundColor: theme.colors.background}]}
+      showsVerticalScrollIndicator={false}>
+      {/* Header Section */}
       <View style={styles.avatarContainer}>
         <Avatar.Image source={{uri: avatarUri}} size={80} />
         <Text style={[styles.name, {color: theme.colors.onBackground}]}>
           {user.name}
         </Text>
+        <View style={styles.chipContainer}>
+          <Chip
+            mode="flat"
+            compact
+            style={[
+              styles.roleChip,
+              {backgroundColor: roleInfo.backgroundColor},
+            ]}
+            textStyle={{color: roleInfo.color}}>
+            {roleInfo.label}
+          </Chip>
+        </View>
       </View>
 
       <View style={styles.infoContainer}>
@@ -92,8 +142,15 @@ const ProfileScreen = () => {
               style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
               Role
             </Text>
-            <Chip mode="outlined" compact>
-              {user.role || 'User'}
+            <Chip
+              mode="flat"
+              compact
+              style={[
+                styles.infoChip,
+                {backgroundColor: roleInfo.backgroundColor},
+              ]}
+              textStyle={{color: roleInfo.color}}>
+              {roleInfo.label}
             </Chip>
           </View>
 
@@ -102,7 +159,14 @@ const ProfileScreen = () => {
               style={[styles.label, {color: theme.colors.onSurfaceVariant}]}>
               Status
             </Text>
-            <Chip mode="outlined" compact style={[]}>
+            <Chip
+              mode="flat"
+              compact
+              style={[
+                styles.infoChip,
+                {backgroundColor: getStatusColor(user.status)},
+              ]}
+              textStyle={{color: theme.colors.surface}}>
               {user.status?.toUpperCase() || 'UNKNOWN'}
             </Chip>
           </View>
@@ -148,9 +212,9 @@ const ProfileScreen = () => {
 
       <Button
         mode="outlined"
-        labelStyle={{fontWeight: 'bold', paddingVertical: 8}}
-        style={[styles.logoutBtn]}
-        // labelStyle={{color: theme.colors.onError, fontWeight: 'bold'}}
+        labelStyle={{fontWeight: 'bold', paddingVertical: 4}}
+        style={[styles.logoutBtn, {borderColor: theme.colors.error}]}
+        textColor={theme.colors.error}
         onPress={logout}>
         Logout
       </Button>
@@ -174,13 +238,18 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 8,
   },
-
+  chipContainer: {
+    marginTop: 8,
+  },
+  roleChip: {
+    borderRadius: 16,
+  },
   infoContainer: {
     width: '100%',
     marginBottom: 32,
   },
   infoSection: {
-    marginBottom: 24,
+    // marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 18,
@@ -209,17 +278,10 @@ const styles = StyleSheet.create({
     flex: 2,
     textAlign: 'right',
   },
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: 'bold',
+  infoChip: {
+    borderRadius: 12,
   },
   logoutBtn: {
-    width: '100%',
     borderRadius: 12,
   },
   errorText: {
