@@ -19,7 +19,7 @@ import {useHideTabBar} from '../../../hooks/ useHideTabBar';
 import {ActivityIndicator} from 'react-native-paper';
 import {useSnackbar} from '../../../context/SnackbarContext';
 import {useRBAC} from '../../../context/RBACContext';
-import RoleBanner from './RoleBanner';
+import StatusBanner from './StatusBanner';
 
 interface FamilyDetailsScreenProps {
   navigation: FamilyDetailsScreenNavigationProp;
@@ -157,7 +157,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
   }
   return (
     <>
-      <RoleBanner userId={family?.id!} status={family?.status!} />
+      <StatusBanner userId={family?.id!} status={family?.status!} />
       <FlatList
         data={family!.members || []}
         renderItem={({item}) => (

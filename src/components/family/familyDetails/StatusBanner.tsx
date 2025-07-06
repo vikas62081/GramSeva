@@ -14,7 +14,7 @@ interface RoleBannerProps {
   status: string;
 }
 
-const RoleBanner: React.FC<RoleBannerProps> = ({userId, status}) => {
+const StatusBanner: React.FC<RoleBannerProps> = ({userId, status}) => {
   const {isAdmin} = useRBAC();
   const {showSnackbar} = useSnackbar();
   const [showRoleDialog, setShowRoleDialog] = useState(false);
@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RoleBanner;
+export default StatusBanner;
