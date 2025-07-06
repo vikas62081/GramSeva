@@ -3,7 +3,11 @@ import {View, FlatList, StyleSheet, RefreshControl} from 'react-native';
 import {Surface, Divider} from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
-import {Contributor, ContributorsListScreenRouteProp} from '../../types';
+import {
+  Contributor,
+  ContributorsListScreenRouteProp,
+  IContributorForm,
+} from '../../types';
 import {
   useGetContributorsQuery,
   useAddContributorMutation,
@@ -116,13 +120,14 @@ const ContributorsListScreen: React.FC = () => {
         placeholder="Search contributors..."
         isFetching={isFetching}
         goBack={() => navigation.goBack()}
+        showAddButton={false}
       />
 
       <View style={styles.content}>
         <FlatList
           data={contributors}
           renderItem={({item}) => (
-            <ContributorItem item={item} onPress={handleEdit} />
+            <ContributorItem item={item} onPress={() => null} />
           )}
           keyExtractor={item => item.id!}
           contentContainerStyle={styles.listContainer}
@@ -168,7 +173,7 @@ const ContributorsListScreen: React.FC = () => {
           setSelectedContributor(undefined);
         }}
         onSubmit={handleSubmit}
-        initialData={selectedContributor}
+        initialData={selectedContributor as unknown as IContributorForm}
       />
     </Surface>
   );

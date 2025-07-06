@@ -20,10 +20,12 @@ import SearchHeader from '../common/SearchHeader';
 import EventForm from './eventDetails/EventForm';
 import LoadMoreButton from '../common/LoadMoreButton';
 import {usePaginatedList} from '../../hooks/usePaginatedList';
+import {useRBAC} from '../../context/RBACContext';
 
 const EventContainer = (): React.JSX.Element => {
   const navigation = useNavigation<EventsScreenNavigationProp>();
 
+  const {isAdmin} = useRBAC();
   // State management
   const [isAddingEvent, setIsAddingEvent] = useState(false);
 
@@ -122,6 +124,7 @@ const EventContainer = (): React.JSX.Element => {
         onAdd={() => setIsAddingEvent(true)}
         placeholder="Search events..."
         isFetching={isFetching}
+        showAddButton={isAdmin}
       />
 
       <View style={styles.content}>
@@ -176,16 +179,18 @@ const EventContainer = (): React.JSX.Element => {
         />
       )}
 
-      <FAB
-        style={styles.fab}
-        icon="add"
-        onPress={() => {
-          setIsAddingEvent(true);
-        }}
-        color="white"
-        visible={!isAddingEvent}
-        accessibilityLabel="Add Event"
-      />
+      {isAdmin && (
+        <FAB
+          style={styles.fab}
+          icon="add"
+          onPress={() => {
+            setIsAddingEvent(true);
+          }}
+          color="white"
+          visible={!isAddingEvent}
+          accessibilityLabel="Add Event"
+        />
+      )}
     </Surface>
   );
 };

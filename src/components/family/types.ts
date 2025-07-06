@@ -16,6 +16,7 @@ export interface Family {
   relationship: string;
   members: number;
   phone: string;
+  status?: string;
 }
 
 export interface FamilyMember {
@@ -23,6 +24,7 @@ export interface FamilyMember {
   name: string;
   gender: string;
   dob: Date;
+  status?: string;
   relationship: string;
   parentId?: string;
   members?: FamilyMember[];

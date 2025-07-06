@@ -7,6 +7,7 @@ import {formatDateTime} from '../../../utils';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types';
+import {useRBAC} from '../../../context/RBACContext';
 
 interface EventDetailsHeaderProps {
   event?: Event_;
@@ -17,8 +18,7 @@ const EventDetailsHeader: React.FC<EventDetailsHeaderProps> = ({
   event,
   onEdit,
 }) => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const {isAdmin} = useRBAC();
   if (!event) {
     return null;
   }
@@ -47,14 +47,16 @@ const EventDetailsHeader: React.FC<EventDetailsHeaderProps> = ({
             {description}
           </Text>
         </View>
-        <IconButton
-          mode="contained"
-          icon="edit"
-          size={24}
-          onPress={onEdit}
-          style={styles.editIcon}
-          accessibilityLabel="Edit Event"
-        />
+        {isAdmin && (
+          <IconButton
+            mode="contained"
+            icon="edit"
+            size={24}
+            onPress={onEdit}
+            style={styles.editIcon}
+            accessibilityLabel="Edit Event"
+          />
+        )}
       </View>
 
       <View style={styles.infoRow}>

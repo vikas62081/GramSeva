@@ -1,22 +1,24 @@
 import React from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import {Avatar, IconButton, Text} from 'react-native-paper';
+import {FamilyMember} from '../types';
 
 interface FamilyDetailHeaderProps {
-  name: string;
-  relationship: string;
-  familyCount?: number;
+  family: FamilyMember;
   onAdd: () => void;
   imageUrl?: string;
+  isEditAllowed: boolean;
 }
 const fallbackImg = 'https://buildingontheword.org/files/2014/12/family.jpg';
+
 const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
-  name,
-  relationship = 'Head',
-  familyCount = 6,
+  family,
   onAdd,
   imageUrl = fallbackImg,
+  isEditAllowed = false,
 }) => {
+  const {name, members = [], relationship = 'Head'} = family;
+  const familyCount = Array.isArray(members) ? members.length : 0;
   return (
     <View style={styles.container}>
       <View style={styles.cardHeader}>
@@ -38,15 +40,17 @@ const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
             {relationship}
           </Text>
         </View>
-        <IconButton
-          onPress={onAdd}
-          icon="add"
-          mode="contained"
-          style={styles.addButton}
-          containerColor="#63C7A6"
-          iconColor="#fff"
-          size={28}
-        />
+        {isEditAllowed && (
+          <IconButton
+            onPress={onAdd}
+            icon="add"
+            mode="contained"
+            style={styles.addButton}
+            containerColor="#63C7A6"
+            iconColor="#fff"
+            size={28}
+          />
+        )}
       </View>
       <View style={styles.sectionHeader}>
         <Text variant="titleMedium" style={styles.sectionTitle}>

@@ -4,6 +4,7 @@ import {familyApi} from './slices/familyApiSlice';
 import {eventApi} from './slices/eventApiSlice';
 import {dashboardApi} from './slices/dashboardApiSlice';
 import {authApi} from './slices/authApiSlice';
+import {userApi} from './slices/userApiSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     [eventApi.reducerPath]: eventApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware().concat(
@@ -18,6 +20,7 @@ export const store = configureStore({
       eventApi.middleware,
       dashboardApi.middleware,
       authApi.middleware,
+      userApi.middleware,
     ),
 });
 

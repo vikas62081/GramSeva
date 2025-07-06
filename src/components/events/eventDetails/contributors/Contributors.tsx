@@ -20,6 +20,7 @@ import LazyLoader from '../../../common/LazyLoader';
 import {useSnackbar} from '../../../../context/SnackbarContext';
 import ContributorItem from './ContributorItem';
 import {usePreviewList} from '../../../../hooks/usePreviewList';
+import {useRBAC} from '../../../../context/RBACContext';
 
 export interface ContributorsProps {
   eventId: string;
@@ -34,6 +35,7 @@ const Contributors: React.FC<ContributorsProps> = ({
 }) => {
   const navigation = useNavigation<EventDetailsScreenNavigationProp>();
   const {showSnackbar} = useSnackbar();
+  const {isAdmin} = useRBAC();
 
   // Use the preview list hook
   const {
@@ -78,6 +80,7 @@ const Contributors: React.FC<ContributorsProps> = ({
   };
 
   const handleEdit = (contributor: Contributor) => {
+    if (!isAdmin) return;
     setSelectedContributor(contributor);
     setShowForm(true);
   };
@@ -128,18 +131,20 @@ const Contributors: React.FC<ContributorsProps> = ({
         />
       </LazyLoader>
 
-      <FAB
-        icon="add"
-        style={styles.fab}
-        label=""
-        onPress={() => {
-          setSelectedContributor(undefined);
-          setShowForm(true);
-        }}
-        size="small"
-        color="white"
-        accessibilityLabel="Add Contributor"
-      />
+      {isAdmin && (
+        <FAB
+          icon="add"
+          style={styles.fab}
+          label=""
+          onPress={() => {
+            setSelectedContributor(undefined);
+            setShowForm(true);
+          }}
+          size="small"
+          color="white"
+          accessibilityLabel="Add Contributor"
+        />
+      )}
       {showForm && (
         <ContributorForm
           visible={showForm}

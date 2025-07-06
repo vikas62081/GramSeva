@@ -3,7 +3,8 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Family} from './types';
 import {Text, Avatar} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {getInitials} from '../../utils';
+import {capitalize, getInitials} from '../../utils';
+import {useRBAC} from '../../context/RBACContext';
 
 interface MemberProps {
   family: Family;
@@ -13,6 +14,7 @@ interface MemberProps {
 const Member: React.FC<MemberProps> = ({family, onPress}) => {
   // Get initials for avatar
   const initials = getInitials(family.name);
+  const {isAdmin} = useRBAC();
 
   return (
     <TouchableOpacity
@@ -49,9 +51,16 @@ const Member: React.FC<MemberProps> = ({family, onPress}) => {
               style={styles.genderIcon}
             />
           </View>
-          <Text variant="labelMedium" style={styles.metaText}>
-            {family.gender}
-          </Text>
+          <View style={{flexDirection: 'row', gap: 8}}>
+            <Text variant="labelMedium" style={styles.metaText}>
+              {family.gender}
+            </Text>
+            {isAdmin && family.status && (
+              <Text variant="labelSmall" style={styles.statusText}>
+                Status: {capitalize(family.status)}
+              </Text>
+            )}
+          </View>
         </View>
         <MaterialIcons
           name="chevron-right"
@@ -140,6 +149,12 @@ const styles = StyleSheet.create({
   metaText: {
     color: '#888',
     marginTop: 1,
+    letterSpacing: 0.1,
+  },
+  statusText: {
+    color: '#1976d2',
+    marginTop: 1,
+    fontWeight: '500',
     letterSpacing: 0.1,
   },
   chevron: {

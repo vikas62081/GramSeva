@@ -1,5 +1,5 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {Modal, StyleSheet, FlatList, Alert, ToastAndroid} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {FlatList, Alert} from 'react-native';
 import MemberCard from './MemberCard';
 import {FamilyMember} from '../types';
 import {
@@ -18,6 +18,8 @@ import EmptyComponent from '../../common/EmptyComponent';
 import {useHideTabBar} from '../../../hooks/ useHideTabBar';
 import {ActivityIndicator} from 'react-native-paper';
 import {useSnackbar} from '../../../context/SnackbarContext';
+import {useRBAC} from '../../../context/RBACContext';
+import RoleBanner from './RoleBanner';
 
 interface FamilyDetailsScreenProps {
   navigation: FamilyDetailsScreenNavigationProp;
@@ -29,7 +31,9 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
 }) => {
   useHideTabBar();
   const {showSnackbar} = useSnackbar();
+  const {canEditSelf} = useRBAC();
   const {familyId} = route.params || {};
+
   const {
     data: family,
     isLoading,
@@ -146,11 +150,14 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
     setShowAddMemberModal(true);
   };
 
+  const isEditAllowed = useMemo(() => canEditSelf(family?.id!), [family]);
+
   if (isFetching || isLoading) {
     return <ActivityIndicator animating />;
   }
   return (
     <>
+      <RoleBanner userId={family?.id!} status={family?.status!} />
       <FlatList
         data={family!.members || []}
         renderItem={({item}) => (
@@ -159,14 +166,14 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
             member={item}
             nameById={nameById}
             onEdit={handleEditMember}
+            isEditAllowed={isEditAllowed}
           />
         )}
         ListHeaderComponent={
           <FamilyDetailHeader
-            name={family!.name}
-            relationship={family!.relationship}
+            family={family!}
             onAdd={handleAddBtnClick}
-            familyCount={family!.members?.length || 0}
+            isEditAllowed={isEditAllowed}
           />
         }
         ListEmptyComponent={<EmptyComponent msg="No member found." />}

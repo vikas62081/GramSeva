@@ -17,6 +17,7 @@ import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import {SnackbarProvider} from './src/context/SnackbarContext';
 import {AuthProvider} from './src/context/AuthContext';
+import {RBACProvider} from './src/context/RBACContext';
 
 enableScreens();
 
@@ -66,15 +67,17 @@ const App = (): React.JSX.Element => {
         <Provider store={store}>
           <SafeAreaProvider>
             <AuthProvider>
-              <NavigationContainer theme={navTheme}>
-                <StatusBar
-                  barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                  backgroundColor={backgroundStyle.backgroundColor}
-                />
-                <SafeAreaView style={backgroundStyle}>
-                  <AppNavigator />
-                </SafeAreaView>
-              </NavigationContainer>
+              <RBACProvider>
+                <NavigationContainer theme={navTheme}>
+                  <StatusBar
+                    barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+                    backgroundColor={backgroundStyle.backgroundColor}
+                  />
+                  <SafeAreaView style={backgroundStyle}>
+                    <AppNavigator />
+                  </SafeAreaView>
+                </NavigationContainer>
+              </RBACProvider>
             </AuthProvider>
           </SafeAreaProvider>
         </Provider>

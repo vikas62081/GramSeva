@@ -9,9 +9,15 @@ interface MemberCardProps {
   member: FamilyMember;
   onEdit: (member: FamilyMember) => void;
   nameById: Record<string, string>;
+  isEditAllowed: boolean;
 }
 
-const MemberCard: React.FC<MemberCardProps> = ({member, nameById, onEdit}) => {
+const MemberCard: React.FC<MemberCardProps> = ({
+  member,
+  nameById,
+  onEdit,
+  isEditAllowed = false,
+}) => {
   const initials = getInitials(member.name);
 
   const relatedName = nameById[member.parentId!] || 'Unknown';
@@ -38,27 +44,27 @@ const MemberCard: React.FC<MemberCardProps> = ({member, nameById, onEdit}) => {
           <Text
             numberOfLines={1}
             style={[styles.metaText, {color: genderColor}]}>
-            {' '}
             {member.gender}
           </Text>
           <Text style={styles.dot}> • </Text>
           <MaterialIcons name="supervisor-account" size={13} color="#777" />
           <Text style={styles.metaText} numberOfLines={1} ellipsizeMode="tail">
-            {' '}
             {member.relationship} of {relatedName}
           </Text>
         </View>
       </View>
-      <IconButton
-        icon="mode-edit-outline"
-        size={20}
-        mode="contained-tonal"
-        containerColor="#f0f0f0"
-        onPress={() => onEdit(member)}
-        style={styles.icon}
-        accessibilityLabel={`Edit ${member.name}`}
-        testID={`edit-${member.id}`}
-      />
+      {isEditAllowed && (
+        <IconButton
+          icon="mode-edit-outline"
+          size={20}
+          mode="contained-tonal"
+          containerColor="#f0f0f0"
+          onPress={() => onEdit(member)}
+          style={styles.icon}
+          accessibilityLabel={`Edit ${member.name}`}
+          testID={`edit-${member.id}`}
+        />
+      )}
     </View>
   );
 };
@@ -95,6 +101,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   metaText: {
+    marginLeft: 2,
     fontSize: 11.5,
     color: '#555',
     flexShrink: 1,

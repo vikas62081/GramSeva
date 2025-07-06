@@ -174,8 +174,9 @@ const RegisterScreen = ({navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     padding: 24,
+    paddingTop: 40,
   },
   logoSection: {
     alignItems: 'center',

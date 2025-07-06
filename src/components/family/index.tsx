@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {View, StyleSheet, FlatList, RefreshControl} from 'react-native';
+import {View, StyleSheet, FlatList, RefreshControl, Alert} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Family} from './types';
 import Member from './Member';
@@ -15,6 +15,7 @@ import SearchHeader from '../common/SearchHeader';
 import {useSnackbar} from '../../context/SnackbarContext';
 import LoadMoreButton from '../common/LoadMoreButton';
 import {usePaginatedList} from '../../hooks/usePaginatedList';
+import {useRBAC} from '../../context/RBACContext';
 
 type RootStackParamList = {
   FamilyList: undefined;
@@ -32,6 +33,7 @@ interface FamilyScreenProps {
 
 const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   const {showSnackbar} = useSnackbar();
+  const {isAdmin, isPendingUser} = useRBAC();
 
   // State management
   const [isAddingFamily, setIsAddingFamily] = useState(false);
@@ -66,6 +68,13 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   }, [refetch]);
 
   const handleFamilyPress = (familyId: string) => {
+    if (isPendingUser) {
+      Alert.alert(
+        'Access Denied',
+        'Your account is still pending approval. You’ll get access once it’s reviewed.',
+      );
+      return;
+    }
     navigation.navigate('FamilyDetails', {familyId});
   };
 
@@ -117,6 +126,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
         onAdd={handleAddFamily}
         placeholder="Search families..."
         isFetching={isFetching}
+        showAddButton={isAdmin}
       />
 
       {isAddingFamily && (

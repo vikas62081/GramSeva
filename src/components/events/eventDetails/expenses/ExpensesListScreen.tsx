@@ -113,13 +113,14 @@ const ExpensesListScreen: React.FC = () => {
         placeholder="Search expenses..."
         isFetching={isFetching}
         goBack={() => navigation.goBack()}
+        showAddButton={false}
       />
 
       <View style={styles.content}>
         <FlatList
           data={expenses}
           renderItem={({item}) => (
-            <ExpenseItem item={item} onPress={handleEdit} />
+            <ExpenseItem item={item} onPress={() => null} />
           )}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContainer}

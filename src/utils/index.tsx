@@ -20,6 +20,11 @@ function getInitials(name: string): string {
     .toUpperCase()
     .slice(0, 2);
 }
+
+function capitalize(word: string): string {
+  if (!word) return '';
+  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+}
 export {
   formatDate,
   getTime,
@@ -32,4 +37,5 @@ export {
   getFamilyDropdownOptions,
   formatCurrency,
   getInitials,
+  capitalize,
 };

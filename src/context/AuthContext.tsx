@@ -19,17 +19,17 @@ import {
 } from '../store/slices/authApiSlice';
 
 interface User {
-  id?: string;
+  id: string;
   name: string;
   phone: string;
-  email?: string;
+  email: string;
   gender: string;
-  role?: string;
-  status?: string;
+  role: string;
+  status: string;
   family_id?: string | null;
-  created_at?: string;
-  updated_at?: string;
-  token?: string;
+  created_at: string;
+  updated_at: string;
+  token: string;
 }
 
 interface AuthContextType {
@@ -96,14 +96,14 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
   const googleLogin = async () => {
     // Simulate Google login (replace with real Google Sign-In)
-    const googleUser = {
-      name: 'Google User',
-      phone: '0000000000',
-      email: 'user@gmail.com',
-      gender: 'Other',
-    };
-    setUser(googleUser);
-    await saveToStorage('user', googleUser);
+    // const googleUser = {
+    //   name: 'Google User',
+    //   phone: '0000000000',
+    //   email: 'user@gmail.com',
+    //   gender: 'Other',
+    // };
+    // setUser(googleUser);
+    // await saveToStorage('user', googleUser);
     return true;
   };
 

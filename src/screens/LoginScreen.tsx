@@ -123,8 +123,9 @@ const LoginScreen = ({navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     padding: 24,
+    paddingTop: 72,
   },
   logoSection: {
     alignItems: 'center',

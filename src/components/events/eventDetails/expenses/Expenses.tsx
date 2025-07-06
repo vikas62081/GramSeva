@@ -15,6 +15,7 @@ import {useSnackbar} from '../../../../context/SnackbarContext';
 import {useNavigation} from '@react-navigation/native';
 import ExpenseItem from './ExpenseItem';
 import {usePreviewList} from '../../../../hooks/usePreviewList';
+import {useRBAC} from '../../../../context/RBACContext';
 
 export interface ExpensesProps {
   eventId: string;
@@ -25,7 +26,7 @@ export interface ExpensesProps {
 const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
   const navigation = useNavigation<EventDetailsScreenNavigationProp>();
   const {showSnackbar} = useSnackbar();
-
+  const {isAdmin} = useRBAC();
   // Use the preview list hook
   const {
     data: expenses,
@@ -66,6 +67,7 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
   };
 
   const handleEdit = (expense: Expense) => {
+    if (!isAdmin) return;
     setSelectedExpense(expense);
     setShowForm(true);
   };
@@ -112,18 +114,20 @@ const Expenses: React.FC<ExpensesProps> = ({eventId, eventTitle, refetch}) => {
           contentContainerStyle={expenses.length === 0 ? {flex: 1} : undefined}
         />
       </LazyLoader>
-      <FAB
-        icon="add"
-        style={styles.fab}
-        label=""
-        onPress={() => {
-          setSelectedExpense(undefined);
-          setShowForm(true);
-        }}
-        size="small"
-        color="white"
-        accessibilityLabel="Add Expense"
-      />
+      {isAdmin && (
+        <FAB
+          icon="add"
+          style={styles.fab}
+          label=""
+          onPress={() => {
+            setSelectedExpense(undefined);
+            setShowForm(true);
+          }}
+          size="small"
+          color="white"
+          accessibilityLabel="Add Expense"
+        />
+      )}
       {showForm && (
         <ExpenseForm
           visible={showForm}
