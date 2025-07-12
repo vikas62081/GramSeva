@@ -1,15 +1,17 @@
 import React from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, RefreshControl} from 'react-native';
 import {List, Divider, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import PageHeader from '../components/common/PageHeader';
 import {useHideTabBar} from '../hooks/ useHideTabBar';
 import {formatDate, getRoleInfo, getStatusColor} from '../utils';
+import {useUserRefresh} from '../hooks/useUserRefresh';
 
 const AccountInfoScreen = ({navigation}: any) => {
   useHideTabBar();
   const theme = useTheme();
   const {user} = useAuth();
+  const {refreshing, onRefresh} = useUserRefresh();
 
   if (!user) {
     return (
@@ -28,7 +30,15 @@ const AccountInfoScreen = ({navigation}: any) => {
   return (
     <ScrollView
       style={[styles.container, {backgroundColor: theme.colors.background}]}
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[theme.colors.primary]}
+          tintColor={theme.colors.primary}
+        />
+      }>
       <PageHeader
         title="Personal Information"
         onBack={() => navigation?.goBack()}

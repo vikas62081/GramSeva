@@ -1,13 +1,16 @@
 import React from 'react';
-import {View, StyleSheet, Text, ScrollView} from 'react-native';
+import {View, StyleSheet, Text, ScrollView, RefreshControl} from 'react-native';
 import {Avatar, Chip, useTheme, List, Divider} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
+import {useUserRefresh} from '../hooks/useUserRefresh';
 
 import {getRoleInfo} from '../utils';
 
 const ProfileScreen = ({navigation}: any) => {
   const theme = useTheme();
   const {user, logout} = useAuth();
+  const {refreshing, onRefresh} = useUserRefresh();
+
   // Generate avatar URI based on user's name
   const avatarUri = user?.name
     ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -31,7 +34,15 @@ const ProfileScreen = ({navigation}: any) => {
   return (
     <ScrollView
       style={[styles.container, {backgroundColor: theme.colors.background}]}
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[theme.colors.primary]}
+          tintColor={theme.colors.primary}
+        />
+      }>
       {/* Header Section with Avatar, Name, and Role */}
       <View style={styles.headerContainer}>
         <View style={styles.avatarSection}>

@@ -54,10 +54,11 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
     ready,
   } = usePaginatedList<
     Family,
-    {page?: number; limit?: number; search?: string}
+    {page?: number; limit?: number; search?: string; status: string}
   >({
     queryHook: useGetFamiliesQuery,
     limit: 8,
+    queryParams: {status: 'Active'},
   });
 
   const [createFamily, {isLoading: creatingFamily}] = useCreateFamilyMutation();
@@ -126,7 +127,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
         onAdd={handleAddFamily}
         placeholder="Search families..."
         isFetching={isFetching}
-        showAddButton={isAdmin}
+        showAddButton={false}
       />
 
       {isAddingFamily && (

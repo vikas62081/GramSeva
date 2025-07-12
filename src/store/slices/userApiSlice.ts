@@ -17,7 +17,7 @@ export interface UserReview {
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery,
-  tagTypes: ['User'],
+  tagTypes: ['User', 'Family'],
   endpoints: builder => ({
     getUsers: builder.query<Pagination<User[]>, PaginationRequest>({
       query: ({page = 1, limit = 10, search, status} = {}) => {
@@ -40,7 +40,7 @@ export const userApi = createApi({
         method: 'GET',
       }),
       transformResponse: (response: any) => response.data,
-      // providesTags: (result, error, {userId}) => [{type: 'User', id: userId}],
+      providesTags: (result, error, userId) => [{type: 'User', id: userId}],
     }),
     updateUserStatus: builder.mutation<User, {userId: string; status?: string}>(
       {
@@ -50,18 +50,28 @@ export const userApi = createApi({
           params: {status},
         }),
         transformResponse: (response: any) => response.data,
-        async onQueryStarted({status}, {dispatch, queryFulfilled}) {
+        async onQueryStarted({userId, status}, {dispatch, queryFulfilled}) {
           const {data: updatedUser} = await queryFulfilled;
           let patchResult: any;
           try {
-            patchResult = dispatch(
-              familyApi.util.updateQueryData(
-                'getFamilyById',
-                updatedUser.family_id!,
-                draft => {
-                  draft['status'] = status;
-                },
-              ),
+            if (updatedUser.family_id) {
+              patchResult = dispatch(
+                familyApi.util.updateQueryData(
+                  'getFamilyById',
+                  updatedUser.family_id,
+                  draft => {
+                    draft['status'] = status;
+                  },
+                ),
+              );
+            }
+
+            dispatch(
+              userApi.util.updateQueryData('getUser', userId, draft => {
+                if (draft) {
+                  draft.status = status || updatedUser.status;
+                }
+              }),
             );
           } catch {
             patchResult?.undo?.();

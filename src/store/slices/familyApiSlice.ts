@@ -12,12 +12,17 @@ export const familyApi = createApi({
   endpoints: builder => ({
     getFamilies: builder.query<
       Pagination<Family[]>,
-      {page?: number; limit?: number; search?: string}
+      {page?: number; limit?: number; search?: string; status?: string}
     >({
-      query: ({page = 1, limit = 10, search}) => ({
+      query: ({page = 1, limit = 10, search, status}) => ({
         url: '/family',
         method: 'GET',
-        params: {page, limit, ...(search && {search})},
+        params: {
+          page,
+          limit,
+          ...(search && {search}),
+          ...(status && {status}),
+        },
       }),
       providesTags: ['Family'],
     }),
