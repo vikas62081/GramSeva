@@ -50,15 +50,19 @@ export const userApi = createApi({
           params: {status},
         }),
         transformResponse: (response: any) => response.data,
-        async onQueryStarted({userId, status}, {dispatch, queryFulfilled}) {
+        async onQueryStarted({status}, {dispatch, queryFulfilled}) {
+          const {data: updatedUser} = await queryFulfilled;
           let patchResult: any;
           try {
             patchResult = dispatch(
-              familyApi.util.updateQueryData('getFamilyById', userId, draft => {
-                draft['status'] = status;
-              }),
+              familyApi.util.updateQueryData(
+                'getFamilyById',
+                updatedUser.family_id!,
+                draft => {
+                  draft['status'] = status;
+                },
+              ),
             );
-            await queryFulfilled;
           } catch {
             patchResult?.undo?.();
           }

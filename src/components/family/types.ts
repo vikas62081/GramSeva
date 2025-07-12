@@ -17,6 +17,7 @@ export interface Family {
   members: number;
   phone: string;
   status?: string;
+  head_user_id?: string;
 }
 
 export interface FamilyMember {
@@ -28,4 +29,5 @@ export interface FamilyMember {
   relationship: string;
   parentId?: string;
   members?: FamilyMember[];
+  head_user_id?: string;
 }

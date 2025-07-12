@@ -4,46 +4,12 @@ import {List, Divider, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import PageHeader from '../components/common/PageHeader';
 import {useHideTabBar} from '../hooks/ useHideTabBar';
-import {formatDate} from '../utils';
+import {formatDate, getRoleInfo, getStatusColor} from '../utils';
 
 const AccountInfoScreen = ({navigation}: any) => {
   useHideTabBar();
   const theme = useTheme();
   const {user} = useAuth();
-
-  const getStatusColor = (status?: string) => {
-    switch (status?.toLowerCase()) {
-      case 'active':
-        return theme.colors.primary;
-      case 'inactive':
-        return theme.colors.error;
-      default:
-        return theme.colors.outline;
-    }
-  };
-
-  const getRoleInfo = (role?: string) => {
-    switch (role?.toLowerCase()) {
-      case 'admin':
-        return {
-          label: 'Admin',
-          color: theme.colors.error,
-          backgroundColor: theme.colors.errorContainer,
-        };
-      case 'viewer':
-        return {
-          label: 'User',
-          color: theme.colors.primary,
-          backgroundColor: theme.colors.primaryContainer,
-        };
-      default:
-        return {
-          label: role || 'User',
-          color: theme.colors.outline,
-          backgroundColor: theme.colors.surfaceVariant,
-        };
-    }
-  };
 
   if (!user) {
     return (
@@ -57,7 +23,7 @@ const AccountInfoScreen = ({navigation}: any) => {
     );
   }
 
-  const roleInfo = getRoleInfo(user.role);
+  const roleInfo = getRoleInfo(theme, user.role);
 
   return (
     <ScrollView
@@ -147,13 +113,13 @@ const AccountInfoScreen = ({navigation}: any) => {
             <List.Icon
               {...props}
               icon="circle"
-              color={getStatusColor(user.status)}
+              color={getStatusColor(theme, user.status)}
             />
           )}
           titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
           descriptionStyle={[
             styles.itemDescription,
-            {color: getStatusColor(user.status)},
+            {color: getStatusColor(theme, user.status)},
           ]}
         />
         <Divider />

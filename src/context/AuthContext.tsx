@@ -91,7 +91,9 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   }, []);
 
   useEffect(() => {
-    if (freshUserData && !userError) {
+    if (userError) {
+      logout();
+    } else if (freshUserData) {
       const updatedUser = {
         ...freshUserData,
         token: user?.token || '',

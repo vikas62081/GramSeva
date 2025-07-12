@@ -31,7 +31,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
 }) => {
   useHideTabBar();
   const {showSnackbar} = useSnackbar();
-  const {canEditSelf} = useRBAC();
+  const {canEditFamily} = useRBAC();
   const {familyId} = route.params || {};
 
   const {
@@ -150,14 +150,14 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
     setShowAddMemberModal(true);
   };
 
-  const isEditAllowed = useMemo(() => canEditSelf(family?.id!), [family]);
+  const isEditAllowed = useMemo(() => canEditFamily(family?.id!), [family]);
 
   if (isFetching || isLoading) {
     return <ActivityIndicator animating />;
   }
   return (
     <>
-      <StatusBanner userId={family?.id!} status={family?.status!} />
+      <StatusBanner userId={family?.head_user_id!} status={family?.status!} />
       <FlatList
         data={family!.members || []}
         renderItem={({item}) => (

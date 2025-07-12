@@ -1,4 +1,5 @@
 import {getFromStorage, saveToStorage} from './AsyncStorage';
+import {getRoleInfo, getStatusColor} from './auth';
 import {formatDate, getTime, getTimeLeft, formatDateTime} from './datetime';
 import {isAndroid, isIOS} from './device';
 import {getFamilyDropdownOptions} from './family';
@@ -25,6 +26,7 @@ function capitalize(word: string): string {
   if (!word) return '';
   return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
+
 export {
   formatDate,
   getTime,
@@ -38,4 +40,6 @@ export {
   formatCurrency,
   getInitials,
   capitalize,
+  getStatusColor,
+  getRoleInfo,
 };

@@ -2,8 +2,8 @@ import React from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {Avatar, Chip, useTheme, List, Divider} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+import {getRoleInfo} from '../utils';
 
 const ProfileScreen = ({navigation}: any) => {
   const theme = useTheme();
@@ -14,29 +14,6 @@ const ProfileScreen = ({navigation}: any) => {
         user.name,
       )}&background=4a90e2&color=fff&size=128`
     : 'https://ui-avatars.com/api/?name=User&background=4a90e2&color=fff&size=128';
-
-  const getRoleInfo = (role?: string) => {
-    switch (role?.toLowerCase()) {
-      case 'admin':
-        return {
-          label: 'Admin',
-          color: theme.colors.error,
-          backgroundColor: theme.colors.errorContainer,
-        };
-      case 'viewer':
-        return {
-          label: 'User',
-          color: theme.colors.primary,
-          backgroundColor: theme.colors.primaryContainer,
-        };
-      default:
-        return {
-          label: role || 'User',
-          color: theme.colors.outline,
-          backgroundColor: theme.colors.surfaceVariant,
-        };
-    }
-  };
 
   if (!user) {
     return (
@@ -49,7 +26,7 @@ const ProfileScreen = ({navigation}: any) => {
     );
   }
 
-  const roleInfo = getRoleInfo(user.role);
+  const roleInfo = getRoleInfo(theme, user.role);
 
   return (
     <ScrollView
