@@ -17,6 +17,7 @@ import {
   OtpVerificationRequest,
   ResetPasswordRequest,
 } from '../store/slices/authApiSlice';
+import {useGetUserQuery} from '../store/slices/userApiSlice';
 
 interface CreateUser {
   name: string;
@@ -55,8 +56,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
 
   // RTK Query hooks
+  const {
+    data: freshUserData,
+    isLoading: userLoading,
+    error: userError,
+  } = useGetUserQuery(userId!, {
+    skip: !userId,
+  });
   const [loginMutation, {isLoading: loginLoading}] = useLoginMutation();
   const [registerMutation, {isLoading: registerLoading}] =
     useRegisterMutation();
@@ -64,13 +73,33 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [verifyOtpMutation] = useVerifyOtpMutation();
   const [resetPasswordMutation] = useResetPasswordMutation();
 
+  // Load user from storage on app start
   useEffect(() => {
     (async () => {
-      const storedUser = await getFromStorage('user');
-      if (storedUser) setUser(storedUser);
-      setLoading(false);
+      try {
+        const storedUser = await getFromStorage('user');
+        if (storedUser && storedUser.id) {
+          setUser(storedUser);
+          setUserId(storedUser.id);
+        }
+      } catch (error) {
+        console.error('Error loading user from storage:', error);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
+
+  useEffect(() => {
+    if (freshUserData && !userError) {
+      const updatedUser = {
+        ...freshUserData,
+        token: user?.token || '',
+      };
+      setUser(updatedUser);
+      saveToStorage('user', updatedUser);
+    }
+  }, [freshUserData, userError]);
 
   const login = async (phone: string, password: string) => {
     try {
@@ -81,6 +110,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       const _user = await loginMutation(loginData).unwrap();
       if (_user) {
         setUser(_user);
+        setUserId(_user.id);
         await saveToStorage('user', _user);
         if (_user.token) {
           await saveToStorage('token', _user.token);
@@ -109,6 +139,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
   const logout = async () => {
     setUser(null);
+    setUserId(null);
     await saveToStorage('user', null);
     await saveToStorage('token', null);
   };
@@ -173,7 +204,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     }
   };
 
-  const isLoading = loginLoading || registerLoading || loading;
+  const isLoading = loginLoading || registerLoading || loading || userLoading;
 
   return (
     <AuthContext.Provider
