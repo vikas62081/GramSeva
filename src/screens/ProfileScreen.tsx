@@ -2,10 +2,19 @@ import React from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {Button, Avatar, Chip, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+type ProfileStackParamList = {
+  ProfileMain: undefined;
+  Users: undefined;
+};
 
 const ProfileScreen = () => {
   const theme = useTheme();
   const {user, logout} = useAuth();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
 
   // Generate avatar URI based on user's name
   const avatarUri = user?.name
@@ -91,6 +100,12 @@ const ProfileScreen = () => {
             {roleInfo.label}
           </Chip>
         </View>
+        <Button
+          mode="contained"
+          style={{marginTop: 16, alignSelf: 'center'}}
+          onPress={() => navigation.navigate('Users')}>
+          New Users
+        </Button>
       </View>
 
       <View style={styles.infoContainer}>

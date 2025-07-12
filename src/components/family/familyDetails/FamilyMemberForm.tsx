@@ -48,7 +48,6 @@ const FamilyMemberForm: React.FC<FamilyMemberFormProps> = ({
   relatedTo,
   isLoading,
 }) => {
-  console.log('FamilyForm rendered with formData:', relatedTo);
   const {colors} = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -56,7 +55,6 @@ const FamilyMemberForm: React.FC<FamilyMemberFormProps> = ({
   // Subscribe to person selection events
   React.useEffect(() => {
     const unsubscribe = SerachSelectorListener.subscribe(member => {
-      console.log('Selected member:', member);
       setFormData(prev => ({
         ...prev,
         parentId: member.value,

@@ -18,12 +18,14 @@ import {
   ResetPasswordRequest,
 } from '../store/slices/authApiSlice';
 
-interface User {
-  id: string;
+interface CreateUser {
   name: string;
   phone: string;
   email: string;
   gender: string;
+}
+interface User extends CreateUser {
+  id: string;
   role: string;
   status: string;
   family_id?: string | null;
@@ -38,7 +40,7 @@ interface AuthContextType {
   login: (phone: string, password: string) => Promise<boolean>;
   googleLogin: () => Promise<boolean>;
   logout: () => void;
-  register: (data: User & {password: string}) => Promise<boolean>;
+  register: (data: RegisterRequest) => Promise<boolean>;
   forgotPassword: (phone: string) => Promise<boolean>;
   verifyOtp: (phone: string, otp: number) => Promise<boolean>;
   resetPassword: (
@@ -76,9 +78,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         username: phone,
         password: password,
       };
-
       const _user = await loginMutation(loginData).unwrap();
-
       if (_user) {
         setUser(_user);
         await saveToStorage('user', _user);
@@ -113,7 +113,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     await saveToStorage('token', null);
   };
 
-  const register = async (data: User & {password: string}) => {
+  const register = async (data: RegisterRequest) => {
     try {
       const registerData: RegisterRequest = {
         name: data.name,
@@ -122,9 +122,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         password: data.password,
         gender: (data.gender as 'Male' | 'Female') || 'Male',
       };
-
       const response = await registerMutation(registerData).unwrap();
-
       if (response) return true;
       return false;
     } catch (error) {

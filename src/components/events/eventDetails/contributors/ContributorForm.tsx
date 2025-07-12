@@ -56,8 +56,6 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
     setForm(initialFormValue);
   }, [initialData]);
 
-  console.log('ContributorForm rendered with form:', form);
-
   const handleSubmit = async () => {
     if (!form.name || !form.amount) {
       Alert.alert('Missing Fields', 'Please select contributor and amount.');
@@ -70,7 +68,7 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
     });
     setForm(initialFormValue);
   };
-  console.log('ContributorForm handleSubmit called with form:', form);
+
   return (
     <FormModal
       isLoading={isLoading}

@@ -8,6 +8,7 @@ import EventStack from './EventsStackNavigator';
 import FamilyStack from './FamilyStackNavigator';
 import {useTheme} from 'react-native-paper';
 import ProfileScreen from '../screens/ProfileScreen';
+import ProfileStackNavigator from './ProfileStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,7 +28,12 @@ const tabScreens = [
   },
   {name: 'Events', component: EventStack, icon: 'event', hidden: false},
   {name: 'Family', component: FamilyStack, icon: 'group', hidden: false},
-  {name: 'Profile', component: ProfileScreen, icon: 'person', hidden: false},
+  {
+    name: 'Profile',
+    component: ProfileStackNavigator,
+    icon: 'person',
+    hidden: false,
+  },
 ];
 
 const MainTabs = () => {

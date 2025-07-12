@@ -49,10 +49,16 @@ const RegisterScreen = ({navigation}: any) => {
     }
 
     const success = await register(form);
-    if (!success) {
+    if (success) {
+      Alert.alert(
+        'Registration Successful',
+        'You have successfully registered. Please log in to continue.',
+        [{text: 'OK', onPress: () => navigation?.navigate('Login')}],
+      );
+    } else {
       Alert.alert(
         'Registration Failed',
-        'Registration failed. Please try again or check if the phone number is already registered.',
+        'Please try again or check if the phone number is already registered.',
       );
     }
   };

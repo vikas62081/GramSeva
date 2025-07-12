@@ -117,7 +117,6 @@ const FamilyForm: React.FC<FamilyFormProps> = ({
         isVisible={showDatePicker}
         mode="date"
         onConfirm={date => {
-          console.log(date);
           setFormData(prev => ({...prev, dob: date}));
           setShowDatePicker(false);
         }}

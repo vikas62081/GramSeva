@@ -2,6 +2,7 @@ import {createApi} from '@reduxjs/toolkit/query/react';
 import {baseQuery} from '../baseQuery';
 import {User} from './authApiSlice';
 import {familyApi} from './familyApiSlice';
+import {Pagination, PaginationRequest} from '../types';
 
 // Define types for the user review data
 export interface UserReview {
@@ -18,6 +19,21 @@ export const userApi = createApi({
   baseQuery,
   tagTypes: ['User'],
   endpoints: builder => ({
+    getUsers: builder.query<Pagination<User[]>, PaginationRequest>({
+      query: ({page = 1, limit = 10, search, status} = {}) => {
+        return {
+          url: '/users',
+          method: 'GET',
+          params: {
+            page,
+            limit,
+            ...(search && {search}),
+            ...(status && {status}),
+          },
+        };
+      },
+      transformResponse: (response: any) => response.data,
+    }),
     getUser: builder.query<User, string>({
       query: (userId: string) => ({
         url: `/users/${userId}`,
@@ -52,6 +68,7 @@ export const userApi = createApi({
   }),
 });
 
-export const {useGetUserQuery, useUpdateUserStatusMutation} = userApi;
+export const {useGetUserQuery, useUpdateUserStatusMutation, useGetUsersQuery} =
+  userApi;
 
 export const {resetApiState: resetUserApiState} = userApi.util;

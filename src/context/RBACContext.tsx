@@ -30,8 +30,7 @@ interface Props {
 export const RBACProvider: React.FC<Props> = ({children}) => {
   const {user} = useAuth();
 
-  const isAdmin = true;
-  // useMemo(() => user?.role === UserRole.admin, [user]);
+  const isAdmin = useMemo(() => user?.role === UserRole.admin, [user]);
   const isActiveUser = useMemo(
     () => user?.status === UserStatus.active,
     [user],

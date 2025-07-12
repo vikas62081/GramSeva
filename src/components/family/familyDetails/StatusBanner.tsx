@@ -1,10 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button, Portal, Dialog, RadioButton, Text} from 'react-native-paper';
-import {
-  useGetUserQuery,
-  useUpdateUserStatusMutation,
-} from '../../../store/slices/userApiSlice';
+import {useUpdateUserStatusMutation} from '../../../store/slices/userApiSlice';
 import {useRBAC} from '../../../context/RBACContext';
 import {capitalize} from '../../../utils';
 import {useSnackbar} from '../../../context/SnackbarContext';
@@ -15,7 +12,7 @@ interface RoleBannerProps {
 }
 
 const StatusBanner: React.FC<RoleBannerProps> = ({userId, status}) => {
-  const {isAdmin} = useRBAC();
+  const {isAdmin, canEditSelf} = useRBAC();
   const {showSnackbar} = useSnackbar();
   const [showRoleDialog, setShowRoleDialog] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(status);
@@ -34,7 +31,8 @@ const StatusBanner: React.FC<RoleBannerProps> = ({userId, status}) => {
     }
   };
 
-  if (!isAdmin) return null;
+  const isHimself = useMemo(() => canEditSelf(userId), []);
+  if (!isAdmin || isHimself) return null;
 
   return (
     <>
@@ -56,9 +54,9 @@ const StatusBanner: React.FC<RoleBannerProps> = ({userId, status}) => {
             <RadioButton.Group
               onValueChange={setSelectedStatus}
               value={selectedStatus}>
-              <RadioButton.Item label="Pending" value="pending" />
-              <RadioButton.Item label="Active" value="active" />
-              <RadioButton.Item label="Inactive" value="inactive" />
+              <RadioButton.Item label="Pending" value="Pending" />
+              <RadioButton.Item label="Active" value="Active" />
+              <RadioButton.Item label="Suspended" value="Suspended" />
             </RadioButton.Group>
           </Dialog.Content>
           <Dialog.Actions>
