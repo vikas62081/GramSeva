@@ -4,6 +4,7 @@ import FormModal from '../../../common/FormModal';
 import {Expense} from '../../types';
 import {placeholderTextColor} from '../../../../theme';
 import FormGroup from '../../../common/FormGroup';
+import {normalizeObjectStrings} from '../../../../utils';
 
 interface ExpenseFormProps {
   visible: boolean;
@@ -39,7 +40,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
       Alert.alert('Missing Fields', 'Please enter item name and amount.');
       return;
     }
-    await onSubmit(form as unknown as Expense);
+    await onSubmit(normalizeObjectStrings(form) as unknown as Expense);
     setForm(initialFormValue);
   };
 

@@ -6,6 +6,7 @@ import FormModal from '../common/FormModal';
 import Pills from '../common/Pills';
 import {genderOptions} from './constants';
 import {useTheme} from 'react-native-paper';
+import {normalizeObjectStrings} from '../../utils';
 
 interface AddFamilyFormProps {
   selectedMember?: FamilyMember | null;
@@ -34,7 +35,7 @@ const AddFamilyForm: React.FC<AddFamilyFormProps> = ({
       Alert.alert('Missing Fields', 'Please complete all the required fields.');
       return;
     }
-    onSave(formData);
+    onSave(normalizeObjectStrings(formData));
   };
 
   return (

@@ -27,6 +27,7 @@ const FamilyHeadSelector = ({route}: any) => {
       queryHook: useGetFamiliesQuery,
       limit: 10,
       accumulateData: true,
+      queryParams: {status: 'Active'},
     });
     people = paginated.data;
     isLoading = paginated.isLoading;

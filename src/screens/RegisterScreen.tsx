@@ -11,6 +11,7 @@ import {SegmentedButtons, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import Logo from '../components/common/Logo';
+import {normalizeObjectStrings} from '../utils';
 
 const RegisterScreen = ({navigation}: any) => {
   const {register, loading} = useAuth();
@@ -24,7 +25,8 @@ const RegisterScreen = ({navigation}: any) => {
   });
 
   const handleRegister = async () => {
-    if (!form.name || !form.phone || !form.password) {
+    const {name, phone, password} = form;
+    if (!name || !phone || !password) {
       Alert.alert(
         'Missing Fields',
         'Name, phone, email, and password are required.',
@@ -47,8 +49,7 @@ const RegisterScreen = ({navigation}: any) => {
       );
       return;
     }
-
-    const success = await register(form);
+    const success = await register(normalizeObjectStrings(form));
     if (success) {
       Alert.alert(
         'Registration Successful',

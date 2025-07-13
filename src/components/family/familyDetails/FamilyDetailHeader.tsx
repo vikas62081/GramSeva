@@ -18,7 +18,7 @@ const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
   isEditAllowed = false,
 }) => {
   const {name, members = [], relationship = 'Head'} = family;
-  const familyCount = Array.isArray(members) ? members.length : 0;
+  const familyCount = (Array.isArray(members) ? members.length : 0) + 1;
   return (
     <View style={styles.container}>
       <View style={styles.cardHeader}>
@@ -53,9 +53,11 @@ const FamilyDetailHeader: React.FC<FamilyDetailHeaderProps> = ({
         )}
       </View>
       <View style={styles.sectionHeader}>
-        <Text variant="titleMedium" style={styles.sectionTitle}>
-          Family Members
-        </Text>
+        {familyCount > 1 && (
+          <Text variant="titleMedium" style={styles.sectionTitle}>
+            Family Members
+          </Text>
+        )}
       </View>
     </View>
   );

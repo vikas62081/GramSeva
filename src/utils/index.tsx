@@ -27,6 +27,15 @@ function capitalize(word: string): string {
   return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
 
+function normalizeObjectStrings<T extends Record<string, any>>(obj: T): T {
+  const trimmed: any = {};
+  for (const key in obj) {
+    if (typeof obj[key] === 'string') trimmed[key] = obj[key].trim();
+    else trimmed[key] = obj[key];
+  }
+  return trimmed;
+}
+
 export {
   formatDate,
   getTime,
@@ -42,4 +51,5 @@ export {
   capitalize,
   getStatusColor,
   getRoleInfo,
+  normalizeObjectStrings,
 };

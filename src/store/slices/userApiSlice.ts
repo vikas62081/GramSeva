@@ -65,14 +65,6 @@ export const userApi = createApi({
                 ),
               );
             }
-
-            dispatch(
-              userApi.util.updateQueryData('getUser', userId, draft => {
-                if (draft) {
-                  draft.status = status || updatedUser.status;
-                }
-              }),
-            );
           } catch {
             patchResult?.undo?.();
           }

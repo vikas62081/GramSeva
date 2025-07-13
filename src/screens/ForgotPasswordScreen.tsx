@@ -27,7 +27,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
       return;
     }
 
-    const success = await forgotPassword(phone);
+    const success = await forgotPassword(phone.trim());
     if (success) {
       Alert.alert('OTP Sent', 'Please check your phone for the OTP.');
       setStep('otp');
@@ -42,7 +42,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
       return;
     }
 
-    const success = await verifyOtp(phone, parseInt(otp));
+    const success = await verifyOtp(phone.trim(), parseInt(otp));
     if (success) {
       setStep('reset');
     } else {
@@ -63,7 +63,11 @@ const ForgotPasswordScreen = ({navigation}: any) => {
       return;
     }
 
-    const success = await resetPassword(phone, parseInt(otp), newPassword);
+    const success = await resetPassword(
+      phone.trim(),
+      parseInt(otp),
+      newPassword,
+    );
     if (success) {
       Alert.alert('Success', 'Password reset successfully. Please login.');
       navigation?.navigate('Login');

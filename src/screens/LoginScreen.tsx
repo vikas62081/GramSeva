@@ -27,7 +27,7 @@ const LoginScreen = ({navigation}: any) => {
       return;
     }
 
-    const success = await login(phone, password);
+    const success = await login(phone.trim(), password);
     if (!success) {
       Alert.alert(
         'Login Failed',

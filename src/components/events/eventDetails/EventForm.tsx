@@ -12,7 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {EventFormScreenProps} from '../types';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import FormGroup from '../../common/FormGroup';
-import {formatDateTime} from '../../../utils';
+import {formatDateTime, normalizeObjectStrings} from '../../../utils';
 import {placeholderTextColor} from '../../../theme';
 import {
   useCreateEventMutation,
@@ -115,7 +115,10 @@ const EventForm: React.FC<EventFormScreenProps> = ({
     try {
       let msg = 'Event created successfully';
       if (initialData) {
-        await updateEvent({eventId: initialData.id, event: eventData}).unwrap();
+        await updateEvent({
+          eventId: initialData.id,
+          event: normalizeObjectStrings(eventData),
+        }).unwrap();
         msg = 'Event updated successfully';
       } else {
         await createEvent(eventData).unwrap();

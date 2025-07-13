@@ -6,7 +6,7 @@ import {
   FamilyDetailsScreenNavigationProp,
   FamilyDetailsScreenRouteProp,
 } from '../../../navigation/types';
-import {getFamilyDropdownOptions} from '../../../utils';
+import {getFamilyDropdownOptions, normalizeObjectStrings} from '../../../utils';
 import FamilyDetailHeader from './FamilyDetailHeader';
 import FamilyMemberForm from './FamilyMemberForm';
 import {
@@ -31,7 +31,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
 }) => {
   useHideTabBar();
   const {showSnackbar} = useSnackbar();
-  const {canEditFamily} = useRBAC();
+  const {canEditFamily, isAdmin} = useRBAC();
   const {familyId} = route.params || {};
 
   const {
@@ -92,7 +92,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
     try {
       await addMember({
         familyId,
-        member: newMember,
+        member: normalizeObjectStrings(newMember),
       }).unwrap();
       setShowAddMemberModal(false);
       resetForm();
@@ -111,7 +111,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
       await updateMember({
         familyId,
         memberId: selectedMember.id!,
-        member: formData,
+        member: normalizeObjectStrings(formData),
       }).unwrap();
       showSnackbar('Family member updated successfully');
       setShowAddMemberModal(false);
@@ -150,7 +150,10 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
     setShowAddMemberModal(true);
   };
 
-  const isEditAllowed = useMemo(() => canEditFamily(family?.id!), [family]);
+  const isEditAllowed = useMemo(
+    () => canEditFamily(family?.id!) || isAdmin,
+    [family],
+  );
 
   if (isFetching || isLoading) {
     return <ActivityIndicator animating />;

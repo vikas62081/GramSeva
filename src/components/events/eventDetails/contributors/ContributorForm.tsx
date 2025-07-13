@@ -14,6 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types';
 import SearchSelectorListener from '../../../common/SearchSelectorListener';
+import {normalizeObjectStrings} from '../../../../utils';
 
 interface ContributorFormProps {
   visible: boolean;
@@ -61,11 +62,13 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
       Alert.alert('Missing Fields', 'Please select contributor and amount.');
       return;
     }
-    await onSubmit({
-      name: form.name,
-      amount: parseFloat(form.amount),
-      user_id: form.user_id || '',
-    });
+    await onSubmit(
+      normalizeObjectStrings({
+        name: form.name,
+        amount: parseFloat(form.amount),
+        user_id: form.user_id || '',
+      }),
+    );
     setForm(initialFormValue);
   };
 
