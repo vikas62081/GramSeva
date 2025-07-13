@@ -6,6 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {SegmentedButtons, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
@@ -66,114 +69,124 @@ const RegisterScreen = ({navigation}: any) => {
 
   return (
     <LoadingSpinner loading={loading} content="Registering...">
-      <View
-        style={[styles.container, {backgroundColor: theme.colors.background}]}>
-        <View style={styles.logoSection}>
-          <Logo size="large" />
-        </View>
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView
+          style={[styles.container, {backgroundColor: theme.colors.background}]}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
+          <View style={styles.logoSection}>
+            <Logo size="large" />
+          </View>
 
-        <Text style={[styles.title, {color: theme.colors.onBackground}]}>
-          Register
-        </Text>
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: theme.colors.surface,
-              color: theme.colors.onSurface,
-              borderColor: theme.colors.outline,
-            },
-          ]}
-          placeholder="Full Name"
-          value={form.name}
-          onChangeText={name => setForm(prev => ({...prev, name}))}
-          placeholderTextColor={theme.colors.onSurfaceVariant}
-        />
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: theme.colors.surface,
-              color: theme.colors.onSurface,
-              borderColor: theme.colors.outline,
-            },
-          ]}
-          placeholder="Phone Number"
-          keyboardType="phone-pad"
-          value={form.phone}
-          onChangeText={phone => setForm(prev => ({...prev, phone}))}
-          placeholderTextColor={theme.colors.onSurfaceVariant}
-        />
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: theme.colors.surface,
-              color: theme.colors.onSurface,
-              borderColor: theme.colors.outline,
-            },
-          ]}
-          placeholder="Email"
-          keyboardType="email-address"
-          value={form.email}
-          onChangeText={email => setForm(prev => ({...prev, email}))}
-          placeholderTextColor={theme.colors.onSurfaceVariant}
-        />
-        <View style={styles.genderContainer}>
-          <SegmentedButtons
-            value={form.gender}
-            onValueChange={gender =>
-              setForm(prev => ({...prev, gender: gender as 'Male' | 'Female'}))
-            }
-            buttons={[
-              {
-                icon: 'male',
-                value: 'Male',
-                label: 'Male',
-                style: styles.segmentedButton,
-                labelStyle: styles.segmentedLabel,
-              },
-              {
-                icon: 'female',
-                value: 'Female',
-                label: 'Female',
-                style: styles.segmentedButton,
-                labelStyle: styles.segmentedLabel,
-              },
-            ]}
-            style={styles.segmentedButtons}
-            density="small"
-          />
-        </View>
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: theme.colors.surface,
-              color: theme.colors.onSurface,
-              borderColor: theme.colors.outline,
-            },
-          ]}
-          placeholder="Password"
-          secureTextEntry
-          value={form.password}
-          onChangeText={password => setForm(prev => ({...prev, password}))}
-          placeholderTextColor={theme.colors.onSurfaceVariant}
-        />
-        <TouchableOpacity
-          style={[styles.button, {backgroundColor: theme.colors.primary}]}
-          onPress={handleRegister}
-          disabled={loading}>
-          <Text style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
+          <Text style={[styles.title, {color: theme.colors.onBackground}]}>
             Register
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
-          <Text style={[styles.link, {color: theme.colors.primary}]}>
-            Already have an account? Login
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: theme.colors.surface,
+                color: theme.colors.onSurface,
+                borderColor: theme.colors.outline,
+              },
+            ]}
+            placeholder="Full Name"
+            value={form.name}
+            onChangeText={name => setForm(prev => ({...prev, name}))}
+            placeholderTextColor={theme.colors.onSurfaceVariant}
+          />
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: theme.colors.surface,
+                color: theme.colors.onSurface,
+                borderColor: theme.colors.outline,
+              },
+            ]}
+            placeholder="Phone Number"
+            keyboardType="phone-pad"
+            value={form.phone}
+            onChangeText={phone => setForm(prev => ({...prev, phone}))}
+            placeholderTextColor={theme.colors.onSurfaceVariant}
+          />
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: theme.colors.surface,
+                color: theme.colors.onSurface,
+                borderColor: theme.colors.outline,
+              },
+            ]}
+            placeholder="Email"
+            keyboardType="email-address"
+            value={form.email}
+            onChangeText={email => setForm(prev => ({...prev, email}))}
+            placeholderTextColor={theme.colors.onSurfaceVariant}
+          />
+          <View style={styles.genderContainer}>
+            <SegmentedButtons
+              value={form.gender}
+              onValueChange={gender =>
+                setForm(prev => ({
+                  ...prev,
+                  gender: gender as 'Male' | 'Female',
+                }))
+              }
+              buttons={[
+                {
+                  icon: 'male',
+                  value: 'Male',
+                  label: 'Male',
+                  style: styles.segmentedButton,
+                  labelStyle: styles.segmentedLabel,
+                },
+                {
+                  icon: 'female',
+                  value: 'Female',
+                  label: 'Female',
+                  style: styles.segmentedButton,
+                  labelStyle: styles.segmentedLabel,
+                },
+              ]}
+              style={styles.segmentedButtons}
+              density="small"
+            />
+          </View>
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: theme.colors.surface,
+                color: theme.colors.onSurface,
+                borderColor: theme.colors.outline,
+              },
+            ]}
+            placeholder="Password"
+            secureTextEntry
+            value={form.password}
+            onChangeText={password => setForm(prev => ({...prev, password}))}
+            placeholderTextColor={theme.colors.onSurfaceVariant}
+          />
+          <TouchableOpacity
+            style={[styles.button, {backgroundColor: theme.colors.primary}]}
+            onPress={handleRegister}
+            disabled={loading}>
+            <Text style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
+              Register
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
+            <Text style={[styles.link, {color: theme.colors.primary}]}>
+              Already have an account? Login
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </LoadingSpinner>
   );
 };
@@ -181,9 +194,11 @@ const RegisterScreen = ({navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
+  },
+  scrollContent: {
     padding: 24,
     paddingTop: 40,
+    paddingBottom: 40,
   },
   logoSection: {
     alignItems: 'center',

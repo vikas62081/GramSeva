@@ -2,7 +2,7 @@ import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {getFromStorage} from '../utils/AsyncStorage';
 
 export const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:8000',
+  baseUrl: 'https://gramseva-backend-jqo2.onrender.com',
   prepareHeaders: async headers => {
     try {
       const token = await getFromStorage('token');

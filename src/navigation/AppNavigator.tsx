@@ -1,18 +1,25 @@
-import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  View,
-  Text,
-  useColorScheme,
-} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import React, {useState} from 'react';
 import {useAuth} from '../context/AuthContext';
 import MainTabs from './BottomTabNavigator';
 import AuthNavigator from './AuthNavigator';
+import LoadingScreen from '../components/common/LoadingScreen';
+import SplashScreen from '../components/common/SplashScreen';
 
 const AppNavigator = () => {
-  const {user} = useAuth();
+  const {user, loading} = useAuth();
+  const [showSplash, setShowSplash] = useState(true);
+
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+  };
+
+  if (showSplash) {
+    return <SplashScreen onFinish={handleSplashFinish} />;
+  }
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return user ? <MainTabs /> : <AuthNavigator />;
 };

@@ -199,8 +199,9 @@ const ForgotPasswordScreen = ({navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     padding: 24,
+    marginTop: 120,
   },
   logoSection: {
     alignItems: 'center',
