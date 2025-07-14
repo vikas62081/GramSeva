@@ -2,10 +2,14 @@ import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import Dashboard from './Dashboard';
 
-const Home = () => {
+interface HomeProps {
+  navigation: any;
+}
+
+const Home = ({navigation}: HomeProps) => {
   return (
     <View style={styles.container}>
-      <Dashboard />
+      <Dashboard navigation={navigation} />
     </View>
   );
 };

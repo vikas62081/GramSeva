@@ -46,6 +46,7 @@ export interface DashboardUI {
 export interface DashboardData {
   familiesOverview: DashboardFamiliesOverview;
   latestEvent: DashboardLatestEvent;
+  latestEventData: Event_ | undefined;
   ui: DashboardUI;
 }
 
@@ -169,6 +170,7 @@ export const useDashboard = () => {
         fundingProgress,
       },
     },
+    latestEventData: event,
     ui: {
       loading,
       error,

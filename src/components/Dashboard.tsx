@@ -12,27 +12,27 @@ import {
   Appbar,
 } from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
-import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {CommonActions} from '@react-navigation/native';
 import {useDashboard} from '../hooks/useDashboard';
 import {useAuth} from '../context/AuthContext';
 import {formatCurrency} from '../utils';
 
-// Define the tab param list for navigation
-// Only the tab names are needed for navigation
 export type TabParamList = {
   Home: undefined;
   Family: undefined;
   Events: undefined;
 };
 
-const Dashboard = () => {
+interface DashboardProps {
+  navigation: any;
+}
+
+const Dashboard = ({navigation}: DashboardProps) => {
   const {colors} = useTheme();
-  const navigation = useNavigation<BottomTabNavigationProp<TabParamList>>();
   const {user} = useAuth();
 
   // Get structured dashboard data
-  const {familiesOverview, latestEvent, ui} = useDashboard();
+  const {familiesOverview, latestEvent, ui, latestEventData} = useDashboard();
 
   // Generate avatar URI based on user's name
   const avatarUri = user?.name
@@ -266,7 +266,21 @@ const Dashboard = () => {
           <View style={{alignItems: 'flex-end', marginTop: 8}}>
             <Text
               style={{color: colors.primary, fontWeight: 'bold'}}
-              onPress={() => navigation.navigate('Events')}>
+              onPress={() => {
+                if (latestEventData) {
+                  navigation.dispatch(
+                    CommonActions.navigate({
+                      name: 'Events',
+                      params: {
+                        screen: 'EventDetails',
+                        params: {event: latestEventData},
+                      },
+                    }),
+                  );
+                } else {
+                  navigation.navigate('Events');
+                }
+              }}>
               View More →
             </Text>
           </View>
