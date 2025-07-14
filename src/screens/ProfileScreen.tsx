@@ -5,10 +5,12 @@ import {useAuth} from '../context/AuthContext';
 import {useUserRefresh} from '../hooks/useUserRefresh';
 
 import {getRoleInfo} from '../utils';
+import {useRBAC} from '../context/RBACContext';
 
 const ProfileScreen = ({navigation}: any) => {
   const theme = useTheme();
   const {user, logout} = useAuth();
+  const {isAdmin} = useRBAC();
   const {refreshing, onRefresh} = useUserRefresh();
 
   // Generate avatar URI based on user's name
@@ -18,6 +20,11 @@ const ProfileScreen = ({navigation}: any) => {
       )}&background=4a90e2&color=fff&size=128`
     : 'https://ui-avatars.com/api/?name=User&background=4a90e2&color=fff&size=128';
 
+  const handleMyFamilyView = () => {
+    navigation.push('MyFamilyDetails', {
+      familyId: user?.family_id,
+    });
+  };
   if (!user) {
     return (
       <View
@@ -76,7 +83,6 @@ const ProfileScreen = ({navigation}: any) => {
             Account
           </List.Subheader>
 
-          {/* Account Info */}
           <List.Item
             title="Account Info"
             description="View full profile details"
@@ -90,21 +96,38 @@ const ProfileScreen = ({navigation}: any) => {
             onPress={() => navigation.navigate('AccountInfo')}
           />
           <Divider />
-
-          {/* New Users */}
           <List.Item
-            title="New Users"
-            description="Manage user accounts"
-            left={props => <List.Icon {...props} icon="manage-accounts" />}
+            title="My Family"
+            description="View and manage family details"
+            descriptionNumberOfLines={1}
+            left={props => <List.Icon {...props} icon="group" />}
             right={props => <List.Icon {...props} icon="chevron-right" />}
             titleStyle={[styles.menuTitle, {color: theme.colors.onSurface}]}
             descriptionStyle={[
               styles.menuDescription,
               {color: theme.colors.onSurfaceVariant},
             ]}
-            onPress={() => navigation.navigate('Users')}
+            onPress={handleMyFamilyView}
           />
           <Divider />
+
+          {isAdmin && (
+            <>
+              <List.Item
+                title="Verify New Users"
+                description="Manage newly registered accounts"
+                left={props => <List.Icon {...props} icon="manage-accounts" />}
+                right={props => <List.Icon {...props} icon="chevron-right" />}
+                titleStyle={[styles.menuTitle, {color: theme.colors.onSurface}]}
+                descriptionStyle={[
+                  styles.menuDescription,
+                  {color: theme.colors.onSurfaceVariant},
+                ]}
+                onPress={() => navigation.navigate('NewUsers')}
+              />
+              <Divider />
+            </>
+          )}
 
           {/* Logout */}
           <List.Item

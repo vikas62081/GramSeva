@@ -17,10 +17,6 @@ const Home = ({navigation}: HomeProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f9fc',
-  },
-  expenseValue: {
-    // Add appropriate styles for expenseValue
   },
 });
 

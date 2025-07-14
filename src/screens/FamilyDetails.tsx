@@ -8,16 +8,10 @@ import {
 } from '../navigation/types';
 import FamilyDetailsContainer from '../components/family/familyDetails';
 import {Surface} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 
-interface FamilyDetailsScreenProps {
-  navigation: FamilyDetailsScreenNavigationProp;
-  route: FamilyDetailsScreenRouteProp;
-}
-
-const FamilyDetailsScreen: React.FC<FamilyDetailsScreenProps> = ({
-  navigation,
-  route,
-}) => {
+const FamilyDetailsScreen: React.FC = ({route}: any) => {
+  const navigation = useNavigation<FamilyDetailsScreenNavigationProp>();
   return (
     <SafeAreaView style={styles.container}>
       <PageHeader title="Family Details" onBack={() => navigation.goBack()} />

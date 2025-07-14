@@ -9,13 +9,14 @@ import FamilyStack from './FamilyStackNavigator';
 import {useTheme} from 'react-native-paper';
 import ProfileStackNavigator from './ProfileStackNavigator';
 import DebugScreen from '../components/DebugScreen';
+import HomeStackNavigator from './HomeStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
 const tabScreens = [
   {
     name: 'Home',
-    component: require('../components/Home').default,
+    component: HomeStackNavigator,
     icon: 'home',
     hidden: false,
   },
@@ -47,6 +48,7 @@ const MainTabs = () => {
 
   return (
     <Tab.Navigator
+      backBehavior="firstRoute"
       screenOptions={({route}) => ({
         tabBarStyle: {height: 60},
         tabBarLabelStyle: {fontSize: 12, fontWeight: 'bold'},

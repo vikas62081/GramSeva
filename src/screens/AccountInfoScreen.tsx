@@ -83,7 +83,12 @@ const AccountInfoScreen = ({navigation}: any) => {
         <List.Item
           title="Gender"
           description={user.gender || 'Not specified'}
-          left={props => <List.Icon {...props} icon="gender-male-female" />}
+          left={props => (
+            <List.Icon
+              {...props}
+              icon={user.gender == 'Male' ? 'man' : 'woman'}
+            />
+          )}
           titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
           descriptionStyle={[
             styles.itemDescription,
@@ -114,7 +119,7 @@ const AccountInfoScreen = ({navigation}: any) => {
 
         <List.Item
           title="Status"
-          description={user.status?.toUpperCase() || 'UNKNOWN'}
+          description={user.status || 'Unknown'}
           left={props => (
             <List.Icon
               {...props}
@@ -130,7 +135,7 @@ const AccountInfoScreen = ({navigation}: any) => {
         />
         <Divider />
 
-        <List.Item
+        {/* <List.Item
           title="Family ID"
           description={user.family_id || 'Not assigned'}
           left={props => <List.Icon {...props} icon="home" />}
@@ -139,7 +144,7 @@ const AccountInfoScreen = ({navigation}: any) => {
             styles.itemDescription,
             {color: theme.colors.onSurfaceVariant},
           ]}
-        />
+        /> */}
       </List.Section>
 
       <List.Section>

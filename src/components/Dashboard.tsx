@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, StyleSheet, ScrollView, RefreshControl} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import {
   Card,
   Text,
@@ -31,34 +38,14 @@ const Dashboard = ({navigation}: DashboardProps) => {
   const {colors} = useTheme();
   const {user} = useAuth();
 
-  // Get structured dashboard data
   const {familiesOverview, latestEvent, ui, latestEventData} = useDashboard();
 
-  // Generate avatar URI based on user's name
   const avatarUri = user?.name
     ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
         user.name,
       )}&background=4a90e2&color=fff&size=128`
     : 'https://ui-avatars.com/api/?name=User&background=4a90e2&color=fff&size=128';
 
-  /**
-   * familiesOverview: Contains village demographic information
-   * - population: Total village population
-   * - families: Number of families
-   * - demographics: Age-based breakdown (children, adults, seniors)
-   * - genderDistribution: Gender statistics and percentages
-   */
-
-  /**
-   * latestEvent: Contains current/latest event information
-   * - title: Event name
-   * - date: Event date
-   * - head: Event organizer/head
-   * - status: Event status (Current/Upcoming/Last Event)
-   * - finances: Financial details (contribution, expense, funding progress)
-   */
-
-  // Loading and error UI
   if (ui.loading) {
     return (
       <View style={styles.centered}>
@@ -91,15 +78,15 @@ const Dashboard = ({navigation}: DashboardProps) => {
       refreshControl={
         <RefreshControl refreshing={ui.refreshing} onRefresh={ui.onRefresh} />
       }>
-      {/* Header */}
       <Appbar.Header
         style={{
           height: 100,
           paddingHorizontal: 12,
-          backgroundColor: '#f7f9fc',
         }}>
         <View style={styles.headerRow}>
-          <Avatar.Image source={{uri: avatarUri}} size={48} />
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+            <Avatar.Image source={{uri: avatarUri}} size={48} />
+          </TouchableOpacity>
           <View style={{flex: 1, marginLeft: 12}}>
             <Text
               variant="titleLarge"
@@ -188,12 +175,17 @@ const Dashboard = ({navigation}: DashboardProps) => {
               </View>
             </View>
           </View>
-          <View style={{alignItems: 'flex-end', marginTop: 8}}>
-            <Text
-              style={{color: colors.primary, fontWeight: 'bold'}}
+          <View style={{alignItems: 'flex-end'}}>
+            <Button
+              compact
+              icon="arrow-forward"
+              contentStyle={{
+                flexDirection: 'row-reverse',
+                justifyContent: 'space-between',
+              }}
               onPress={() => navigation.navigate('Family')}>
-              View More →
-            </Text>
+              View More
+            </Button>
           </View>
         </Card.Content>
       </Card>
@@ -263,26 +255,23 @@ const Dashboard = ({navigation}: DashboardProps) => {
               backgroundColor: '#f5f7fa',
             }}
           />
-          <View style={{alignItems: 'flex-end', marginTop: 8}}>
-            <Text
-              style={{color: colors.primary, fontWeight: 'bold'}}
+          <View style={{alignItems: 'flex-end'}}>
+            <Button
+              compact
+              icon="arrow-forward"
+              contentStyle={{
+                flexDirection: 'row-reverse',
+                justifyContent: 'space-between',
+              }}
               onPress={() => {
                 if (latestEventData) {
-                  navigation.dispatch(
-                    CommonActions.navigate({
-                      name: 'Events',
-                      params: {
-                        screen: 'EventDetails',
-                        params: {event: latestEventData},
-                      },
-                    }),
-                  );
+                  navigation.push('LatestEvent', {event: latestEventData});
                 } else {
                   navigation.navigate('Events');
                 }
               }}>
-              View More →
-            </Text>
+              View More
+            </Button>
           </View>
         </Card.Content>
       </Card>
@@ -293,7 +282,6 @@ const Dashboard = ({navigation}: DashboardProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f9fc',
   },
   headerRow: {
     flexDirection: 'row',
@@ -308,7 +296,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     marginBottom: 20,
     paddingVertical: 4,
-    backgroundColor: '#f5f7fa',
+    // backgroundColor: '#f5f7fa',
     shadowColor: '#000',
     shadowOpacity: 0.04,
     shadowRadius: 4,

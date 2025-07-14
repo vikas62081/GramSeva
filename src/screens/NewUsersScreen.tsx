@@ -21,6 +21,7 @@ import {User} from '../store/slices/authApiSlice';
 import {EventDetailsScreenNavigationProp} from '../navigation/types';
 import {useHideTabBar} from '../hooks/ useHideTabBar';
 import {useSnackbar} from '../context/SnackbarContext';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 
 interface UserCardProps {
   user: User;
@@ -98,7 +99,7 @@ const UserCard: React.FC<UserCardProps> = ({user, onUpdateStatus}) => {
   );
 };
 
-const UsersScreen = () => {
+const NewUsersScreen = () => {
   useHideTabBar();
   const navigation = useNavigation<EventDetailsScreenNavigationProp>();
   const {showSnackbar} = useSnackbar();
@@ -129,6 +130,7 @@ const UsersScreen = () => {
   const handleUpdate = async (userId: string, status: string) => {
     try {
       await updateUserStatus({userId, status}).unwrap();
+      handleRefresh();
       showSnackbar('User status updated succesffuly');
     } catch (e: any) {
       showSnackbar(e.data.message, 'error');
@@ -136,48 +138,49 @@ const UsersScreen = () => {
     }
   };
 
-  if (showInitialLoader) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator />
-      </View>
-    );
-  }
-
   return (
     <Surface style={styles.container}>
-      <SearchHeader
-        title="New Users"
-        onSearch={handleSearch}
-        placeholder="Search user..."
-        isFetching={isFetching}
-        showAddButton={false}
-        goBack={() => navigation.goBack()}
-      />
-
-      <View style={styles.content}>
-        <FlatList
-          data={users}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => (
-            <UserCard user={item} onUpdateStatus={handleUpdate} />
-          )}
-          contentContainerStyle={[users.length === 0 && styles.centered]}
-          ListEmptyComponent={<Text>No users found.</Text>}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.9}
-          showsVerticalScrollIndicator={false}
-          onRefresh={handleRefresh}
-          refreshing={isRefreshing}
-          ListFooterComponent={
-            ready && users.length > 0 && hasMorePages ? (
-              <View style={styles.footer}>
-                <ActivityIndicator />
-              </View>
-            ) : null
-          }
+      <LoadingSpinner loading={showInitialLoader || isUpdating}>
+        <SearchHeader
+          title="New Users"
+          onSearch={handleSearch}
+          placeholder="Search user..."
+          isFetching={isFetching}
+          showAddButton={false}
+          goBack={() => navigation.goBack()}
         />
-      </View>
+
+        <View style={styles.content}>
+          <FlatList
+            data={users}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <UserCard user={item} onUpdateStatus={handleUpdate} />
+            )}
+            contentContainerStyle={[users.length === 0 && styles.centered]}
+            ListEmptyComponent={
+              ready &&
+              users.length === 0 &&
+              !showInitialLoader &&
+              !isFetching ? (
+                <Text>No new users found.</Text>
+              ) : null
+            }
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.9}
+            showsVerticalScrollIndicator={false}
+            onRefresh={handleRefresh}
+            refreshing={isRefreshing}
+            ListFooterComponent={
+              ready && users.length > 0 && hasMorePages ? (
+                <View style={styles.footer}>
+                  <ActivityIndicator />
+                </View>
+              ) : null
+            }
+          />
+        </View>
+      </LoadingSpinner>
     </Surface>
   );
 };
@@ -247,7 +250,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UsersScreen;
-function showSnackbar(arg0: string) {
-  throw new Error('Function not implemented.');
-}
+export default NewUsersScreen;

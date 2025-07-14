@@ -16,11 +16,7 @@ import {useGetEventByIdQuery} from '../../store/slices/eventApiSlice';
 import {useHideTabBar} from '../../hooks/ useHideTabBar';
 import EventForm from './eventDetails/EventForm';
 
-interface EventDetailsScreenProps {
-  route: EventDetailsScreenRouteProp;
-}
-
-const EventDetailsScreen: React.FC<EventDetailsScreenProps> = ({route}) => {
+const EventDetailsScreen: React.FC = ({route}: any) => {
   const navigation = useNavigation<EventDetailsScreenNavigationProp>();
   useHideTabBar();
   const {event} = route.params;

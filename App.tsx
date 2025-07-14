@@ -29,7 +29,7 @@ const App = (): React.JSX.Element => {
 
   const backgroundStyle = useMemo(
     () => ({
-      backgroundColor: isDarkMode ? '#121212' : '#ffffff',
+      backgroundColor: isDarkMode ? '#121212' : 'transparent',
       flex: 1,
     }),
     [isDarkMode],
