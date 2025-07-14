@@ -105,11 +105,7 @@ const AccountInfoScreen = ({navigation}: any) => {
           title="Role"
           description={roleInfo.label}
           left={props => (
-            <List.Icon
-              {...props}
-              icon="shield-account"
-              color={roleInfo.color}
-            />
+            <List.Icon {...props} icon="security" color={roleInfo.color} />
           )}
           titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
           descriptionStyle={[styles.itemDescription, {color: roleInfo.color}]}

@@ -7,8 +7,8 @@ import NoticeListing from '../components/noticeboard';
 import EventStack from './EventsStackNavigator';
 import FamilyStack from './FamilyStackNavigator';
 import {useTheme} from 'react-native-paper';
-import ProfileScreen from '../screens/ProfileScreen';
 import ProfileStackNavigator from './ProfileStackNavigator';
+import DebugScreen from '../components/DebugScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,6 +33,12 @@ const tabScreens = [
     component: ProfileStackNavigator,
     icon: 'person',
     hidden: false,
+  },
+  {
+    name: 'DEV ENV',
+    component: DebugScreen,
+    icon: 'developer-mode',
+    hidden: !__DEV__,
   },
 ];
 
