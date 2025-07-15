@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   Animated,
+  Dimensions,
 } from 'react-native';
 import {
   Card,
@@ -22,6 +23,7 @@ import {useDashboard} from '../hooks/useDashboard';
 import {useAuth} from '../context/AuthContext';
 import {formatCurrency} from '../utils';
 import AnimatedProgressBar from './common/AnimatedProgressBar';
+import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
 
 export type TabParamList = {
   Home: undefined;
@@ -44,6 +46,14 @@ const Dashboard = ({navigation}: DashboardProps) => {
         user.name,
       )}&background=4a90e2&color=fff&size=128`
     : 'https://ui-avatars.com/api/?name=User&background=4a90e2&color=fff&size=128';
+
+  const greetingTextVariant: React.ComponentProps<typeof Text>['variant'] =
+    useMemo(() => {
+      const deviceWidth = Dimensions.get('window').width;
+      let variant: React.ComponentProps<typeof Text>['variant'] = 'titleMedium';
+      if (deviceWidth > 385) variant = 'titleLarge';
+      return variant;
+    }, []);
 
   const animatedProgress = useRef(
     new Animated.Value(latestEvent.finances.fundingProgress),
@@ -100,9 +110,9 @@ const Dashboard = ({navigation}: DashboardProps) => {
           </TouchableOpacity>
           <View style={{flex: 1, marginLeft: 12}}>
             <Text
-              variant="titleLarge"
+              variant={greetingTextVariant}
               numberOfLines={1}
-              style={styles.greeting}>
+              style={[styles.greeting]}>
               Welcome back, {user?.name?.split(' ')?.[0] || 'User'}!
             </Text>
             <Text variant="bodySmall" style={{color: '#888'}}>
