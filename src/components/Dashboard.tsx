@@ -1,17 +1,16 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   RefreshControl,
-  Pressable,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import {
   Card,
   Text,
   useTheme,
-  ProgressBar,
   IconButton,
   ActivityIndicator,
   Button,
@@ -19,10 +18,10 @@ import {
   Appbar,
 } from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {CommonActions} from '@react-navigation/native';
 import {useDashboard} from '../hooks/useDashboard';
 import {useAuth} from '../context/AuthContext';
 import {formatCurrency} from '../utils';
+import AnimatedProgressBar from './common/AnimatedProgressBar';
 
 export type TabParamList = {
   Home: undefined;
@@ -45,6 +44,18 @@ const Dashboard = ({navigation}: DashboardProps) => {
         user.name,
       )}&background=4a90e2&color=fff&size=128`
     : 'https://ui-avatars.com/api/?name=User&background=4a90e2&color=fff&size=128';
+
+  const animatedProgress = useRef(
+    new Animated.Value(latestEvent.finances.fundingProgress),
+  ).current;
+  useEffect(() => {
+    Animated.timing(animatedProgress, {
+      toValue: latestEvent.finances.fundingProgress,
+      duration: 700,
+      useNativeDriver: false,
+      easing: undefined,
+    }).start();
+  }, [latestEvent.finances.fundingProgress]);
 
   if (ui.loading) {
     return (
@@ -245,15 +256,13 @@ const Dashboard = ({navigation}: DashboardProps) => {
               </Text>
             </View>
           </View>
-          <ProgressBar
+          {/* Animated Progress Bar */}
+          <AnimatedProgressBar
             progress={latestEvent.finances.fundingProgress}
-            color="#388e3c"
-            style={{
-              height: 8,
-              borderRadius: 4,
-              marginTop: 8,
-              backgroundColor: '#f5f7fa',
-            }}
+            height={8}
+            backgroundColor="#fff"
+            barColor="#388e3c"
+            style={{marginTop: 8}}
           />
           <View style={{alignItems: 'flex-end'}}>
             <Button

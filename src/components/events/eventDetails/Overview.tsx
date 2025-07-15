@@ -1,10 +1,11 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Event_} from '../types';
 import LazyLoader from '../../common/LazyLoader';
 import {formatCurrency} from '../../../utils';
+import AnimatedProgressBar from '../../common/AnimatedProgressBar';
 
 interface OverviewProps {
   event: Event_;
@@ -27,6 +28,15 @@ const Overview: React.FC<OverviewProps> = ({event, loading}) => {
       return 0;
     }
   }, [total_expenditure, total_contribution]);
+
+  const [animatedPercent, setAnimatedPercent] = useState(0);
+  useEffect(() => {
+    if (loading) {
+      setAnimatedPercent(0);
+    } else {
+      setAnimatedPercent(Math.min(Number(contributionPercent), 1));
+    }
+  }, [loading, contributionPercent]);
 
   return (
     <View style={styles.cardContainer}>
@@ -92,20 +102,13 @@ const Overview: React.FC<OverviewProps> = ({event, loading}) => {
                   {(contributionPercent * 100).toFixed(0)}%
                 </Text>
               </View>
-              <View style={styles.progressBarBg}>
-                <View
-                  style={[
-                    styles.progressBarFill,
-                    {
-                      width: `${Math.min(
-                        Number(contributionPercent) * 100,
-                        100,
-                      )}%`,
-                      backgroundColor: balance >= 0 ? '#388e3c' : '#d32f2f',
-                    },
-                  ]}
-                />
-              </View>
+              <AnimatedProgressBar
+                progress={animatedPercent}
+                height={8}
+                backgroundColor="#e0e0e0"
+                barColor={balance >= 0 ? '#388e3c' : '#d32f2f'}
+                style={{marginTop: 2}}
+              />
             </View>
             {top_contributor?.amount ? (
               <>

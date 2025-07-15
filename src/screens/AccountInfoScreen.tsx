@@ -43,59 +43,57 @@ const AccountInfoScreen = ({navigation}: any) => {
         title="Personal Information"
         onBack={() => navigation?.goBack()}
       />
-      <List.Section>
-        <List.Item
-          title="Name"
-          description={user.name}
-          left={props => <List.Icon {...props} icon="person" />}
-          titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
-          descriptionStyle={[
-            styles.itemDescription,
-            {color: theme.colors.onSurfaceVariant},
-          ]}
-        />
-        <Divider />
+      <List.Item
+        title="Name"
+        description={user.name}
+        left={props => <List.Icon {...props} icon="person" />}
+        titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
+        descriptionStyle={[
+          styles.itemDescription,
+          {color: theme.colors.onSurfaceVariant},
+        ]}
+      />
+      <Divider />
 
-        <List.Item
-          title="Phone"
-          description={user.phone}
-          left={props => <List.Icon {...props} icon="phone" />}
-          titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
-          descriptionStyle={[
-            styles.itemDescription,
-            {color: theme.colors.onSurfaceVariant},
-          ]}
-        />
-        <Divider />
+      <List.Item
+        title="Phone"
+        description={user.phone}
+        left={props => <List.Icon {...props} icon="phone" />}
+        titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
+        descriptionStyle={[
+          styles.itemDescription,
+          {color: theme.colors.onSurfaceVariant},
+        ]}
+      />
+      <Divider />
 
-        <List.Item
-          title="Email"
-          description={user.email || 'Not provided'}
-          left={props => <List.Icon {...props} icon="email" />}
-          titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
-          descriptionStyle={[
-            styles.itemDescription,
-            {color: theme.colors.onSurfaceVariant},
-          ]}
-        />
-        <Divider />
+      <List.Item
+        title="Email"
+        description={user.email || 'Not provided'}
+        left={props => <List.Icon {...props} icon="email" />}
+        titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
+        descriptionStyle={[
+          styles.itemDescription,
+          {color: theme.colors.onSurfaceVariant},
+        ]}
+      />
+      <Divider />
 
-        <List.Item
-          title="Gender"
-          description={user.gender || 'Not specified'}
-          left={props => (
-            <List.Icon
-              {...props}
-              icon={user.gender == 'Male' ? 'man' : 'woman'}
-            />
-          )}
-          titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
-          descriptionStyle={[
-            styles.itemDescription,
-            {color: theme.colors.onSurfaceVariant},
-          ]}
-        />
-      </List.Section>
+      <List.Item
+        title="Gender"
+        description={user.gender || 'Not specified'}
+        left={props => (
+          <List.Icon
+            {...props}
+            icon={user.gender == 'Male' ? 'man' : 'woman'}
+          />
+        )}
+        titleStyle={[styles.itemTitle, {color: theme.colors.onSurface}]}
+        descriptionStyle={[
+          styles.itemDescription,
+          {color: theme.colors.onSurfaceVariant},
+        ]}
+      />
 
       <List.Section>
         <List.Subheader
