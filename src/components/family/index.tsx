@@ -9,7 +9,7 @@ import {
   useGetFamiliesQuery,
 } from '../../store/slices/familyApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
-import {Surface} from 'react-native-paper';
+import {Divider, Surface, useTheme} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
 import SearchHeader from '../common/SearchHeader';
 import {useSnackbar} from '../../context/SnackbarContext';
@@ -34,6 +34,7 @@ interface FamilyScreenProps {
 const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   const {showSnackbar} = useSnackbar();
   const {isAdmin, isPendingUser} = useRBAC();
+  const theme = useTheme();
 
   // State management
   const [isAddingFamily, setIsAddingFamily] = useState(false);
@@ -120,7 +121,8 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   }
 
   return (
-    <Surface style={styles.container}>
+    <Surface
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <SearchHeader
         title="Family"
         onSearch={handleSearch}
@@ -152,6 +154,7 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.9}
+          ItemSeparatorComponent={Divider}
           ListEmptyComponent={
             ready && families.length === 0 && !isLoading && !isFetching ? (
               <EmptyComponent
@@ -196,9 +199,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   listContainer: {
-    gap: 14,
+    // gap: 14,
     paddingBottom: 32,
-    paddingTop: 4,
+    // paddingTop: 4,
   },
   loadingContainer: {
     flex: 1,

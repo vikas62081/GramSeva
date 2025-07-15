@@ -76,14 +76,14 @@ const Member: React.FC<MemberProps> = ({family, onPress}) => {
 
 const styles = StyleSheet.create({
   touchable: {
-    borderRadius: 16,
-    // marginBottom: 2,
-    backgroundColor: '#fff',
+    // borderRadius: 16,
+    marginBottom: 4,
+    // backgroundColor: '#fff',
   },
   card: {
     borderRadius: 16,
     elevation: 2,
-    backgroundColor: '#f8f9fa',
+    // backgroundColor: '#f8f9fa',
     shadowColor: '#000',
     shadowOpacity: 0.06,
     shadowRadius: 4,
@@ -138,7 +138,6 @@ const styles = StyleSheet.create({
   familyName: {
     fontWeight: '600',
     fontSize: 15,
-    color: '#222',
     marginRight: 4,
     letterSpacing: 0.1,
   },
