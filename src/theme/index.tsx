@@ -1,83 +1,145 @@
-export interface CustomTheme {
-  dark: boolean;
-  colors: {
-    primary: string;
-    secondary: string;
-    background: string;
-    card: string;
-    text: string;
-    subtext: string;
-    border: string;
-    error: string;
-    success: string;
-    gradientStart: string;
-    gradientEnd: string;
-    surface: string;
-    placeholder: string;
-    disabled: string;
-    notification: string;
-  };
-}
+import {configureFonts, MD3Theme} from 'react-native-paper';
 
-export const lightTheme: CustomTheme = {
+export const GramSevaLightTheme: MD3Theme = {
   dark: false,
+  roundness: 4,
+  version: 3,
+  isV3: true,
   colors: {
-    primary: '#3494E6',
-    secondary: '#EC6EAD',
-    background: '#f8f9fa',
-    card: '#ffffff',
-    text: '#2d3436',
-    subtext: '#666666',
-    border: '#e1e1e1',
-    error: '#ff4444',
-    success: '#4CAF50',
-    gradientStart: '#3494E6',
-    gradientEnd: '#EC6EAD',
-    surface: '#ffffff',
-    placeholder: '#9ca3af',
-    disabled: '#d1d5db',
-    notification: '#3494E6',
+    // Primary - Indigo Core
+    primary: '#3F51B5', // Indigo 500
+    onPrimary: '#FFFFFF',
+    primaryContainer: '#C5CAE9', // Indigo 100
+    onPrimaryContainer: '#1A237E', // Indigo 900
+
+    // Secondary - Indigo Variant
+    secondary: '#5C6BC0', // Indigo 400
+    onSecondary: '#FFFFFF',
+    secondaryContainer: '#E8EAF6', // Indigo 50
+    onSecondaryContainer: '#303F9F', // Indigo 700
+
+    // Tertiary - Deep Purple accent
+    tertiary: '#9575CD',
+    onTertiary: '#FFFFFF',
+    tertiaryContainer: '#EDE7F6',
+    onTertiaryContainer: '#4A148C',
+
+    // Background & Surface
+    background: '#FFFFFF',
+    onBackground: '#1A237E',
+    surface: '#FFFFFF',
+    onSurface: '#1A237E',
+    surfaceVariant: '#F5F5F5',
+    onSurfaceVariant: '#3C3C3C',
+
+    // Disabled
+    surfaceDisabled: 'rgba(0,0,0,0.12)',
+    onSurfaceDisabled: 'rgba(0,0,0,0.38)',
+
+    // Errors
+    error: '#D32F2F',
+    onError: '#FFFFFF',
+    errorContainer: '#FFCDD2',
+    onErrorContainer: '#B71C1C',
+
+    // Outline
+    outline: '#7986CB',
+    outlineVariant: '#C5CAE9',
+
+    // Inverse
+    inverseSurface: '#1A237E',
+    inverseOnSurface: '#FFFFFF',
+    inversePrimary: '#C5CAE9',
+
+    // Shadows & effects
+    shadow: '#000000',
+    scrim: '#000000',
+    backdrop: 'rgba(63, 81, 181, 0.3)',
+
+    // Elevation
+    elevation: {
+      level0: 'transparent',
+      level1: '#F3F4FD',
+      level2: '#ECEEFE',
+      level3: '#E6E9FD',
+      level4: '#E0E3FC',
+      level5: '#DBDFFC',
+    },
+  },
+  fonts: configureFonts(),
+  animation: {
+    scale: 1.0,
   },
 };
 
-export const darkTheme: CustomTheme = {
-  dark: true,
+export const GramSevaDarkTheme: MD3Theme = {
+  dark: false,
+  roundness: 4,
+  version: 3,
+  isV3: true,
   colors: {
-    primary: '#3494E6',
-    secondary: '#EC6EAD',
-    background: '#121212', // Proper dark mode background
-    card: '#1e1e1e', // Slightly lighter than background
-    text: '#ffffff',
-    subtext: '#a0a0a0',
-    border: '#2d2d2d',
-    error: '#ff6b6b',
-    success: '#69F0AE',
-    gradientStart: '#3494E6',
-    gradientEnd: '#EC6EAD',
-    surface: '#1e1e1e',
-    placeholder: '#6b7280',
-    disabled: '#374151',
-    notification: '#3494E6',
+    // Primary - Indigo Core
+    primary: '#7986CB', // Indigo 300
+    onPrimary: '#FFFFFF',
+    primaryContainer: '#1A237E', // Indigo 900
+    onPrimaryContainer: '#C5CAE9', // Indigo 100
+
+    // Secondary - Indigo Variant
+    secondary: '#9FA8DA', // Indigo 200
+    onSecondary: '#1A237E',
+    secondaryContainer: '#303F9F', // Indigo 700
+    onSecondaryContainer: '#E8EAF6',
+
+    // Tertiary - Soft Violet
+    tertiary: '#B39DDB', // Deep Purple 200
+    onTertiary: '#311B92',
+    tertiaryContainer: '#512DA8',
+    onTertiaryContainer: '#EDE7F6',
+
+    // Backgrounds and surfaces
+    background: '#121212',
+    onBackground: '#EDEDED',
+    surface: '#1C1C1E',
+    onSurface: '#F5F5F5',
+    surfaceVariant: '#2C2C2E',
+    onSurfaceVariant: '#CCCCCC',
+
+    // Disabled states
+    surfaceDisabled: 'rgba(255,255,255,0.12)',
+    onSurfaceDisabled: 'rgba(255,255,255,0.38)',
+
+    // Errors
+    error: '#EF5350',
+    onError: '#000000',
+    errorContainer: '#B00020',
+    onErrorContainer: '#FFCDD2',
+
+    // Outline
+    outline: '#5C6BC0',
+    outlineVariant: '#9FA8DA',
+
+    // Inverse
+    inverseSurface: '#E8EAF6',
+    inverseOnSurface: '#1A237E',
+    inversePrimary: '#C5CAE9',
+
+    // Extras
+    shadow: '#000000',
+    scrim: '#000000',
+    backdrop: 'rgba(63, 81, 181, 0.4)',
+
+    // Elevation (Indigo-tinted)
+    elevation: {
+      level0: 'transparent',
+      level1: '#21233A',
+      level2: '#2A2D4A',
+      level3: '#313358',
+      level4: '#3A3C6C',
+      level5: '#424378',
+    },
+  },
+  fonts: configureFonts(),
+  animation: {
+    scale: 1.0,
   },
 };
-
-// Helper function to get elevation colors for dark mode
-export const getDarkElevation = (elevation: number) => {
-  const overlayColor = '#ffffff';
-  const opacity = (elevation / 24) * 0.15; // Max elevation is 24
-  return `rgba(${overlayColor}, ${opacity})`;
-};
-
-// Helper function to get shadow styles
-export const getShadow = (elevation: number) => ({
-  elevation,
-  shadowColor: '#000000',
-  shadowOffset: {
-    width: 0,
-    height: elevation / 2,
-  },
-  shadowOpacity: 0.25,
-  shadowRadius: elevation,
-});
-
-export const placeholderTextColor = '#B0B0B0';
