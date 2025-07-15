@@ -8,13 +8,13 @@ import {
 } from 'react-native';
 import {FAB} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {Event_, EventsScreenNavigationProp} from './types';
 
 import {formatDate, getTime} from '../../utils';
 import {useGetEventsQuery} from '../../store/slices/eventApiSlice';
 import EmptyComponent from '../common/EmptyComponent';
-import {Card, IconButton, Surface, Text} from 'react-native-paper';
+import {Card, Surface, Text} from 'react-native-paper';
 import LazyLoader from '../common/LazyLoader';
 import SearchHeader from '../common/SearchHeader';
 import EventForm from './eventDetails/EventForm';

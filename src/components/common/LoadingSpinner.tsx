@@ -19,7 +19,8 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <View style={styles.container}>
       {children}
       {loading && (
-        <View style={styles.overlay}>
+        <View
+          style={[styles.overlay, {backgroundColor: theme.colors.backdrop}]}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
           {content ? (
             <Text style={[styles.text, {color: theme.colors.onPrimary}]}>
@@ -39,7 +40,6 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 999,

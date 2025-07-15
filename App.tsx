@@ -21,27 +21,14 @@ import {RBACProvider} from './src/context/RBACContext';
 
 enableScreens();
 
-// 🌿 Gram Seva Primary Color
-// const PRIMARY_GREEN = '#5DBA5F';
-
 const App = (): React.JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = useMemo(
-    () => ({
-      backgroundColor: isDarkMode ? '#121212' : 'transparent',
-      flex: 1,
-    }),
-    [isDarkMode],
-  );
-
-  // 🧱 Define custom Paper & Navigation themes
   const paperTheme = useMemo(
     () => ({
       ...(isDarkMode ? MD3DarkTheme : MD3LightTheme),
       colors: {
         ...(isDarkMode ? MD3DarkTheme.colors : MD3LightTheme.colors),
-        // primary: PRIMARY_GREEN,
       },
     }),
     [isDarkMode],
@@ -52,11 +39,9 @@ const App = (): React.JSX.Element => {
       ...(isDarkMode ? NavDarkTheme : NavDefaultTheme),
       colors: {
         ...(isDarkMode ? NavDarkTheme.colors : NavDefaultTheme.colors),
-        // primary: PRIMARY_GREEN,
-        background: backgroundStyle.backgroundColor,
       },
     }),
-    [isDarkMode, backgroundStyle],
+    [isDarkMode],
   );
 
   return (
@@ -71,9 +56,9 @@ const App = (): React.JSX.Element => {
                 <NavigationContainer theme={navTheme}>
                   <StatusBar
                     barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                    backgroundColor={backgroundStyle.backgroundColor}
+                    backgroundColor={paperTheme.colors.background}
                   />
-                  <SafeAreaView style={backgroundStyle}>
+                  <SafeAreaView style={{flex: 1}}>
                     <AppNavigator />
                   </SafeAreaView>
                 </NavigationContainer>

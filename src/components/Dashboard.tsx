@@ -35,8 +35,8 @@ interface DashboardProps {
 }
 
 const Dashboard = ({navigation}: DashboardProps) => {
-  const {colors} = useTheme();
   const {user} = useAuth();
+  const theme = useTheme();
 
   const {familiesOverview, latestEvent, ui, latestEventData} = useDashboard();
 
@@ -74,7 +74,7 @@ const Dashboard = ({navigation}: DashboardProps) => {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, {backgroundColor: theme.colors.background}]}
       refreshControl={
         <RefreshControl refreshing={ui.refreshing} onRefresh={ui.onRefresh} />
       }>
