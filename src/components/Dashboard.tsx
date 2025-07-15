@@ -17,13 +17,15 @@ import {
   Button,
   Avatar,
   Appbar,
+  Divider,
 } from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useDashboard} from '../hooks/useDashboard';
 import {useAuth} from '../context/AuthContext';
 import {formatCurrency} from '../utils';
 import AnimatedProgressBar from './common/AnimatedProgressBar';
-import {VariantProp} from 'react-native-paper/lib/typescript/components/Typography/types';
+import {useRBAC} from '../context/RBACContext';
+import PendingApprovalBanner from './common/PendingApprovalBanner';
 
 export type TabParamList = {
   Home: undefined;
@@ -127,8 +129,16 @@ const Dashboard = ({navigation}: DashboardProps) => {
           />
         </View>
       </Appbar.Header>
-      {/* Village Statistics Card */}
-      <Card style={[styles.card, styles.cardVillage]}>
+
+      {/* Pending User Banner (custom view) */}
+      <PendingApprovalBanner />
+
+      <Card
+        style={[
+          styles.card,
+          styles.cardVillage,
+          {backgroundColor: theme.colors.secondaryContainer},
+        ]}>
         <Card.Content style={styles.cardContent}>
           <Text variant="titleMedium" style={styles.cardTitle}>
             Village Statistics
@@ -211,7 +221,12 @@ const Dashboard = ({navigation}: DashboardProps) => {
         </Card.Content>
       </Card>
       {/* Event & Expenses Card */}
-      <Card style={[styles.card, styles.cardEvent]}>
+      <Card
+        style={[
+          styles.card,
+          styles.cardEvent,
+          {backgroundColor: theme.colors.secondaryContainer},
+        ]}>
         <Card.Content style={styles.cardContent}>
           <View style={styles.eventHeaderRow}>
             <Text variant="titleMedium" style={styles.cardTitle}>
@@ -239,7 +254,9 @@ const Dashboard = ({navigation}: DashboardProps) => {
                 color="#1976d2"
                 style={styles.iconNoBg}
               />
-              <Text style={styles.eventDetailModern}>{latestEvent.date}</Text>
+              <Text variant="bodyMedium" style={styles.eventDetailModern}>
+                {latestEvent.date}
+              </Text>
             </View>
             <View style={styles.eventDetailItem}>
               <MaterialIcons
@@ -248,10 +265,13 @@ const Dashboard = ({navigation}: DashboardProps) => {
                 color="#8e24aa"
                 style={styles.iconNoBg}
               />
-              <Text style={styles.eventDetailModern}>{latestEvent.head}</Text>
+              <Text variant="bodyMedium" style={styles.eventDetailModern}>
+                {latestEvent.head}
+              </Text>
             </View>
           </View>
-          <View style={styles.eventDivider} />
+          <View />
+          <Divider style={styles.eventDivider} />
           <View style={styles.expenseRowModern}>
             <View style={styles.expenseBoxModern}>
               <Text style={styles.expenseLabelModern}>Contribution</Text>
@@ -272,7 +292,7 @@ const Dashboard = ({navigation}: DashboardProps) => {
             height={8}
             backgroundColor="#fff"
             barColor="#388e3c"
-            style={{marginTop: 8}}
+            style={{marginTop: 8, marginBottom: 4}}
           />
           <View style={{alignItems: 'flex-end'}}>
             <Button
@@ -315,7 +335,6 @@ const styles = StyleSheet.create({
     elevation: 1,
     marginBottom: 20,
     paddingVertical: 4,
-    // backgroundColor: '#f5f7fa',
     shadowColor: '#000',
     shadowOpacity: 0.04,
     shadowRadius: 4,
@@ -326,15 +345,12 @@ const styles = StyleSheet.create({
   },
   cardVillage: {
     marginTop: 8,
-    backgroundColor: '#f9f6ff',
   },
-  cardEvent: {
-    marginTop: 8,
-    backgroundColor: '#f6f3ff',
-  },
+  cardEvent: {},
   cardContent: {
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 4,
+    paddingBottom: 0,
   },
 
   eventHeaderRow: {
@@ -367,17 +383,10 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   eventDetailModern: {
-    color: '#555',
-    fontSize: 14,
     marginLeft: 4,
-    fontWeight: '500',
   },
   eventDivider: {
-    height: 1,
-    backgroundColor: '#e1e1e1',
     marginVertical: 8,
-    borderRadius: 1,
-    opacity: 0.5,
   },
   expenseRowModern: {
     flexDirection: 'row',
@@ -425,7 +434,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 8,
     marginTop: 4,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   statsGridRow: {
     flexDirection: 'row',
@@ -590,7 +599,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     marginBottom: 4,
-    color: '#222',
     marginTop: 2,
   },
   eventDetailsRow: {
