@@ -143,3 +143,5 @@ export const GramSevaDarkTheme: MD3Theme = {
     scale: 1.0,
   },
 };
+
+export const placeholderTextColor = '#999';

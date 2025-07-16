@@ -61,7 +61,6 @@ const MainTabs = () => {
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.secondary,
-        animation: 'fade',
       })}>
       {tabScreens
         .filter(tab => !tab.hidden)

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
+import {placeholderTextColor} from '../../theme';
 
 interface SearchProps {
   onSearch: (query: string) => void;
@@ -18,7 +19,7 @@ const Search: React.FC<SearchProps> = ({onSearch}) => {
       <TextInput
         style={styles.searchInput}
         placeholder="Search Members"
-        placeholderTextColor="#999" // Ensures placeholder is visible
+        placeholderTextColor={placeholderTextColor} // Ensures placeholder is visible
         value={query}
         onChangeText={handleSearch}
       />

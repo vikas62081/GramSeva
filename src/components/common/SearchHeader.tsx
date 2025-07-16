@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet} from 'react-native';
 import {Appbar, Searchbar, Divider} from 'react-native-paper';
+import {placeholderTextColor} from '../../theme';
 
 // Debounce hook
 const useDebounce = (value: string, delay: number) => {
@@ -90,7 +91,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
             inputStyle={styles.searchInput}
             mode="view"
             showDivider={false}
-            placeholderTextColor={'#999'}
+            placeholderTextColor={placeholderTextColor}
           />
           <Divider />
         </Appbar.Header>

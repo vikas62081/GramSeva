@@ -15,6 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import {PollingStackNavigationProp} from '../../../types/navigation';
 import PageHeader from '../common/PageHeader';
 import FormGroup from '../common/FormGroup';
+import {placeholderTextColor} from '../../theme';
 
 interface PollForm {
   question: string;
@@ -91,7 +92,7 @@ const CreatePoll = (): React.JSX.Element => {
             value={formData.question}
             onChangeText={handleQuestionChange}
             placeholder="Ask a question..."
-            placeholderTextColor="#999"
+            placeholderTextColor={placeholderTextColor}
             multiline
           />
         </FormGroup>
@@ -104,7 +105,7 @@ const CreatePoll = (): React.JSX.Element => {
                 value={option}
                 onChangeText={text => handleOptionChange(text, index)}
                 placeholder={`Option ${index + 1}`}
-                placeholderTextColor="#999"
+                placeholderTextColor={placeholderTextColor}
               />
               {index >= 2 && (
                 <TouchableOpacity

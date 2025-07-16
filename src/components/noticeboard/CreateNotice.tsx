@@ -15,6 +15,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import PageHeader from '../common/PageHeader';
 import FormGroup from '../common/FormGroup';
 import Pills from '../common/Pills';
+import {placeholderTextColor} from '../../theme';
 
 interface CreateNoticeModalProps {
   visible: boolean;
@@ -84,7 +85,7 @@ const CreateNoticeModal: React.FC<CreateNoticeModalProps> = ({
                   setFormData(prev => ({...prev, title: text}))
                 }
                 placeholder="Enter notice title"
-                placeholderTextColor="#999"
+                placeholderTextColor={placeholderTextColor}
               />
             </FormGroup>
             <FormGroup label="Description">
@@ -95,7 +96,7 @@ const CreateNoticeModal: React.FC<CreateNoticeModalProps> = ({
                   setFormData(prev => ({...prev, description: text}))
                 }
                 placeholder="Enter notice description"
-                placeholderTextColor="#999"
+                placeholderTextColor={placeholderTextColor}
                 multiline
                 numberOfLines={4}
               />

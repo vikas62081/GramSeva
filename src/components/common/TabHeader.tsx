@@ -8,6 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {placeholderTextColor} from '../../theme';
 
 interface TabHeaderProps {
   title: string;
@@ -64,7 +65,7 @@ const TabHeader: React.FC<TabHeaderProps> = ({
           <TextInput
             style={styles.searchInput}
             placeholder="Search..."
-            placeholderTextColor="#999"
+            placeholderTextColor={placeholderTextColor}
             value={searchQuery}
             onChangeText={handleSearch}
             autoFocus

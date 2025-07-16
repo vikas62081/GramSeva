@@ -8,6 +8,7 @@ import {
   Surface,
   Divider,
 } from 'react-native-paper';
+import {placeholderTextColor} from '../../theme';
 
 interface ReusableSelectorProps<T> {
   data: T[];
@@ -75,7 +76,7 @@ function ReusableSelector<T extends Record<string, any>>({
         mode="view"
         showDivider={false}
         onIconPress={() => navigation.goBack()}
-        placeholderTextColor={'#999'}
+        placeholderTextColor={placeholderTextColor}
       />
       <Divider />
       {isLoading ? (

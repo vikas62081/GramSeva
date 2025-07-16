@@ -79,7 +79,8 @@ const ContributorForm: React.FC<ContributorFormProps> = ({
       onClose={onClose}
       title={initialData ? 'Edit Contributor' : 'Add Contributor'}
       onSubmit={handleSubmit}
-      submitText={initialData ? 'Update' : 'Add'}>
+      submitText={initialData ? 'Update' : 'Add'}
+      stickyFooter={false}>
       <FormGroup label="Name">
         <TouchableOpacity
           style={[

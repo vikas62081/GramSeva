@@ -51,7 +51,8 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
       onClose={onClose}
       title={initialData ? 'Edit Expense' : 'Add Expense'}
       onSubmit={handleSubmit}
-      submitText={initialData ? 'Update' : 'Add'}>
+      submitText={initialData ? 'Update' : 'Add'}
+      stickyFooter={false}>
       <FormGroup label="Item">
         <TextInput
           style={styles.input}
