@@ -72,7 +72,7 @@ const Dashboard = ({navigation}: DashboardProps) => {
   if (ui.loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" animating />
         <Text style={{marginTop: 12}}>Loading dashboard...</Text>
       </View>
     );

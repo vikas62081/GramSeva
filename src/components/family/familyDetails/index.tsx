@@ -16,10 +16,10 @@ import {
 } from '../../../store/slices/familyApiSlice';
 import EmptyComponent from '../../common/EmptyComponent';
 import {useHideTabBar} from '../../../hooks/ useHideTabBar';
-import {ActivityIndicator} from 'react-native-paper';
 import {useSnackbar} from '../../../context/SnackbarContext';
 import {useRBAC} from '../../../context/RBACContext';
 import StatusBanner from './StatusBanner';
+import LoadingSpinner from '../../common/LoadingSpinner';
 
 interface FamilyDetailsScreenProps {
   navigation: FamilyDetailsScreenNavigationProp;
@@ -156,7 +156,11 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
   );
 
   if (isFetching || isLoading) {
-    return <ActivityIndicator animating />;
+    return (
+      <LoadingSpinner loading={isFetching || isLoading} content="Loading...">
+        <></>
+      </LoadingSpinner>
+    );
   }
   return (
     <>

@@ -19,11 +19,10 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <View style={styles.container}>
       {children}
       {loading && (
-        <View
-          style={[styles.overlay, {backgroundColor: theme.colors.backdrop}]}>
+        <View style={[styles.overlay]}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
           {content ? (
-            <Text style={[styles.text, {color: theme.colors.onPrimary}]}>
+            <Text style={[styles.text, {color: theme.colors.onSurface}]}>
               {content}
             </Text>
           ) : null}

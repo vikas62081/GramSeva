@@ -22,6 +22,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         size="large"
         color={theme.colors.primary}
         style={styles.spinner}
+        animating
       />
     </View>
   );
