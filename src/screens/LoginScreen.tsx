@@ -41,7 +41,7 @@ const LoginScreen = ({navigation}: any) => {
   };
 
   return (
-    <LoadingSpinner loading={loading} content="Logging in...">
+    <LoadingSpinner loading={loading} text="Logging in...">
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
         <View style={styles.logoSection}>

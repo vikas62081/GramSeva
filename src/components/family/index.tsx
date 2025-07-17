@@ -103,7 +103,8 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   // Show loading screen for initial load
   if (showInitialLoader) {
     return (
-      <Surface style={styles.container}>
+      <Surface
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
         <SearchHeader
           title="Family"
           onSearch={handleSearch}

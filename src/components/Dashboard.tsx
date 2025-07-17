@@ -71,7 +71,8 @@ const Dashboard = ({navigation}: DashboardProps) => {
 
   if (ui.loading) {
     return (
-      <View style={styles.centered}>
+      <View
+        style={[styles.centered, {backgroundColor: theme.colors.background}]}>
         <ActivityIndicator size="large" animating />
         <Text style={{marginTop: 12}}>Loading dashboard...</Text>
       </View>
@@ -79,7 +80,8 @@ const Dashboard = ({navigation}: DashboardProps) => {
   }
   if (ui.error) {
     return (
-      <View style={styles.centered}>
+      <View
+        style={[styles.centered, {backgroundColor: theme.colors.background}]}>
         <Text style={{color: 'red', marginBottom: 8}}>
           Failed to load dashboard.
         </Text>

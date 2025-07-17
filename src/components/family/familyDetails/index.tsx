@@ -157,7 +157,7 @@ const FamilyDetailsContainer: React.FC<FamilyDetailsScreenProps> = ({
 
   if (isFetching || isLoading) {
     return (
-      <LoadingSpinner loading={isFetching || isLoading} content="Loading...">
+      <LoadingSpinner loading={isFetching || isLoading} text="Loading...">
         <></>
       </LoadingSpinner>
     );

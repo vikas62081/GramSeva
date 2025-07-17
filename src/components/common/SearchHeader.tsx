@@ -76,7 +76,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   return (
     <>
       {isSearchVisible ? (
-        <Appbar.Header style={{paddingHorizontal: 0}}>
+        <Appbar.Header style={[styles.shadow, {paddingHorizontal: 0}]}>
           {/* <Appbar.Action icon="arrow-back" onPress={toggleSearch} /> */}
           <Searchbar
             loading={isSearchLoading}
@@ -96,7 +96,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           <Divider />
         </Appbar.Header>
       ) : (
-        <Appbar.Header>
+        <Appbar.Header style={[styles.shadow, {paddingHorizontal: 0}]}>
           {goBack && <Appbar.Action icon="arrow-back" onPress={goBack} />}
           <Appbar.Content title={title} />
           <Appbar.Action icon="search" onPress={toggleSearch} />
@@ -115,8 +115,14 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 48,
     backgroundColor: 'transparent',
-    borderColor: '#ddd',
-    borderBottomWidth: 1,
+  },
+  shadow: {
+    // elevation: 8,
+    // shadowColor: '#000',
+    // shadowOffset: {width: 0, height: 2},
+    // shadowOpacity: 0.08,
+    // shadowRadius: 4,
+    // zIndex: 1,
   },
   searchInput: {
     color: '#222',

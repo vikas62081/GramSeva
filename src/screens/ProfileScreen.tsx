@@ -53,7 +53,10 @@ const ProfileScreen = ({navigation}: any) => {
 
   return (
     <>
-      <LoadingSpinner loading={loggingOut} content="Logging out">
+      <LoadingSpinner
+        loading={loggingOut}
+        text="Logging out"
+        backgroundColor="rgba(0, 0, 0, 0.4)">
         <ScrollView
           style={[styles.container, {backgroundColor: theme.colors.background}]}
           showsVerticalScrollIndicator={false}

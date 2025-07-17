@@ -100,7 +100,8 @@ const EventContainer = (): React.JSX.Element => {
   // Show loading screen for initial load
   if (showInitialLoader) {
     return (
-      <Surface style={styles.container}>
+      <Surface
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
         <SearchHeader
           title="Events"
           onSearch={handleSearch}

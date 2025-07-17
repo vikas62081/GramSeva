@@ -5,13 +5,15 @@ import {useTheme} from 'react-native-paper';
 interface LoadingSpinnerProps {
   loading: boolean;
   children: ReactNode;
-  content?: string;
+  text?: string;
+  backgroundColor?: string;
 }
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   loading,
   children,
-  content = 'Please wait...',
+  text = 'Please wait...',
+  backgroundColor = 'transparent',
 }) => {
   const theme = useTheme();
 
@@ -19,11 +21,11 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <View style={styles.container}>
       {children}
       {loading && (
-        <View style={[styles.overlay]}>
+        <View style={[styles.overlay, {backgroundColor: backgroundColor}]}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
-          {content ? (
-            <Text style={[styles.text, {color: theme.colors.onSurface}]}>
-              {content}
+          {text ? (
+            <Text style={[styles.text, {color: theme.colors.onPrimary}]}>
+              {text}
             </Text>
           ) : null}
         </View>

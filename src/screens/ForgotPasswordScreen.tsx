@@ -77,7 +77,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
   };
 
   return (
-    <LoadingSpinner loading={loading} content="Processing...">
+    <LoadingSpinner loading={loading} text="Processing...">
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
         <View style={styles.logoSection}>

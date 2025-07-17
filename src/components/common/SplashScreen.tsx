@@ -10,14 +10,13 @@ interface SplashScreenProps {
 
 const SplashScreen: React.FC<SplashScreenProps> = ({
   onFinish,
-  duration = 2000,
+  duration = 1500,
 }) => {
   const theme = useTheme();
   const fadeAnim = new Animated.Value(0);
   const scaleAnim = new Animated.Value(0.8);
 
   useEffect(() => {
-    // Fade in animation
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,

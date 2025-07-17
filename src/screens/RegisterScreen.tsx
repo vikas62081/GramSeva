@@ -68,7 +68,7 @@ const RegisterScreen = ({navigation}: any) => {
   };
 
   return (
-    <LoadingSpinner loading={loading} content="Registering...">
+    <LoadingSpinner loading={loading} text="Registering...">
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
