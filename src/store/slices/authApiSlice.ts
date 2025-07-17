@@ -17,13 +17,12 @@ export interface RegisterRequest {
 }
 
 export interface OtpVerificationRequest {
-  phone: string;
+  optRequestId: string;
   otp: number;
 }
 
 export interface ResetPasswordRequest {
   phone: string;
-  otp: number;
   new_password: string;
 }
 

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Keyboard,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
@@ -13,7 +14,8 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import Logo from '../components/common/Logo';
 
 const ForgotPasswordScreen = ({navigation}: any) => {
-  const {forgotPassword, verifyOtp, resetPassword, loading} = useAuth();
+  const {forgotPassword, verifyOtp, resetPassword, isInForgotPasswordFlow} =
+    useAuth();
   const theme = useTheme();
   const [step, setStep] = useState<'phone' | 'otp' | 'reset'>('phone');
   const [phone, setPhone] = useState('');
@@ -26,7 +28,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
       Alert.alert('Missing Field', 'Please enter your phone number.');
       return;
     }
-
+    Keyboard.dismiss();
     const success = await forgotPassword(phone.trim());
     if (success) {
       Alert.alert('OTP Sent', 'Please check your phone for the OTP.');
@@ -41,8 +43,8 @@ const ForgotPasswordScreen = ({navigation}: any) => {
       Alert.alert('Missing Field', 'Please enter the OTP.');
       return;
     }
-
-    const success = await verifyOtp(phone.trim(), parseInt(otp));
+    Keyboard.dismiss();
+    const success = await verifyOtp(parseInt(otp));
     if (success) {
       setStep('reset');
     } else {
@@ -62,12 +64,8 @@ const ForgotPasswordScreen = ({navigation}: any) => {
       Alert.alert('Mismatch', 'Passwords do not match.');
       return;
     }
-
-    const success = await resetPassword(
-      phone.trim(),
-      parseInt(otp),
-      newPassword,
-    );
+    Keyboard.dismiss();
+    const success = await resetPassword(phone.trim(), newPassword);
     if (success) {
       Alert.alert('Success', 'Password reset successfully. Please login.');
       navigation?.navigate('Login');
@@ -77,7 +75,16 @@ const ForgotPasswordScreen = ({navigation}: any) => {
   };
 
   return (
-    <LoadingSpinner loading={loading} text="Processing...">
+    <LoadingSpinner
+      loading={isInForgotPasswordFlow}
+      text={
+        step === 'phone'
+          ? 'Sending OTP...'
+          : step === 'otp'
+          ? 'Verifying Otp...'
+          : 'Reseting password...'
+      }
+      backgroundColor="rgba(0, 0, 0, 0.4)">
       <View
         style={[styles.container, {backgroundColor: theme.colors.background}]}>
         <View style={styles.logoSection}>
@@ -107,7 +114,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
             <TouchableOpacity
               style={[styles.button, {backgroundColor: theme.colors.primary}]}
               onPress={handleSendOtp}
-              disabled={loading}>
+              disabled={isInForgotPasswordFlow}>
               <Text
                 style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
                 Send OTP
@@ -135,7 +142,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
             <TouchableOpacity
               style={[styles.button, {backgroundColor: theme.colors.primary}]}
               onPress={handleOtp}
-              disabled={loading}>
+              disabled={isInForgotPasswordFlow}>
               <Text
                 style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
                 Verify OTP
@@ -178,7 +185,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
             <TouchableOpacity
               style={[styles.button, {backgroundColor: theme.colors.primary}]}
               onPress={handleReset}
-              disabled={loading}>
+              disabled={isInForgotPasswordFlow}>
               <Text
                 style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
                 Reset Password
@@ -201,7 +208,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // justifyContent: 'center',
     padding: 24,
-    marginTop: 120,
+    paddingTop: 120,
   },
   logoSection: {
     alignItems: 'center',

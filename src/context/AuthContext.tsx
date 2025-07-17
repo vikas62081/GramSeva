@@ -43,12 +43,9 @@ interface AuthContextType {
   logout: () => void;
   register: (data: RegisterRequest) => Promise<boolean>;
   forgotPassword: (phone: string) => Promise<boolean>;
-  verifyOtp: (phone: string, otp: number) => Promise<boolean>;
-  resetPassword: (
-    phone: string,
-    otp: number,
-    newPassword: string,
-  ) => Promise<boolean>;
+  verifyOtp: (otp: number) => Promise<boolean>;
+  resetPassword: (phone: string, newPassword: string) => Promise<boolean>;
+  isInForgotPasswordFlow: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -69,9 +66,13 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [loginMutation, {isLoading: loginLoading}] = useLoginMutation();
   const [registerMutation, {isLoading: registerLoading}] =
     useRegisterMutation();
-  const [forgotPasswordMutation] = useForgotPasswordMutation();
-  const [verifyOtpMutation] = useVerifyOtpMutation();
-  const [resetPasswordMutation] = useResetPasswordMutation();
+  const [forgotPasswordMutation, {isLoading: isSendingOtp}] =
+    useForgotPasswordMutation();
+  const [verifyOtpMutation, {isLoading: isVerifyingOtp}] =
+    useVerifyOtpMutation();
+  const [resetPasswordMutation, {isLoading: isResetingPassword}] =
+    useResetPasswordMutation();
+  const [otpRequestId, setOtpRequestId] = useState('');
 
   // Load user from storage on app start
   useEffect(() => {
@@ -166,16 +167,17 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const forgotPassword = async (phone: string) => {
     try {
       const response = await forgotPasswordMutation({phone}).unwrap();
+      setOtpRequestId(response.data?.message || '');
       return response.data ? true : false;
     } catch (error) {
       return false;
     }
   };
 
-  const verifyOtp = async (phone: string, otp: number) => {
+  const verifyOtp = async (otp: number) => {
     try {
       const otpData: OtpVerificationRequest = {
-        phone: phone,
+        optRequestId: otpRequestId,
         otp: otp,
       };
 
@@ -186,15 +188,10 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     }
   };
 
-  const resetPassword = async (
-    phone: string,
-    otp: number,
-    newPassword: string,
-  ) => {
+  const resetPassword = async (phone: string, newPassword: string) => {
     try {
       const resetData: ResetPasswordRequest = {
         phone: phone,
-        otp: otp,
         new_password: newPassword,
       };
 
@@ -207,6 +204,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   };
 
   const isLoading = loginLoading || registerLoading || loading || userLoading;
+  const isInForgotPasswordFlow =
+    isSendingOtp || isVerifyingOtp || isResetingPassword;
 
   return (
     <AuthContext.Provider
@@ -220,6 +219,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         forgotPassword,
         verifyOtp,
         resetPassword,
+        isInForgotPasswordFlow,
       }}>
       {children}
     </AuthContext.Provider>
