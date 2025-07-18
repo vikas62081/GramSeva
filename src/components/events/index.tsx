@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import {Divider, FAB, useTheme} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -25,7 +26,7 @@ import {useRBAC} from '../../context/RBACContext';
 const EventContainer = (): React.JSX.Element => {
   const navigation = useNavigation<EventsScreenNavigationProp>();
   const theme = useTheme();
-  const {isAdmin} = useRBAC();
+  const {isAdmin, isActiveUser} = useRBAC();
   // State management
   const [isAddingEvent, setIsAddingEvent] = useState(false);
 
@@ -55,11 +56,22 @@ const EventContainer = (): React.JSX.Element => {
     setIsAddingEvent(false);
   }, [refetch]);
 
+  const onEventCardPress = (item: Event_) => {
+    if (isActiveUser) {
+      navigation.navigate('EventDetails', {event: item});
+      return;
+    }
+    Alert.alert(
+      'Access Denied',
+      'Your account is still pending approval. You’ll get access once it’s reviewed.',
+    );
+  };
+
   // Render individual event item
   const renderEventItem = useCallback(
     ({item}: {item: Event_}) => (
       <TouchableOpacity
-        onPress={() => navigation.navigate('EventDetails', {event: item})}
+        onPress={() => onEventCardPress(item)}
         // activeOpacity={0.85}
         style={styles.eventCard}>
         {/* <Card mode="elevated" style={styles.eventCard}> */}

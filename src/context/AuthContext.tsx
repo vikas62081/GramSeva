@@ -17,8 +17,8 @@ import {
   OtpVerificationRequest,
   ResetPasswordRequest,
 } from '../store/slices/authApiSlice';
-import {useGetUserQuery} from '../store/slices/userApiSlice';
-
+import {useGetUserQuery, userApi} from '../store/slices/userApiSlice';
+import {useDispatch} from 'react-redux';
 interface CreateUser {
   name: string;
   phone: string;
@@ -38,8 +38,8 @@ interface User extends CreateUser {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  registerLoading: boolean;
   login: (phone: string, password: string) => Promise<boolean>;
-  googleLogin: () => Promise<boolean>;
   logout: () => void;
   register: (data: RegisterRequest) => Promise<boolean>;
   forgotPassword: (phone: string) => Promise<boolean>;
@@ -51,6 +51,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
+  const dispatch = useDispatch();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
@@ -127,26 +128,6 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     }
   };
 
-  const googleLogin = async () => {
-    // Simulate Google login (replace with real Google Sign-In)
-    // const googleUser = {
-    //   name: 'Google User',
-    //   phone: '0000000000',
-    //   email: 'user@gmail.com',
-    //   gender: 'Other',
-    // };
-    // setUser(googleUser);
-    // await saveToStorage('user', googleUser);
-    return true;
-  };
-
-  const logout = async () => {
-    setUser(null);
-    setUserId(null);
-    await saveToStorage('user', null);
-    await saveToStorage('token', null);
-  };
-
   const register = async (data: RegisterRequest) => {
     try {
       const registerData: RegisterRequest = {
@@ -203,7 +184,15 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     }
   };
 
-  const isLoading = loginLoading || registerLoading || loading || userLoading;
+  const logout = async () => {
+    dispatch(userApi.util.resetApiState());
+    await saveToStorage('user', null);
+    await saveToStorage('token', null);
+    setUser(null);
+    setUserId(null);
+  };
+
+  const isLoading = loginLoading || loading || userLoading;
   const isInForgotPasswordFlow =
     isSendingOtp || isVerifyingOtp || isResetingPassword;
 
@@ -212,8 +201,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       value={{
         user,
         loading: isLoading,
+        registerLoading,
         login,
-        googleLogin,
         logout,
         register,
         forgotPassword,

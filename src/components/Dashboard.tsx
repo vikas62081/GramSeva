@@ -39,6 +39,7 @@ interface DashboardProps {
 
 const Dashboard = ({navigation}: DashboardProps) => {
   const {user} = useAuth();
+  const {isActiveUser} = useRBAC();
   const theme = useTheme();
 
   const {familiesOverview, latestEvent, ui, latestEventData} = useDashboard();
@@ -49,13 +50,13 @@ const Dashboard = ({navigation}: DashboardProps) => {
       )}&background=4a90e2&color=fff&size=128`
     : 'https://ui-avatars.com/api/?name=User&background=4a90e2&color=fff&size=128';
 
-  const greetingTextVariant: React.ComponentProps<typeof Text>['variant'] =
-    useMemo(() => {
-      const deviceWidth = Dimensions.get('window').width;
-      let variant: React.ComponentProps<typeof Text>['variant'] = 'titleMedium';
-      if (deviceWidth > 385) variant = 'titleLarge';
-      return variant;
-    }, []);
+  const greetingFontSize: number = useMemo(() => {
+    const deviceWidth = Dimensions.get('window').width;
+    if (deviceWidth < 350) return 18;
+    if (deviceWidth >= 350 && deviceWidth < 400) return 20;
+    if (deviceWidth >= 400 && deviceWidth < 600) return 22;
+    return 26;
+  }, []);
 
   const animatedProgress = useRef(
     new Animated.Value(latestEvent.finances.fundingProgress),
@@ -114,9 +115,9 @@ const Dashboard = ({navigation}: DashboardProps) => {
           </TouchableOpacity>
           <View style={{flex: 1, marginLeft: 12}}>
             <Text
-              variant={greetingTextVariant}
+              variant="titleMedium"
               numberOfLines={1}
-              style={[styles.greeting]}>
+              style={[styles.greeting, {fontSize: greetingFontSize}]}>
               Welcome back, {user?.name?.split(' ')?.[0] || 'User'}!
             </Text>
             <Text variant="bodySmall" style={{color: '#888'}}>
@@ -305,7 +306,7 @@ const Dashboard = ({navigation}: DashboardProps) => {
                 justifyContent: 'space-between',
               }}
               onPress={() => {
-                if (latestEventData) {
+                if (isActiveUser && latestEventData) {
                   navigation.push('LatestEvent', {event: latestEventData});
                 } else {
                   navigation.navigate('Events');

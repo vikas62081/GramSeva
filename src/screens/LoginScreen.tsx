@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {useTheme} from 'react-native-paper';
+import {Button, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import Logo from '../components/common/Logo';
 
 const LoginScreen = ({navigation}: any) => {
-  const {login, googleLogin, loading} = useAuth();
+  const {login, loading} = useAuth();
   const theme = useTheme();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -34,10 +34,6 @@ const LoginScreen = ({navigation}: any) => {
         'Invalid phone number or password. Please try again.',
       );
     }
-  };
-
-  const handleGoogleLogin = async () => {
-    await googleLogin();
   };
 
   return (
@@ -81,36 +77,22 @@ const LoginScreen = ({navigation}: any) => {
           onChangeText={setPassword}
           placeholderTextColor={theme.colors.onSurfaceVariant}
         />
-        <TouchableOpacity
-          style={[styles.button, {backgroundColor: theme.colors.primary}]}
+        <Button
+          loading={loading}
+          mode="contained"
+          style={{borderRadius: 12}}
+          contentStyle={styles.button}
           onPress={handleLogin}
           disabled={loading}>
-          <Text style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
-            Login
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.googleButton,
-            {
-              backgroundColor: theme.colors.surface,
-              borderColor: theme.colors.outline,
-            },
-          ]}
-          onPress={handleGoogleLogin}
-          disabled={loading}>
-          <Text
-            style={[styles.googleButtonText, {color: theme.colors.primary}]}>
-            Login with Google
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation?.navigate('Register')}>
+          Login
+        </Button>
+
+        <TouchableOpacity onPress={() => navigation?.replace('Register')}>
           <Text style={[styles.link, {color: theme.colors.primary}]}>
             Don't have an account? Register
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation?.navigate('ForgotPassword')}>
+        <TouchableOpacity onPress={() => navigation?.replace('ForgotPassword')}>
           <Text style={[styles.link, {color: theme.colors.primary}]}>
             Forgot Password?
           </Text>
@@ -146,29 +128,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  googleButton: {
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-    borderWidth: 1,
-    marginBottom: 12,
-  },
-  googleButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    height: 56,
   },
   link: {
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: 20,
     textDecorationLine: 'underline',
   },
 });

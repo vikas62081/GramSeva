@@ -10,14 +10,14 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import {SegmentedButtons, useTheme} from 'react-native-paper';
+import {Button, SegmentedButtons, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import Logo from '../components/common/Logo';
 import {normalizeObjectStrings} from '../utils';
 
 const RegisterScreen = ({navigation}: any) => {
-  const {register, loading} = useAuth();
+  const {register, registerLoading} = useAuth();
   const theme = useTheme();
   const [form, setForm] = useState({
     name: '',
@@ -57,7 +57,7 @@ const RegisterScreen = ({navigation}: any) => {
       Alert.alert(
         'Registration Successful',
         'You have successfully registered. Please log in to continue.',
-        [{text: 'OK', onPress: () => navigation?.navigate('Login')}],
+        [{text: 'OK', onPress: () => navigation?.replace('Login')}],
       );
     } else {
       Alert.alert(
@@ -68,126 +68,127 @@ const RegisterScreen = ({navigation}: any) => {
   };
 
   return (
-    <LoadingSpinner loading={loading} text="Registering...">
-      <KeyboardAvoidingView
-        style={{flex: 1}}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView
-          style={[styles.container, {backgroundColor: theme.colors.background}]}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled">
-          <View style={styles.logoSection}>
-            <Logo size="large" />
-          </View>
+    // <LoadingSpinner loading={registerLoading} text="Registering...">
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView
+        style={[styles.container, {backgroundColor: theme.colors.background}]}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+        <View style={styles.logoSection}>
+          <Logo size="large" />
+        </View>
 
-          <Text style={[styles.title, {color: theme.colors.onBackground}]}>
-            Register
+        <Text style={[styles.title, {color: theme.colors.onBackground}]}>
+          Register
+        </Text>
+        <TextInput
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
+            },
+          ]}
+          placeholder="Full Name"
+          value={form.name}
+          onChangeText={name => setForm(prev => ({...prev, name}))}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
+        />
+        <TextInput
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
+            },
+          ]}
+          placeholder="Phone Number"
+          keyboardType="phone-pad"
+          value={form.phone}
+          onChangeText={phone => setForm(prev => ({...prev, phone}))}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
+        />
+        <TextInput
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
+            },
+          ]}
+          placeholder="Email"
+          keyboardType="email-address"
+          value={form.email}
+          onChangeText={email => setForm(prev => ({...prev, email}))}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
+        />
+        <View style={styles.genderContainer}>
+          <SegmentedButtons
+            value={form.gender}
+            onValueChange={gender =>
+              setForm(prev => ({
+                ...prev,
+                gender: gender as 'Male' | 'Female',
+              }))
+            }
+            buttons={[
+              {
+                icon: 'male',
+                value: 'Male',
+                label: 'Male',
+                style: styles.segmentedButton,
+                labelStyle: styles.segmentedLabel,
+              },
+              {
+                icon: 'female',
+                value: 'Female',
+                label: 'Female',
+                style: styles.segmentedButton,
+                labelStyle: styles.segmentedLabel,
+              },
+            ]}
+            style={styles.segmentedButtons}
+            density="small"
+          />
+        </View>
+        <TextInput
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme.colors.surface,
+              color: theme.colors.onSurface,
+              borderColor: theme.colors.outline,
+            },
+          ]}
+          placeholder="Password"
+          secureTextEntry
+          value={form.password}
+          onChangeText={password => setForm(prev => ({...prev, password}))}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
+        />
+        <Button
+          loading={registerLoading}
+          mode="contained"
+          style={{borderRadius: 12}}
+          contentStyle={styles.button}
+          onPress={handleRegister}
+          disabled={registerLoading}>
+          Register
+        </Button>
+        <TouchableOpacity onPress={() => navigation?.replace('Login')}>
+          <Text style={[styles.link, {color: theme.colors.primary}]}>
+            Already have an account? Login
           </Text>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.colors.surface,
-                color: theme.colors.onSurface,
-                borderColor: theme.colors.outline,
-              },
-            ]}
-            placeholder="Full Name"
-            value={form.name}
-            onChangeText={name => setForm(prev => ({...prev, name}))}
-            placeholderTextColor={theme.colors.onSurfaceVariant}
-          />
-          <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.colors.surface,
-                color: theme.colors.onSurface,
-                borderColor: theme.colors.outline,
-              },
-            ]}
-            placeholder="Phone Number"
-            keyboardType="phone-pad"
-            value={form.phone}
-            onChangeText={phone => setForm(prev => ({...prev, phone}))}
-            placeholderTextColor={theme.colors.onSurfaceVariant}
-          />
-          <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.colors.surface,
-                color: theme.colors.onSurface,
-                borderColor: theme.colors.outline,
-              },
-            ]}
-            placeholder="Email"
-            keyboardType="email-address"
-            value={form.email}
-            onChangeText={email => setForm(prev => ({...prev, email}))}
-            placeholderTextColor={theme.colors.onSurfaceVariant}
-          />
-          <View style={styles.genderContainer}>
-            <SegmentedButtons
-              value={form.gender}
-              onValueChange={gender =>
-                setForm(prev => ({
-                  ...prev,
-                  gender: gender as 'Male' | 'Female',
-                }))
-              }
-              buttons={[
-                {
-                  icon: 'male',
-                  value: 'Male',
-                  label: 'Male',
-                  style: styles.segmentedButton,
-                  labelStyle: styles.segmentedLabel,
-                },
-                {
-                  icon: 'female',
-                  value: 'Female',
-                  label: 'Female',
-                  style: styles.segmentedButton,
-                  labelStyle: styles.segmentedLabel,
-                },
-              ]}
-              style={styles.segmentedButtons}
-              density="small"
-            />
-          </View>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.colors.surface,
-                color: theme.colors.onSurface,
-                borderColor: theme.colors.outline,
-              },
-            ]}
-            placeholder="Password"
-            secureTextEntry
-            value={form.password}
-            onChangeText={password => setForm(prev => ({...prev, password}))}
-            placeholderTextColor={theme.colors.onSurfaceVariant}
-          />
-          <TouchableOpacity
-            style={[styles.button, {backgroundColor: theme.colors.primary}]}
-            onPress={handleRegister}
-            disabled={loading}>
-            <Text style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
-              Register
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
-            <Text style={[styles.link, {color: theme.colors.primary}]}>
-              Already have an account? Login
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </LoadingSpinner>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
+    // </LoadingSpinner>
   );
 };
 
@@ -231,18 +232,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   button: {
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    height: 56,
   },
   link: {
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: 20,
     textDecorationLine: 'underline',
   },
 });

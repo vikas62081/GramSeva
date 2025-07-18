@@ -20,7 +20,6 @@ const FamilyMemberSelector = ({route}: any) => {
       valueKey="value"
       onSelect={handleSelect}
       searchPlaceholder="Search by name"
-      headerTitle={title}
     />
   );
 };

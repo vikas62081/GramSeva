@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
 import {
   View,
-  Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
   Alert,
   Keyboard,
 } from 'react-native';
-import {useTheme} from 'react-native-paper';
+import {Text, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import Logo from '../components/common/Logo';
@@ -68,7 +67,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
     const success = await resetPassword(phone.trim(), newPassword);
     if (success) {
       Alert.alert('Success', 'Password reset successfully. Please login.');
-      navigation?.navigate('Login');
+      navigation?.replace('Login');
     } else {
       Alert.alert('Failed', 'Failed to reset password. Please try again.');
     }
@@ -124,6 +123,16 @@ const ForgotPasswordScreen = ({navigation}: any) => {
         )}
         {step === 'otp' && (
           <>
+            <Text
+              variant="bodyMedium"
+              style={{
+                paddingHorizontal: 4,
+                paddingVertical: 12,
+                textAlign: 'center',
+              }}>
+              OTP has been sent to your phone{' '}
+              <Text style={{fontWeight: '700'}}>{phone}</Text>
+            </Text>
             <TextInput
               style={[
                 styles.input,
@@ -193,7 +202,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
             </TouchableOpacity>
           </>
         )}
-        <TouchableOpacity onPress={() => navigation?.navigate('Login')}>
+        <TouchableOpacity onPress={() => navigation?.replace('Login')}>
           <Text style={[styles.link, {color: theme.colors.primary}]}>
             Back to Login
           </Text>

@@ -3,11 +3,9 @@ import {MD3Theme} from 'react-native-paper';
 export const getStatusColor = (theme: MD3Theme, status?: string) => {
   switch (status?.toLowerCase()) {
     case 'active':
-      return theme.colors.primary;
-    case 'suspended':
-      return theme.colors.error;
+      return '#198754';
     default:
-      return theme.colors.outline;
+      return theme.colors.error;
   }
 };
 

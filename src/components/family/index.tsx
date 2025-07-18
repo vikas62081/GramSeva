@@ -33,7 +33,7 @@ interface FamilyScreenProps {
 
 const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   const {showSnackbar} = useSnackbar();
-  const {isAdmin, isPendingUser} = useRBAC();
+  const {isActiveUser} = useRBAC();
   const theme = useTheme();
 
   // State management
@@ -70,14 +70,14 @@ const FamilyContainer: React.FC<FamilyScreenProps> = ({navigation}) => {
   }, [refetch]);
 
   const handleFamilyPress = (familyId: string) => {
-    if (isPendingUser) {
-      Alert.alert(
-        'Access Denied',
-        'Your account is still pending approval. You’ll get access once it’s reviewed.',
-      );
+    if (isActiveUser) {
+      navigation.navigate('FamilyDetails', {familyId});
       return;
     }
-    navigation.navigate('FamilyDetails', {familyId});
+    Alert.alert(
+      'Access Denied',
+      'Your account is still pending approval. You’ll get access once it’s reviewed.',
+    );
   };
 
   const handleAddFamily = () => {
