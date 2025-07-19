@@ -1,101 +1,153 @@
 # GramSeva
 
-A Digital Village Mobile App for community building and digital empowerment.
+**GramSeva** is a digital village mobile app designed to foster community building and digital empowerment in rural and semi-urban areas. It provides a unified platform for local governance, event management, family records, polling, notice boards, and more—enabling seamless communication and collaboration within the community.
 
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+---
 
-# Getting Started
+## 🚀 Project Intent
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+GramSeva aims to:
 
-## Step 1: Start Metro
+- Digitally empower villages and local communities.
+- Simplify access to local governance, events, and resources.
+- Foster transparency, participation, and collaboration.
+- Serve as a model for scalable, community-driven digital solutions.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+---
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## ✨ Features
 
-```sh
-# Using npm
-npm start
+- **User Authentication & Role-Based Access**  
+  Secure login and access control for different user roles (admin, member, guest, etc.).
 
-# OR using Yarn
-yarn start
-```
+- **Family Records Management**  
+  Add, update, and view family and member details, supporting local census and welfare schemes.
 
-## Step 2: Build and run your app
+- **Event Management**  
+  Create, manage, and track community events, including contributors and expenses.
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+- **Polling & Voting**  
+  Conduct community polls and voting with real-time results.
 
-### Android
+- **Notice Board**  
+  Post and view important community notices and updates.
 
-```sh
-# Using npm
-npm run android
+- **Dashboard & Analytics**  
+  Visualize key metrics and community data for better decision-making. See details below.
 
-# OR using Yarn
-yarn android
-```
+- **Mobile-First, Offline-Ready**  
+  Optimized for mobile devices with offline support for rural connectivity.
 
-### iOS
+- **Theming & Accessibility**  
+  Consistent, accessible UI using [react-native-paper](https://callstack.github.io/react-native-paper/).
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+---
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+## 📊 Dashboard Details
 
-```sh
-bundle install
-```
+The **Dashboard** is the heart of GramSeva, providing a real-time overview of community activities and key statistics. It empowers users and administrators with actionable insights, including:
 
-Then, and every time you update your native dependencies, run:
+- **Family & Member Statistics:**
+  - Total families and members registered
+  - Demographic breakdowns (age, gender, etc.)
+- **Event Overview:**
+  - Upcoming and past events
+  - Participation and contribution summaries
+- **Polling Results:**
+  - Ongoing and completed polls
+  - Voting statistics and trends
+- **Notice Board Highlights:**
+  - Recent and important notices
+- **User Engagement:**
+  - New users, active users, and pending approvals
+- **Visual Analytics:**
+  - Charts and graphs for quick insights
 
-```sh
-bundle exec pod install
-```
+The dashboard is designed for clarity and accessibility, helping community leaders and members make informed decisions at a glance.
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+---
 
-```sh
-# Using npm
-npm run ios
+## 🛠️ Tech Stack
 
-# OR using Yarn
-yarn ios
-```
+- **React Native** (cross-platform mobile development)
+- **Redux Toolkit** (state management & API integration)
+- **TypeScript** (type safety)
+- **React Native Paper** (UI components & theming)
+- **AsyncStorage** (local storage)
+- **Jest** (testing)
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+---
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+## 🏁 Getting Started
 
-## Step 3: Modify your app
+1. **Clone the repository**
 
-Now that you have successfully run the app, let's make changes!
+   ```sh
+   git clone https://github.com/vikas62081/gramSeva.git
+   cd gramSeva
+   ```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+2. **Install dependencies**
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+   ```sh
+   yarn install
+   # or
+   npm install
+   ```
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+3. **Start Metro Bundler**
 
-## Congratulations! :tada:
+   ```sh
+   yarn start
+   # or
+   npm start
+   ```
 
-You've successfully run and modified your React Native App. :partying_face:
+4. **Run on Android**
 
-### Now what?
+   ```sh
+   yarn android
+   # or
+   npm run android
+   ```
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+   **Run on iOS**
 
-# Troubleshooting
+   ```sh
+   bundle install
+   bundle exec pod install
+   yarn ios
+   # or
+   npm run ios
+   ```
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+---
 
-# Learn More
+## 🤝 Contributing
 
-To learn more about React Native, take a look at the following resources:
+We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) to get started.
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- Fork the repo and create your branch (`git checkout -b feature/your-feature`)
+- Commit your changes (`git commit -am 'Add new feature'`)
+- Push to the branch (`git push origin feature/your-feature`)
+- Create a new Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgements
+
+- [React Native](https://reactnative.dev/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [React Native Paper](https://callstack.github.io/react-native-paper/)
+
+---
+
+## 💡 Contact
+
+For questions, suggestions, or support, please open an issue or contact the maintainers.
