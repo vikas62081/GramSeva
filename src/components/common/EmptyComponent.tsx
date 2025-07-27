@@ -1,25 +1,18 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Text, useTheme, Icon} from 'react-native-paper';
+import {View, Text, StyleSheet} from 'react-native';
+import {useTheme} from 'react-native-paper';
 
 interface EmptyComponentProps {
-  message: string;
-  icon?: string;
+  msg: string;
 }
 
-const EmptyComponent: React.FC<EmptyComponentProps> = ({
-  message,
-  icon = 'information-outline',
-}) => {
-  const {colors} = useTheme();
+const EmptyComponent: React.FC<EmptyComponentProps> = ({msg}) => {
+  const theme = useTheme();
 
   return (
     <View style={styles.container}>
-      <Icon source={icon} size={48} color={colors.onSurfaceVariant} />
-      <Text
-        variant="titleMedium"
-        style={[styles.message, {color: colors.onSurfaceVariant}]}>
-        {message}
+      <Text style={[styles.message, {color: theme.colors.onSurfaceVariant}]}>
+        {msg}
       </Text>
     </View>
   );
@@ -28,13 +21,12 @@ const EmptyComponent: React.FC<EmptyComponentProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
+    paddingHorizontal: 20,
+    marginTop: '20%',
   },
   message: {
     textAlign: 'center',
-    marginTop: 16,
+    fontSize: 16,
   },
 });
 

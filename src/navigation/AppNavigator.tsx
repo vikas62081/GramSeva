@@ -1,17 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useAuth} from '../context/AuthContext';
-import BottomTabNavigator from './BottomTabNavigator';
+import MainTabs from './BottomTabNavigator';
 import AuthNavigator from './AuthNavigator';
+import LoadingScreen from '../components/common/LoadingScreen';
 import SplashScreen from '../components/common/SplashScreen';
 
 const AppNavigator = () => {
   const {user, loading} = useAuth();
+  const [showSplash, setShowSplash] = useState(true);
 
-  if (loading) {
-    return <SplashScreen />;
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+  };
+
+  if (showSplash) {
+    return <SplashScreen onFinish={handleSplashFinish} />;
   }
 
-  return user ? <BottomTabNavigator /> : <AuthNavigator />;
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  return user ? <MainTabs /> : <AuthNavigator />;
 };
 
 export default AppNavigator;

@@ -5,27 +5,34 @@ import {Button} from 'react-native-paper';
 interface LoadMoreButtonProps {
   onPress: () => void;
   isLoading: boolean;
-  hasMore: boolean;
+  disabled?: boolean;
+  hasMoreData?: boolean;
+  loadingText?: string;
+  buttonText?: string;
 }
 
 const LoadMoreButton: React.FC<LoadMoreButtonProps> = ({
   onPress,
   isLoading,
-  hasMore,
+  disabled = false,
+  hasMoreData = true,
+  loadingText = 'Loading...',
+  buttonText = 'Load More',
 }) => {
-  if (!hasMore) {
+  if (!hasMoreData) {
     return null;
   }
 
   return (
     <View style={styles.container}>
       <Button
-        mode="elevated"
+        mode="contained-tonal"
         onPress={onPress}
-        disabled={isLoading}
+        disabled={disabled || isLoading}
         loading={isLoading}
-        icon="arrow-down-circle-outline">
-        Load More
+        style={styles.button}
+        labelStyle={styles.label}>
+        {isLoading ? loadingText : buttonText}
       </Button>
     </View>
   );
@@ -33,9 +40,13 @@ const LoadMoreButton: React.FC<LoadMoreButtonProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 24,
     alignItems: 'center',
+    paddingVertical: 16,
   },
+  button: {
+    minWidth: 160,
+  },
+  label: {},
 });
 
 export default LoadMoreButton;

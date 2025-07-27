@@ -1,35 +1,18 @@
 import React from 'react';
-import {View, StyleSheet, ViewStyle} from 'react-native';
-import {useTheme} from 'react-native-paper';
+import {View, StyleSheet, ViewStyle, TextStyle} from 'react-native';
 
 interface ContainerProps {
   children: React.ReactNode;
-  style?: ViewStyle;
-  padding?: boolean;
+  padding?: boolean; // Optional flag to add padding to the container
 }
 
-const Container: React.FC<ContainerProps> = ({
-  children,
-  style,
-  padding = true,
-}) => {
-  const {colors} = useTheme();
-  const containerStyle = [
-    styles.container,
-    {backgroundColor: colors.background},
-    padding && styles.padding,
-    style,
-  ];
-
-  return <View style={containerStyle}>{children}</View>;
+const Container: React.FC<ContainerProps> = ({children, padding = true}) => {
+  return <View style={[styles.container]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  padding: {
-    padding: 16,
   },
 });
 
