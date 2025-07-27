@@ -1,33 +1,25 @@
 import React, {useState} from 'react';
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  Keyboard,
-} from 'react-native';
-import {Text, useTheme} from 'react-native-paper';
+import {View, StyleSheet, Alert, TouchableOpacity} from 'react-native';
+import {Button, TextInput, Text, useTheme} from 'react-native-paper';
 import {useAuth} from '../context/AuthContext';
-import LoadingSpinner from '../components/common/LoadingSpinner';
 import Logo from '../components/common/Logo';
 
 const ForgotPasswordScreen = ({navigation}: any) => {
   const {forgotPassword, verifyOtp, resetPassword, isInForgotPasswordFlow} =
     useAuth();
-  const theme = useTheme();
   const [step, setStep] = useState<'phone' | 'otp' | 'reset'>('phone');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const {colors} = useTheme();
 
   const handleSendOtp = async () => {
     if (!phone) {
-      Alert.alert('Missing Field', 'Please enter your phone number.');
+      Alert.alert('Please enter your phone number.');
       return;
     }
-    Keyboard.dismiss();
     const success = await forgotPassword(phone.trim());
     if (success) {
       Alert.alert('OTP Sent', 'Please check your phone for the OTP.');
@@ -39,10 +31,9 @@ const ForgotPasswordScreen = ({navigation}: any) => {
 
   const handleOtp = async () => {
     if (!otp) {
-      Alert.alert('Missing Field', 'Please enter the OTP.');
+      Alert.alert('Please enter the OTP.');
       return;
     }
-    Keyboard.dismiss();
     const success = await verifyOtp(parseInt(otp));
     if (success) {
       setStep('reset');
@@ -53,17 +44,13 @@ const ForgotPasswordScreen = ({navigation}: any) => {
 
   const handleReset = async () => {
     if (!newPassword || !confirmPassword) {
-      Alert.alert(
-        'Missing Fields',
-        'Please enter and confirm your new password.',
-      );
+      Alert.alert('Please enter and confirm your new password.');
       return;
     }
     if (newPassword !== confirmPassword) {
-      Alert.alert('Mismatch', 'Passwords do not match.');
+      Alert.alert('Passwords do not match.');
       return;
     }
-    Keyboard.dismiss();
     const success = await resetPassword(phone.trim(), newPassword);
     if (success) {
       Alert.alert('Success', 'Password reset successfully. Please login.');
@@ -73,183 +60,145 @@ const ForgotPasswordScreen = ({navigation}: any) => {
     }
   };
 
-  return (
-    <LoadingSpinner
-      loading={isInForgotPasswordFlow}
-      text={
-        step === 'phone'
-          ? 'Sending OTP...'
-          : step === 'otp'
-          ? 'Verifying Otp...'
-          : 'Reseting password...'
-      }
-      backgroundColor="rgba(0, 0, 0, 0.4)">
-      <View
-        style={[styles.container, {backgroundColor: theme.colors.background}]}>
-        <View style={styles.logoSection}>
-          <Logo size="medium" />
-        </View>
-
-        <Text style={[styles.title, {color: theme.colors.onBackground}]}>
-          Forgot Password
-        </Text>
-        {step === 'phone' && (
+  const renderStepContent = () => {
+    switch (step) {
+      case 'phone':
+        return (
           <>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.colors.surface,
-                  color: theme.colors.onSurface,
-                  borderColor: theme.colors.outline,
-                },
-              ]}
-              placeholder="Phone Number"
+              mode="outlined"
+              label="Phone Number"
               keyboardType="phone-pad"
               value={phone}
               onChangeText={setPhone}
-              placeholderTextColor={theme.colors.onSurfaceVariant}
+              style={styles.input}
+              left={<TextInput.Icon icon="phone" />}
             />
-            <TouchableOpacity
-              style={[styles.button, {backgroundColor: theme.colors.primary}]}
+            <Button
+              mode="contained"
               onPress={handleSendOtp}
-              disabled={isInForgotPasswordFlow}>
-              <Text
-                style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
-                Send OTP
-              </Text>
-            </TouchableOpacity>
+              loading={isInForgotPasswordFlow}
+              disabled={isInForgotPasswordFlow}
+              style={styles.button}>
+              Send OTP
+            </Button>
           </>
-        )}
-        {step === 'otp' && (
+        );
+      case 'otp':
+        return (
           <>
-            <Text
-              variant="bodyMedium"
-              style={{
-                paddingHorizontal: 4,
-                paddingVertical: 12,
-                textAlign: 'center',
-              }}>
+            <Text style={styles.otpInfo}>
               OTP has been sent to your phone{' '}
-              <Text style={{fontWeight: '700'}}>{phone}</Text>
+              <Text style={{fontWeight: 'bold'}}>{phone}</Text>
             </Text>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.colors.surface,
-                  color: theme.colors.onSurface,
-                  borderColor: theme.colors.outline,
-                },
-              ]}
-              placeholder="OTP"
+              mode="outlined"
+              label="OTP"
               keyboardType="number-pad"
               value={otp}
               onChangeText={setOtp}
-              placeholderTextColor={theme.colors.onSurfaceVariant}
+              style={styles.input}
+              left={<TextInput.Icon icon="message-processing" />}
             />
-            <TouchableOpacity
-              style={[styles.button, {backgroundColor: theme.colors.primary}]}
+            <Button
+              mode="contained"
               onPress={handleOtp}
-              disabled={isInForgotPasswordFlow}>
-              <Text
-                style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
-                Verify OTP
-              </Text>
-            </TouchableOpacity>
+              loading={isInForgotPasswordFlow}
+              disabled={isInForgotPasswordFlow}
+              style={styles.button}>
+              Verify OTP
+            </Button>
           </>
-        )}
-        {step === 'reset' && (
+        );
+      case 'reset':
+        return (
           <>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.colors.surface,
-                  color: theme.colors.onSurface,
-                  borderColor: theme.colors.outline,
-                },
-              ]}
-              placeholder="New Password"
-              secureTextEntry
+              mode="outlined"
+              label="New Password"
+              secureTextEntry={!isPasswordVisible}
               value={newPassword}
               onChangeText={setNewPassword}
-              placeholderTextColor={theme.colors.onSurfaceVariant}
+              style={styles.input}
+              left={<TextInput.Icon icon="lock" />}
+              right={
+                <TextInput.Icon
+                  icon={isPasswordVisible ? 'eye-off' : 'eye'}
+                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                />
+              }
             />
             <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.colors.surface,
-                  color: theme.colors.onSurface,
-                  borderColor: theme.colors.outline,
-                },
-              ]}
-              placeholder="Confirm Password"
-              secureTextEntry
+              mode="outlined"
+              label="Confirm Password"
+              secureTextEntry={!isPasswordVisible}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
-              placeholderTextColor={theme.colors.onSurfaceVariant}
+              style={styles.input}
+              left={<TextInput.Icon icon="lock-check" />}
             />
-            <TouchableOpacity
-              style={[styles.button, {backgroundColor: theme.colors.primary}]}
+            <Button
+              mode="contained"
               onPress={handleReset}
-              disabled={isInForgotPasswordFlow}>
-              <Text
-                style={[styles.buttonText, {color: theme.colors.onPrimary}]}>
-                Reset Password
-              </Text>
-            </TouchableOpacity>
+              loading={isInForgotPasswordFlow}
+              disabled={isInForgotPasswordFlow}
+              style={styles.button}>
+              Reset Password
+            </Button>
           </>
-        )}
-        <TouchableOpacity onPress={() => navigation?.replace('Login')}>
-          <Text style={[styles.link, {color: theme.colors.primary}]}>
-            Back to Login
-          </Text>
-        </TouchableOpacity>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <View style={styles.logoSection}>
+        <Logo size="large" />
       </View>
-    </LoadingSpinner>
+      <Text variant="headlineLarge" style={styles.title}>
+        Forgot Password
+      </Text>
+      {renderStepContent()}
+      <TouchableOpacity
+        style={styles.linkContainer}
+        onPress={() => navigation?.replace('Login')}>
+        <Text style={[styles.link, {color: colors.primary}]}>
+          Back to Login
+        </Text>
+      </TouchableOpacity>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // justifyContent: 'center',
-    padding: 24,
-    paddingTop: 120,
-  },
   logoSection: {
     alignItems: 'center',
     marginBottom: 24,
+    marginTop: 48,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 32,
     textAlign: 'center',
+    marginBottom: 24,
+    fontWeight: 'bold',
   },
   input: {
-    borderRadius: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    borderWidth: 1,
     marginBottom: 16,
   },
   button: {
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 12,
+    marginTop: 8,
+    paddingVertical: 8,
   },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  otpInfo: {
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  linkContainer: {
+    marginTop: 24,
+    alignItems: 'center',
   },
   link: {
-    textAlign: 'center',
-    marginTop: 8,
     textDecorationLine: 'underline',
   },
 });
