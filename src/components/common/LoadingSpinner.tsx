@@ -1,54 +1,45 @@
-import React, {ReactNode} from 'react';
-import {View, ActivityIndicator, StyleSheet, Text} from 'react-native';
-import {useTheme} from 'react-native-paper';
+import React from 'react';
+import {View, StyleSheet, Modal} from 'react-native';
+import {ActivityIndicator, Text, useTheme} from 'react-native-paper';
 
 interface LoadingSpinnerProps {
   loading: boolean;
-  children: ReactNode;
   text?: string;
-  backgroundColor?: string;
 }
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   loading,
-  children,
-  text = 'Please wait...',
-  backgroundColor = 'transparent',
+  text = 'Loading...',
 }) => {
-  const theme = useTheme();
+  const {colors} = useTheme();
 
   return (
-    <View style={styles.container}>
-      {children}
-      {loading && (
-        <View style={[styles.overlay, {backgroundColor: backgroundColor}]}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
-          {text ? (
-            <Text style={[styles.text, {color: theme.colors.onPrimary}]}>
-              {text}
-            </Text>
-          ) : null}
+    <Modal transparent visible={loading}>
+      <View style={[styles.container, {backgroundColor: colors.backdrop}]}>
+        <View style={[styles.card, {backgroundColor: colors.surface}]}>
+          <ActivityIndicator size="large" />
+          <Text style={styles.text}>{text}</Text>
         </View>
-      )}
-    </View>
+      </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 999,
+  },
+  card: {
+    borderRadius: 12,
+    padding: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   text: {
-    marginTop: 10,
+    marginLeft: 16,
     fontSize: 16,
-    fontWeight: '500',
   },
 });
 

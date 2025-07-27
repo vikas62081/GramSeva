@@ -11,7 +11,8 @@ import {Provider} from 'react-redux';
 import {store} from './src/store';
 import AppNavigator from './src/navigation/AppNavigator';
 
-import {PaperProvider, MD3LightTheme, MD3DarkTheme} from 'react-native-paper';
+import {PaperProvider} from 'react-native-paper';
+import {GramSevaLightTheme, GramSevaDarkTheme} from './src/theme';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import 'react-native-gesture-handler';
 import 'react-native-reanimated';
@@ -24,25 +25,8 @@ enableScreens();
 const App = (): React.JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const paperTheme = useMemo(
-    () => ({
-      ...(isDarkMode ? MD3DarkTheme : MD3LightTheme),
-      colors: {
-        ...(isDarkMode ? MD3DarkTheme.colors : MD3LightTheme.colors),
-      },
-    }),
-    [isDarkMode],
-  );
-
-  const navTheme = useMemo(
-    () => ({
-      ...(isDarkMode ? NavDarkTheme : NavDefaultTheme),
-      colors: {
-        ...(isDarkMode ? NavDarkTheme.colors : NavDefaultTheme.colors),
-      },
-    }),
-    [isDarkMode],
-  );
+  const paperTheme = isDarkMode ? GramSevaDarkTheme : GramSevaLightTheme;
+  const navTheme = isDarkMode ? NavDarkTheme : NavDefaultTheme;
 
   return (
     <PaperProvider

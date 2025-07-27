@@ -1,41 +1,43 @@
 import React from 'react';
-import {View, StyleSheet, Text, Image} from 'react-native';
-import {useTheme} from 'react-native-paper';
+import {View, StyleSheet, Image} from 'react-native';
+import {Text, useTheme} from 'react-native-paper';
 
 interface LogoProps {
-  size?: 'small' | 'medium' | 'large';
-  showTagline?: boolean;
+  size?: 'small' | 'medium' | 'large' | 'x-large';
 }
 
-const Logo: React.FC<LogoProps> = ({size = 'medium', showTagline = true}) => {
-  const theme = useTheme();
+const Logo: React.FC<LogoProps> = ({size = 'medium'}) => {
+  const {colors} = useTheme();
 
   const getSize = () => {
     switch (size) {
       case 'small':
-        return {container: 60, text: 16, tagline: 12};
+        return {width: 60, height: 60, title: 'titleMedium'};
+      case 'medium':
+        return {width: 80, height: 80, title: 'titleLarge'};
       case 'large':
-        return {container: 100, text: 32, tagline: 16};
+        return {width: 120, height: 120, title: 'headlineSmall'};
+      case 'x-large':
+        return {width: 150, height: 150, title: 'headlineMedium'};
       default:
-        return {container: 80, text: 24, tagline: 14};
+        return {width: 80, height: 80, title: 'titleLarge'};
     }
   };
 
-  const sizes = getSize();
+  const {width, height, title} = getSize();
 
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../assets/logo.png')}
-        style={[
-          styles.logoImage,
-          {
-            width: sizes.container,
-            height: sizes.container,
-          },
-        ]}
+        source={require('../../assets/logo1.png')}
+        style={{width, height}}
         resizeMode="contain"
       />
+      <Text
+        variant={title as any}
+        style={[styles.title, {color: colors.primary}]}>
+        GramSeva
+      </Text>
     </View>
   );
 };
@@ -43,17 +45,10 @@ const Logo: React.FC<LogoProps> = ({size = 'medium', showTagline = true}) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  logoImage: {},
-  appName: {
+  title: {
+    marginTop: 8,
     fontWeight: 'bold',
-    letterSpacing: 0.5,
-  },
-  tagline: {
-    fontWeight: '400',
-    textAlign: 'center',
-    letterSpacing: 0.3,
   },
 });
 
