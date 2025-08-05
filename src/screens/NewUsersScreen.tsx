@@ -1,16 +1,17 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import {
   Surface,
   Text,
   ActivityIndicator,
-  Menu,
   IconButton,
   Divider,
+  List,
 } from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 
 import SearchHeader from '../components/common/SearchHeader';
+import BottomSheet from '../components/common/BottomSheet';
 import {
   useGetUsersQuery,
   useUpdateUserStatusMutation,
@@ -22,22 +23,15 @@ import {EventDetailsScreenNavigationProp} from '../navigation/types';
 import {useHideTabBar} from '../hooks/ useHideTabBar';
 import {useSnackbar} from '../context/SnackbarContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import {formatDate} from '../utils';
 
 interface UserCardProps {
   user: User;
-  onUpdateStatus: (userId: string, status: string) => void;
+  onOptionsPress?: () => void;
 }
 
-const UserCard: React.FC<UserCardProps> = ({user, onUpdateStatus}) => {
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const toggleMenu = (visible: boolean) => () => setMenuVisible(visible);
-
-  const formattedDate = new Date(user.created_at).toLocaleDateString('en-IN', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
+const UserCard: React.FC<UserCardProps> = ({user, onOptionsPress}) => {
+  const formattedDate = formatDate(user.created_at);
 
   return (
     <Surface style={styles.card}>
@@ -66,34 +60,11 @@ const UserCard: React.FC<UserCardProps> = ({user, onUpdateStatus}) => {
           ))}
         </View>
 
-        <Menu
-          visible={menuVisible}
-          onDismiss={toggleMenu(false)}
-          anchor={
-            <IconButton
-              icon="more-vert"
-              onPress={toggleMenu(true)}
-              accessibilityLabel="More options"
-            />
-          }>
-          <Menu.Item
-            onPress={() => {
-              onUpdateStatus(user.id, 'Active');
-              toggleMenu(false);
-            }}
-            title="Add User to Family"
-            leadingIcon="person-add-alt-1"
-          />
-          <Divider />
-          <Menu.Item
-            onPress={() => {
-              onUpdateStatus(user.id, 'Suspended');
-              toggleMenu(false);
-            }}
-            title="Pause This Request"
-            leadingIcon="block"
-          />
-        </Menu>
+        <IconButton
+          icon="more-vert"
+          onPress={onOptionsPress}
+          accessibilityLabel="More options"
+        />
       </View>
     </Surface>
   );
@@ -103,6 +74,11 @@ const NewUsersScreen = () => {
   useHideTabBar();
   const navigation = useNavigation<EventDetailsScreenNavigationProp>();
   const {showSnackbar} = useSnackbar();
+
+  // Bottom sheet state
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null); // 'Active' or 'Suspended'
 
   const {
     data: users,
@@ -115,6 +91,7 @@ const NewUsersScreen = () => {
     hasMorePages,
     showInitialLoader,
     ready,
+    refetch: refetchUsers,
   } = usePaginatedList<
     User,
     {page?: number; limit?: number; search?: string; status: string}
@@ -127,20 +104,40 @@ const NewUsersScreen = () => {
   const [updateUserStatus, {isLoading: isUpdating}] =
     useUpdateUserStatusMutation();
 
-  const handleUpdate = async (userId: string, status: string) => {
+  useEffect(() => {
+    refetchUsers();
+  }, []);
+
+  const openSheet = (user: User) => {
+    setSelectedUser(user);
+    setSheetVisible(true);
+    setUpdatingStatus(null);
+  };
+  const closeSheet = () => {
+    setSheetVisible(false);
+    setSelectedUser(null);
+    setUpdatingStatus(null);
+  };
+
+  // Show spinner for the option being updated
+  const handleSheetUpdate = async (userId: string, status: string) => {
+    setUpdatingStatus(status);
     try {
       await updateUserStatus({userId, status}).unwrap();
-      handleRefresh();
+      refetchUsers();
       showSnackbar('User status updated succesffuly');
     } catch (e: any) {
       showSnackbar(e.data.message, 'error');
     } finally {
+      setTimeout(() => {
+        closeSheet();
+      }, 500);
     }
   };
 
   return (
     <Surface style={styles.container}>
-      <LoadingSpinner loading={showInitialLoader || isUpdating}>
+      <LoadingSpinner loading={showInitialLoader}>
         <SearchHeader
           title="New Users"
           onSearch={handleSearch}
@@ -155,7 +152,7 @@ const NewUsersScreen = () => {
             data={users}
             keyExtractor={item => item.id}
             renderItem={({item}) => (
-              <UserCard user={item} onUpdateStatus={handleUpdate} />
+              <UserCard user={item} onOptionsPress={() => openSheet(item)} />
             )}
             contentContainerStyle={[users.length === 0 && styles.centered]}
             ListEmptyComponent={
@@ -180,12 +177,66 @@ const NewUsersScreen = () => {
             }
           />
         </View>
+        <BottomSheet
+          visible={sheetVisible && !!selectedUser}
+          onDismiss={closeSheet}>
+          <View>
+            <List.Item
+              disabled={isUpdating}
+              key="add-user"
+              title="Add User to Family"
+              description="Activate and add user to family group"
+              left={() => <IconButton icon="person-add-alt-1" size={24} />}
+              right={() =>
+                updatingStatus === 'Active' ? (
+                  <ActivityIndicator size={18} style={{marginRight: 8}} />
+                ) : null
+              }
+              onPress={() => {
+                if (!updatingStatus)
+                  handleSheetUpdate(selectedUser!.id, 'Active');
+              }}
+            />
+            <Divider key="divider1" />
+            <List.Item
+              disabled={isUpdating}
+              key="pause-request"
+              title="Pause This Request"
+              description="Suspend this user's request temporarily"
+              left={() => <IconButton icon="block" size={24} />}
+              right={() =>
+                updatingStatus === 'Suspended' ? (
+                  <ActivityIndicator size={18} style={{marginRight: 8}} />
+                ) : null
+              }
+              onPress={() => {
+                if (!updatingStatus)
+                  handleSheetUpdate(selectedUser!.id, 'Suspended');
+              }}
+            />
+            <Divider key="divider2" />
+            <List.Item
+              disabled={isUpdating}
+              key="cancel"
+              title="Cancel"
+              onPress={closeSheet}
+              titleStyle={styles.sheetCancel}
+            />
+          </View>
+        </BottomSheet>
       </LoadingSpinner>
     </Surface>
   );
 };
 
 const styles = StyleSheet.create({
+  sheetCancel: {
+    fontSize: 16,
+    color: '#d32f2f',
+    textAlign: 'center',
+    paddingVertical: 10,
+    fontWeight: '600',
+  },
   container: {flex: 1},
   content: {
     flex: 1,

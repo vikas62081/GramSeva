@@ -113,12 +113,12 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       };
       const _user = await loginMutation(loginData).unwrap();
       if (_user) {
-        setUser(_user);
-        setUserId(_user.id);
         await saveToStorage('user', _user);
         if (_user.token) {
           await saveToStorage('token', _user.token);
         }
+        setUser(_user);
+        setUserId(_user.id);
         return true;
       } else {
         return false;
