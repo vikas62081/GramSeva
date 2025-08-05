@@ -312,7 +312,7 @@ const LoginScreen = ({navigation}: any) => {
           </Animated.View>
 
           {/* Footer */}
-          <View style={styles.footer}>
+          {/* <View style={styles.footer}>
             <Text
               style={[
                 styles.footerText,
@@ -321,7 +321,7 @@ const LoginScreen = ({navigation}: any) => {
               By signing in, you agree to our Terms of Service and Privacy
               Policy
             </Text>
-          </View>
+          </View> */}
         </ScrollView>
       </KeyboardAvoidingView>
     </LoadingSpinner>
